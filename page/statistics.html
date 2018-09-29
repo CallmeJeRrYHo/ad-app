@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>详情页</title>
+    <script src="../js/polyfill.min.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../api/api.js"></script>
+    <script src="../api/apiConfig.js"></script>
+    <script src="../api/apiHttp.js"></script>
+    <script src="../js/mui.min.js"></script>
+    <link href="../css/reset.css" rel="stylesheet" />
+    <link href="../css/mui.min.css" rel="stylesheet" />
+    <link href="../css/weui.min.css" rel="stylesheet" />
+    <link href="../css/style.min.css" rel="stylesheet" />
+    <script src="../js/vue.js"></script>
+    <script src="../js/openWindow.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/index.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
+    </script>
+    <style type="text/css">
+        .container {
+            position: relative;
+            top: 3rem;     
+        }
+        .swiperArea {
+            width: 100%;
+            margin-top: 0.5rem;
+
+        }
+        .swiper_title {
+            font-size: 0.3rem;
+            font-weight: bold;
+            padding: 0.2rem;
+        }
+    </style>
+</head>
+
+<body ontouchstart>
+    <div id="detail">
+        <c-header 
+        :title="title">
+        </c-header>
+        <div class="container">
+            <ve-pie :data="chartData" :settings="chartSetting"></ve-pie>
+        </div>
+    </div>
+</body>
+
+
+<script src="../components/cHeader.js"></script>
+<script>
+    new Vue({
+        el: '#detail',
+        data() {
+            this.chartSetting = {
+                dataType: 'percent'
+            }
+            return {
+                selected: -1,
+                title: '三圳镇人民政府',
+                detail_title: 'A459环城公路与封疆大道汇合圆盘处',
+                infoData: {
+                    org: '城市综合管理局',
+                    response: '陈二',
+                    moblie: '13526984523',
+
+                },
+                chartData: {
+                    columns: ['日期', '销售额'],
+                    rows: [
+                    { '日期': '1月1日', '销售额': 123 },
+                    { '日期': '1月2日', '销售额': 1223 },
+                    { '日期': '1月3日', '销售额': 2123 },
+                    { '日期': '1月4日', '销售额': 4123 },
+                    { '日期': '1月5日', '销售额': 3123 },
+                    { '日期': '1月6日', '销售额': 7123 }
+                    ]
+                },
+            }         
+        },
+        created: function () {
+        },
+        methods: {
+            selectAdv() {
+                pm(api.selectAdv, {}, res => {
+                    // jumpTo
+                }, err => {
+                    console.log(err);
+                })
+            },
+        },
+    })
+</script>
+
+</html> 
