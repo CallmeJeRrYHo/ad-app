@@ -111,7 +111,7 @@
                 <div style="align-self: flex-start;">
                     <img src="../icons/alert.png" style="height: 0.8rem; width: 0.8rem;margin-right: 0.3rem;">
                 </div>
-                <div style="w-100">
+                <div class="w-100">
                     <p style="font-size: 0.5rem; color: #000;">{{contentData.content}}</p>
                     <img v-for="(item, index) in contentData.picFiles" v-if="contentData.picFiles.length > 0" class="card_imgs" :src="HOST + item.path"
                         @click="galleryShow(index)">
@@ -275,7 +275,7 @@
             },
             HOST: 'http://39.108.245.130:9090/',
             uploadUrl: 'http://39.108.245.130:9090/pic/uploadPic',
-            aid: '',
+            mid: '',
             userType: infoGet('userType'),
             contentData: {},
             HOST: api.HOST,
@@ -285,8 +285,8 @@
             var self = this;
             h5(function () {
                 var webview = plus.webview.currentWebview();
-                if (webview.aid) {
-                    self.aid = webview.aid;
+                if (webview.mid) {
+                    self.mid = webview.mid;
                     self.getWarningDetail();
                 }
             });
@@ -333,7 +333,7 @@
                 pm(api.handleWarning, {
                     content: self.feedback,
                     userId: infoGet('userId'),
-                    warningId: self.aid,
+                    warningId: self.mid,
                 }, res => {
                     toast(res);
                     setTimeout(function () {
@@ -347,7 +347,7 @@
                 var self = this;
                 pm(api.auditWarningHandle, {
                     userId: infoGet('userId'),
-                    warningId: self.aid,
+                    warningId: self.mid,
                     auditStatus: val
                 }, res => {
                     toast(res);
@@ -412,7 +412,7 @@
             getWarningDetail() {
                 var self = this;
                 pm(api.getWarningDetail, {
-                    warningId: self.aid,
+                    warningId: self.mid,
                 }, function (res) {
                     self.contentData = res.result;
                 }, function (err) {

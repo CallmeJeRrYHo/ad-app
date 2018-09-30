@@ -13,7 +13,9 @@ Vue.component('c-header', {
 						lineHeight: '1.5rem',
 						overflow: 'hidden',
 						verticalAlign: 'middle',
-						zIndex: '1000000',
+            zIndex: '1000000',
+            borderBottom: '1px solid #ccc',
+            borderTop: '1px solid #ccc',
 					},
 					icon: {
 						height: '0.88rem',

@@ -25,7 +25,7 @@
             background-color: #f2f2f2;
         }
 
-        #resource {
+        #announce {
             width: 100%;
             height: 100%;
         }
@@ -156,7 +156,8 @@
         .card_interact {
             width: 100%;
             height: 1.2rem;
-            padding: 0.2rem;
+            padding: 0.4rem;
+            box-sizing: border-box;
             background-color: #fff;
         }
 
@@ -182,18 +183,32 @@
 
         .account-card {
             width: 100%;
-            height: 5rem;
+            height: 100%;
             margin-bottom: 0.3rem;
             background: #fff;
             padding: 0.5rem;
+            padding-bottom: 0;
         }
         .card_interact {
             width: 100%;
-            height: 1.2rem;
+            height: 1.5rem;
             padding: 0.4rem;
             background-color: #fff;
             border-top: 1px solid #ccc;
             margin-top: 0.2rem;
+        }
+        .card_content {
+            font-size: 0.5rem; 
+            margin-left: 0.5rem;
+            color: #000; 
+            width: 90%;
+            max-height: 1.6rem;
+            overflow: hidden;
+            word-wrap: break-word;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
         }
     </style>
 </head>
@@ -203,20 +218,20 @@
         <c-header :title="title"></c-header>
         <div class="container">
             <div v-if="contentData.length > 0" class="account-card" v-for="(item, index) in contentData" :key="index">
-                <div class="flex" style="height: 2rem;">
+                <!-- <div class="flex" style="height: 2rem;">
                     <img src="../icons/advertisement.png" class="icon-normal" />
                     <span style="font-size: 0.5rem;font-weight: bold;margin-left: 0.5rem;color: #1296DB;">{{item.label}}</span>
-                </div>
+                </div> -->
                 <div class="flex">
-                    <img src="../icons/alert.png" class="icon-normal" />
-                    <span style="font-size: 0.5rem; margin-left: 0.5rem;color: #000;">{{item.content}}</span> 
+                    <img :src="(item.rStatus ? '../icons/notify.png' : '../icons/notify_active.png')" class="icon-normal" />
+                    <p class="card_content">{{item.content}}</p> 
                 </div>
                 <div class="card_interact flex j-b">
-                    <span style="margin-right: 0.3rem;">{{item.wStatus | statusFilter}}</span>
-                    <span class="check" style="" @click="checkMessage(item.value)">查看</span>
+                    <span style="margin-right: 0.3rem;" class="noti-title">{{item.rStatus | statusFilter}}</span>
+                    <span class="check" @click="checkMessage(item.msgId)">查看</span>
                 </div>
             </div>
-            <div v-if="contentData.length === 0" style="height: 1rem;width:4rem;margin: 3rem auto;white-space: nowrap;">
+            <div v-if="contentData.length === 0" style="height: 1rem;width:4rem;margin: 0 auto;white-space: nowrap;">
                 暂无任何公告
             </div>
         </div>
@@ -231,14 +246,12 @@
             title: '通知公告',
             selected: -1,
             isFilter: 0,
-            orgArray: ['全部单位', '三圳镇人民政府', '蕉岭县人民政府', '田头农家乐'],
             filterOption1: -1,
             filterOption2: -1,
             filterOption3: -1,
             query: '',
             contentData: [],
             selectForm: {
-                userId: infoGet('userId'),
                 index: 1,
                 pageSize: 1000,
             },
@@ -248,14 +261,14 @@
             var self = this;
             document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
             window.addEventListener('refresh', function () {
-                self.selectMyAnnoucement();
+                self.selectMsg();
             })
-            this.selectMyAnnoucement();
+            this.selectMsg();
         },
         methods: {
             checkMessage(id) {
                 h5(function () {
-                    jumpTo({to: 'alert_detail.html', data: { aid: id || ''}})
+                    jumpTo({to: 'announcement_detail.html', data: { mid: id || ''}})
                 })
             },
             resetForm() {
@@ -268,16 +281,15 @@
                     pageSize: 1000,
                 }
             },
-            selectMyAnnoucement() {
+            selectMsg() {
                 var self = this;
-                pm(api.selectMyAnnoucement, self.selectForm, res => {
+                pm(api.selectMsg, self.selectForm, res => {
                     self.contentData = [];
                     res.result.forEach(function (ele) {
                         var temp = {};
-                        temp.label = ele.address;
                         temp.content = ele.content;
-                        temp.wStatus = ele.warningStatus;
-                        temp.value = ele.warningId;
+                        temp.rStatus = ele.read_status;
+                        temp.msgId = ele.msgId;
                         self.contentData.push(temp);
                     })
                 }, err => {
@@ -319,17 +331,19 @@
                 this.selectForm.adStatus = '';
             },
             refresh() {
-                this.selectMyAnnoucement();
+                this.selectMsg();
                 this.isFilter = 0;
             }
         },
         filters: {
             statusFilter(val) {
                 switch (val) {
+                    case 0:
+                        return '未读';
                     case 1:
-                        return '待处理';
-                    case 2:
-                        return '已完成';
+                        return '已读';
+                    default: 
+                        return '未读';
                 }
             }
         }

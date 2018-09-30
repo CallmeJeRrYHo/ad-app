@@ -173,7 +173,8 @@
 					"page/account_manage.html",
 					"page/org_manage.html",
 					"page/message.html",
-					"page/my_data.html"
+					"page/my_data.html",
+					"page/announcement.html"
 				],
 				"priority": 0
 			},
@@ -214,6 +215,13 @@
 				"priority": 0
 			},
 			"page/message.html": {
+				"resources": [],
+				"refer": [
+					"page/alert_detail.html"
+				],
+				"priority": 0
+			},
+			"page/announcement.html": {
 				"resources": [],
 				"refer": [
 					"page/alert_detail.html"

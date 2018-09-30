@@ -490,6 +490,12 @@
         to: 'resource.html',
         auth: '1',
       },
+      {
+        title: '通知公告',
+        src: '../icons/watcher_active.png',
+        to: 'announcement.html',
+        auth: '1',
+      },
       ],
       selectForm: {
         companyId: '',
@@ -675,13 +681,6 @@
       },
       edit() {
 
-      },
-      selectAdv() {
-        pm(api.selectAdv, {}, res => {
-          // jumpTo
-        }, err => {
-          console.log(err);
-        })
       },
       handleFilter(val) {
         this.isFilter = val;
