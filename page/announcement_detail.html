@@ -121,58 +121,17 @@
             <div class="warning-status">
                 <dl>
                     <dt>
-                        <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">状态</span>
-                        <span>{{contentData.warningStatus | wStatusFilter}}</span>
-                    </dt>
-                    <dt>
-                        <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">报警时间</span>
+                        <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">发布时间</span>
                         <span>{{contentData.createTime }}</span>
                     </dt>
                     <dt>
-                        <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">报警者</span>
+                        <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">发布者</span>
                         <span>{{contentData.createUserName}}</span>
                     </dt>
                 </dl>
             </div>
-            <div class="handle-status" v-for="(item, index) in contentData.warningHandles">
-                <dl>
-                    <dt>
-                        <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">处理结果</span>
-                        <span>{{item.handleStatus | statusFilter}}</span>
-                    </dt>
-                    <dt>
-                        <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">处理时间</span>
-                        <span>{{item.createTime || '--'}}</span>
-                    </dt>
-                    <dt>
-                        <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">审核时间</span>
-                        <span>{{item.modifyTime || '--'}}</span>
-                    </dt>
-                    <dt>
-                        <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">处理内容</span>
-                        <span>{{item.content}}</span>
-                    </dt>
-                    <dt>
-                        <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">处理回复</span>
-                        <span>{{item.handleResponse}}</span>
-                    </dt>
-                </dl>
-            </div>
 
-            <div class="pic-content" v-if="contentData.isShowHandle && userType === '1'">
-                <div class="noti-title" style="border-bottom: 1px solid #ccc;padding: 0.3rem 0;">处理结果</div>
-                <textarea v-model="feedback" class="t-input" placeholder="请输入内容"></textarea>
-            </div>
-            <div class="w-100 interact_area">
-                <div class="submit" @click="handleWarning" v-if="contentData.isShowHandle && userType === '1'">
-                    提交处理结果
-                </div>
-                <div v-if="contentData.isShowHandleAudit && userType === '2'">
-                    <div class="submit" @click="auditWarningHandle(2)">再次报警</div>
-                    <div class="submit" @click="auditWarningHandle(1)">已审核</div>
-                </div>
-
-            </div>
+      
         </div>
     </div>
 </body>
