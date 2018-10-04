@@ -358,7 +358,10 @@
 	}
 	w.infoGet = function(key) {
 		return window.localStorage.getItem(key);
-	}
+  }
+  w.infoClear = function() {
+    window.localStorage.clear();
+  }
 	w.toast = function (res) {
 		mui.toast(res.message, {duration: 'long', type: 'div'});
 	}

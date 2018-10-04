@@ -174,7 +174,8 @@
 					"page/org_manage.html",
 					"page/message.html",
 					"page/my_data.html",
-					"page/announcement.html"
+					"page/announcement.html",
+					"page/statistics.html"
 				],
 				"priority": 0
 			},
@@ -243,7 +244,6 @@
 				"icons/ad_4.jpg",
 				"page/manage.html",
 				"icons/filter.png",
-				"page/statistics.html",
 				"icons/account_active.png",
 				"icons/gallery.png",
 				"icons/select.png",

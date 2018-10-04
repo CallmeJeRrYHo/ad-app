@@ -13,7 +13,8 @@
 			"page/org_manage.html",
 			"page/message.html",
 			"page/my_data.html",
-			"page/announcement.html"
+			"page/announcement.html",
+			"page/statistics.html"
 		],
 		"resources": []
 	},

@@ -102,6 +102,8 @@
               infoSet('userType', res.result.userType);
               infoSet('mobile', res.result.mobile);
               infoSet('name', res.result.name);
+              infoSet('companyId', res.result.companyId);
+              infoSet('companyName', res.result.companyName);
               mui.toast(res.message, {duration: 'long', type: 'div'});
               h5(function() {
                 jumpTo({to: 'index.html'});

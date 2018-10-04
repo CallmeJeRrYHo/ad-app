@@ -360,7 +360,7 @@
             <img src="../icons/forward.png" class="icon-small" />
           </div>
         </div>
-        <div class="manage-login w-100">
+        <div class="manage-login w-100" @click="logout">
           退出登录
         </div>
       </div>
@@ -496,6 +496,13 @@
         to: 'announcement.html',
         auth: '1',
       },
+      {
+        title: '统计分析',
+        src: '../icons/statistics.png',
+        to: 'statistics.html',
+        auth: '1',
+      },
+
       ],
       selectForm: {
         companyId: '',
@@ -554,6 +561,10 @@
 
     },
     methods: {
+      logout() {
+        infoClear();
+        mui.back();
+      },
       getUserInfo() {
         var self = this;
         pm(api.getUserInfo, {
