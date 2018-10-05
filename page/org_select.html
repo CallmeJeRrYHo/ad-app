@@ -260,7 +260,7 @@
         var self = this;
         pm(api.selectUserCompany, {
           keyWord: key,
-          userId: '',
+          userId: infoGet('userId'),
           companyId: '',
         }, res => {
           self.orgArray = [];
