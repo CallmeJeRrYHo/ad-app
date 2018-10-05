@@ -57,5 +57,10 @@
 		"refer": [
 			"page/alert_detail.html"
 		]
+	},
+	"page/account_add.html": {
+		"refer": [
+			"page/org_select.html"
+		]
 	}
 }

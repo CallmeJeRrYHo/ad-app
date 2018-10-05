@@ -26,7 +26,7 @@
             top: 1.2rem;
         }
 
-        .alert-content,
+        .account_add-content,
         .pic-content {
             padding: 0.2rem;
             height: 5rem;
@@ -55,7 +55,7 @@
 </head>
 
 <body ontouchstart>
-    <div id="alert">
+    <div id="account_add">
         <c-header :title="title">
         </c-header>
         <div class="container">
@@ -88,7 +88,7 @@
 <script src="../components/vMask.js"></script>
 <script>
     new Vue({
-        el: '#alert',
+        el: '#account_add',
         data: {
             selected: -1,
             title: '添加帐号',
@@ -330,8 +330,10 @@
                 }
                 switch (index) {
                     case 0:
-                        this.selectArray = this.orgArray;
-                        break;
+                        h5(function() {
+                          jumpTo({to: 'org_select.html'});
+                        })
+                        return;
                     case 1:
                         this.selectArray = this.roleArray;
                         break;

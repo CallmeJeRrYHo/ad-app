@@ -228,6 +228,13 @@
 					"page/alert_detail.html"
 				],
 				"priority": 0
+			},
+			"page/account_add.html": {
+				"resources": [],
+				"refer": [
+					"page/org_select.html"
+				],
+				"priority": 0
 			}
 		},
 		"idle": {

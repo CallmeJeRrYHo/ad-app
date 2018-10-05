@@ -37,7 +37,7 @@
       overflow: scroll !important;
     }
 
-    .alert-content,
+    .resource_add-content,
     .pic-content {
       padding: 0.2rem;
       background-color: #fff;
@@ -104,7 +104,7 @@
 <body ontouchstart>
   <div id="allmap" style="display: none;"></div>
 
-  <div id="alert">
+  <div id="resource_add">
     <div id="map-buttons" v-if="activeMap" @click="confirmAdd">
       {{flag ? '返回':'确认选点'}}
     </div>
@@ -236,11 +236,12 @@
   }, { enableHighAccuracy: true })
 
   new Vue({
-    el: '#alert',
+    el: '#resource_add',
     data: {
       selected: -1,
       detail_title: 'A459环城公路与封疆大道汇合圆盘处',
-      lineArray: [{
+      lineArray: [
+      {
         title: '序号',
         type: 'input',
       },
@@ -271,6 +272,14 @@
       {
         title: '宣传牌内容',
         type: 'textarea',
+      },
+      {
+        title: '周边摄像头',
+        type: 'input',
+      },
+      {
+        title: '周边派出所',
+        type: 'input',
       },
       ],
       typeArray: [{

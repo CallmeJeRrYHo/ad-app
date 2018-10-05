@@ -9,6 +9,7 @@
         // 公告类
         selectMsg: '/msg/selectMsg', 
         addMsg: '/msg/addMsg', 
+        readMsg: '/msg/readMsg', 
 
         // 广告类
         auditLiveView: '/advertisement/auditLiveView',
@@ -21,6 +22,7 @@
         designAudit: '/advertisement/designAudit',
         updateDesign: '/advertisement/updateDesign',
         deleteAd: '/advertisement/deleteAd',
+        
 
         // 报警类
         auditWarningHandle: '/warning/auditWarningHandle',
@@ -43,6 +45,10 @@
         updateUserInfo: '/user/updateUserInfo',
         getUserInfo: '/user/getUserInfo',
         login: '/user/login', // t
+        addUserToCompany: '/user/addUserToCompany',
+        removeUserCompany: '/user/removeUserCompany',
+        selectUserCompany: '/user/selectUserCompany',
+        adMonitor: '/user/adMonitor',
 
         // 统计类
         adStatistics: '/statistics/adStatistics',

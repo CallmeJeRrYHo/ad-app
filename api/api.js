@@ -12,6 +12,9 @@
         addMsg: function (data) {
             return apiHttp.fetchPost(apiConfig.addMsg, data);
         },
+        readMsg: function (data) {
+            return apiHttp.fetchPost(apiConfig.readMsg, data);
+        },
 
         // 广告类
         auditLiveView: function (data) {
@@ -101,6 +104,18 @@
         },
         login: function (data) {
             return apiHttp.fetchPost(apiConfig.login, data);
+        },
+        addUserToCompany: function (data) {
+            return apiHttp.fetchPost(apiConfig.addUserToCompany, data);
+        },
+        removeUserCompany: function (data) {
+            return apiHttp.fetchPost(apiConfig.removeUserCompany, data);
+        },
+        selectUserCompany: function (data) {
+            return apiHttp.fetchPost(apiConfig.selectUserCompany, data);
+        },
+        adMonitor: function (data) {
+            return apiHttp.fetchPost(apiConfig.adMonitor, data);
         },
 
         // 统计类
