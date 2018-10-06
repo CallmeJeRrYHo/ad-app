@@ -42,8 +42,18 @@
 		} else {
 			w.close();
 		}
-	};
-	var old_back = mui.back;
+  };
+  
+  var old_back = mui.back;
+  w.orgBack = function (data) { // data是JSON格式的数据
+    if (w.plus) {
+      var webviews = plus.webview.all();
+      webviews.forEach(function(ele) {
+        mui.fire(ele,'org', data)
+      })
+    }
+    old_back();
+  }
 	mui.back = function() {
 		if (w.plus) {
 			var webviews = plus.webview.all();

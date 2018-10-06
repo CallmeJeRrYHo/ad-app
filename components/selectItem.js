@@ -10,6 +10,8 @@ Vue.component('select-item', {
                     zIndex: '10001',
                     backgroundColor: '#fff',
                     borderRadius: '0.1rem',
+                    maxHeight: '6rem',
+                    overflow: 'scroll',
                 },
                 item: {
                     height: '1.5rem',

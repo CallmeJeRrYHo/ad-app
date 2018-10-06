@@ -62,7 +62,14 @@ Vue.component('c-header', {
 				type: Boolean,
 				default: false,
       },
+			confirm: {
+				type: Boolean,
+				default: false,
+      },
       plusf: {
+        type: Function,
+      },
+      conf: {
         type: Function,
       }
 		},
@@ -72,10 +79,12 @@ Vue.component('c-header', {
 				<img :style='[style.icon, style.back]' src='../icons/back.png' />\
 			</span>\
 			<span v-if='plus' @click='plusFunc'>\
-				<img :style='[style.icon, style.right]' src='../icons/add.png' />\
+        <img :style='[style.icon, style.right]' src='../icons/add.png' />\
+			</span>\
+			<span v-if='confirm' @click='conf'>\
+        <img :style='[style.icon, style.right]' src='../icons/select.png' />\
 			</span>\
 			{{ title }}\
-			<slot></slot>\
 		</div>\
 		",
 })

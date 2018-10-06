@@ -162,6 +162,7 @@
       z-index: 10001;
       background: #fff;
     }
+
     .selectedComps {
       position: fixed;
       top: 3rem;
@@ -169,18 +170,27 @@
       left: 0;
       min-height: 1.2rem;
       background: #fff;
-      z-index:10001;
+      z-index: 10001;
     }
+
     .account-card-selected {
       background-color: #1296DB;
       color: #fff !important;
+    }
+    .confirm-header {
+      font-size: 0.46rem; 
+      color: #1296DB; 
+      position: absolute; 
+      right: 0; 
+      z-index: 10001;
     }
   </style>
 </head>
 
 <body ontouchstart>
   <div id="org_select" @click="isFilter = 0">
-    <c-header :title="title" :plus="true" :plusf="addAccount"></c-header>
+    <c-header :title="title" :confirm="true" :conf="headerConfirm">
+    </c-header>
     <div class="header">
       <div class="search flex">
         <img src="../icons/search.png" class="icon" />
@@ -189,11 +199,7 @@
     </div>
     <div class="container">
       <div class="selectedComps">已选单位: {{selectedComps.join(',')}}</div>
-      <div 
-      v-for="(item, index) in orgArray" 
-      :key="index" 
-      @click="handleClick(item)"
-      :class="selectedCompsId.indexOf(item.value) !== -1 ? 'account-card noti-title account-card-selected' : 'account-card noti-title'">
+      <div v-for="(item, index) in orgArray" :key="index" @click="handleClick(item)" :class="selectedCompsId.indexOf(item.value) !== -1 ? 'account-card noti-title account-card-selected' : 'account-card noti-title'">
         <div class="flex" style="height: 2rem;">
           <img src="../icons/orgAuth.png" class="icon" />
           <span style="font-size: 0.5rem; font-weight: bold; margin-right: 0.5rem;color: #000;">{{item.label}}</span>
@@ -211,8 +217,7 @@
       title: '单位选择',
       selected: -1,
       isFilter: 0,
-      orgArray: [
-      ],
+      orgArray: [],
       filterOption1: -1,
       filterOption2: -1,
       filterOption3: -1,
@@ -226,19 +231,39 @@
         companyId: '',
         index: 1,
         pageSize: 1000,
+        keyWord: '',
       },
       keyword: '',
       selectedComps: [],
       selectedCompsId: [],
+      atype: '',
+      cid: '',
+      cname: '',
 
     },
     created: function () {
       var self = this;
+      h5(function () {
+        var webview = plus.webview.currentWebview();
+        if (webview.atype) {
+          self.atype = webview.atype;
+          self.cid = webview.companyId;
+          self.cname = webview.companyName;
+          self.selectCompanyFormat();
+          if (webview.atype === 'resource') { // 添加帐号
+            self.selectedComps.push(webview.companyName);
+            self.selectedCompsId.push(webview.companyId);
+          } else { // 修改
+            self.selectedComps = webview.companyName.split(',');
+            self.selectedCompsId = webview.companyId.split(',');
+          }
+        }
+      });
       // window.addEventListener('refresh', function () {
       //   console.log('account cb');
       //   self.refresh();
       // });
-      this.selectCompany();
+      // this.selectCompany();
     },
     filters: {
       typeFilter(val) {
@@ -252,14 +277,28 @@
     },
     watch: {
       keyword(val) {
-        this.selectUserCompany(val);
+        this.selectCompanyFormat(val);
       }
     },
     methods: {
+      headerConfirm() {
+        var data = {};
+        data.label = this.selectedComps.join(',');
+        data.value = this.selectedCompsId.join(',');
+        orgBack(data);
+      },
+      selectCompanyFormat(key) {
+        var self = this;
+        if (self.atype === 'account') {
+          this.selectCompany(key);
+        } else {
+          this.selectUserCompany(key);
+        }
+      },
       selectUserCompany(key) {
         var self = this;
         pm(api.selectUserCompany, {
-          keyWord: key,
+          keyWord: key || '',
           userId: infoGet('userId'),
           companyId: '',
         }, res => {
@@ -275,19 +314,30 @@
         })
       },
       handleClick(item) {
-        if (this.selectedComps.indexOf(item.label) !== -1) {
-          this.selectedComps.splice(this.selectedComps.indexOf(item.label), 1);
+        var self = this;
+        if (this.atype === 'resource') {
+          if (self.selectedComps.length < 1) {
+            self.selectedComps.push(item.label);
+            self.selectedCompsId.push(item.value);
+          } else {
+            self.selectedComps[0] = item.label;
+            self.selectedCompsId[0] = item.value; 
+          }  
         } else {
-          this.selectedComps.push(item.label);
-        }
-        if (this.selectedCompsId.indexOf(item.value) !== -1) {
-          this.selectedCompsId.splice(this.selectedCompsId.indexOf(item.value), 1);
+          this.toggle(self.selectedComps, item.label);
+          this.toggle(self.selectedCompsId, item.value);
+        }  
+      },
+      toggle(arr, val) { // 有就去除，没有就添加
+        if (arr.indexOf(val) !== -1) {
+          arr.splice(arr.indexOf(val), 1);
         } else {
-          this.selectedCompsId.push(item.value);
+          arr.push(val);
         }
       },
-      selectCompany() {
+      selectCompany(val) {
         var self = this;
+        self.selectForm.keyWord = val || '';
         pm(api.selectCompany, self.selectForm, function (res) {
           self.orgArray = [];
           res.result.forEach(function (ele, index) {

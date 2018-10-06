@@ -28,7 +28,10 @@
 		"refer": [
 			"page/account_add.html"
 		],
-		"resources": []
+		"resources": [
+			"icons/edit.png",
+			"icons/delete.png"
+		]
 	},
 	"page/detail.html": {
 		"refer": [
@@ -39,7 +42,8 @@
 	},
 	"page/resource_add.html": {
 		"refer": [
-			"page/resource.html"
+			"page/resource.html",
+			"page/org_select.html"
 		],
 		"resources": []
 	},
@@ -61,6 +65,11 @@
 	"page/account_add.html": {
 		"refer": [
 			"page/org_select.html"
+		]
+	},
+	"page/org_select.html": {
+		"refer": [
+			"page/account_add.html"
 		]
 	}
 }

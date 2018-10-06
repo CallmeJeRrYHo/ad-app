@@ -187,7 +187,10 @@
 				"priority": 0
 			},
 			"page/account_manage.html": {
-				"resources": [],
+				"resources": [
+					"icons/edit.png",
+					"icons/delete.png"
+				],
 				"refer": [
 					"page/account_add.html"
 				],
@@ -204,7 +207,8 @@
 			"page/resource_add.html": {
 				"resources": [],
 				"refer": [
-					"page/resource.html"
+					"page/resource.html",
+					"page/org_select.html"
 				],
 				"priority": 0
 			},
@@ -233,6 +237,13 @@
 				"resources": [],
 				"refer": [
 					"page/org_select.html"
+				],
+				"priority": 0
+			},
+			"page/org_select.html": {
+				"resources": [],
+				"refer": [
+					"page/account_add.html"
 				],
 				"priority": 0
 			}
@@ -272,7 +283,6 @@
 				"icons/account.png",
 				"api/apiHttp.js",
 				"icons/ad_3.jpg",
-				"icons/edit.png",
 				"icons/ad_1.jpg",
 				"icons/manager_active.png",
 				"js/axios.min.js",
@@ -282,7 +292,6 @@
 				"components/cHeader.js",
 				"css/style.min.css",
 				"icons/广告牌1.jpg",
-				"icons/delete.png",
 				"api/apiConfig.js",
 				"js/vue-awesome-swiper.js",
 				"components/vMask.js",

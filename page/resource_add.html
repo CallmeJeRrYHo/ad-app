@@ -122,8 +122,7 @@
         </div>
         <div v-else-if="item.type === 'input'" class="flex w_100">
           <span class="noti-title">{{item.title}}</span>
-          <input class="t-input" adType="text" placeholder="请输入序号" v-model="submitForm.serialNum" :disabled="(!boolAnd(2, 1)) && flag"
-          />
+          <input class="t-input" adType="text" :placeholder="'请输入' + item.title" v-model="submitForm[item.value]" :disabled="(!boolAnd(2, 1)) && flag" />
         </div>
         <div v-else-if="item.type === 'textarea'" class="w_100" style="height: 3rem;">
           <span class="noti-title">{{item.title}}</span>
@@ -139,11 +138,11 @@
         <div class="noti-title" style="border-bottom: 1px solid #ccc;padding: 0.3rem 0;">设计图相册</div>
         <div class="picArea flex">
           <div v-for="(item, index) in submitForm.designPic" style="margin: 0.3rem 0.2rem;position: relative;">
-            <img :src="HOST + item.path" :key="index" class="uimg" style="width: 3rem; height: 3rem; vertical-align: middle;" @click="galleryShow(index)" />
+            <img :src="HOST + item.path" :key="index" class="uimg" style="width: 3rem; height: 3rem; vertical-align: middle;"
+              @click="galleryShow(index)" />
             <img v-if="boolAnd(2, 1) || !flag" src="../icons/delete_active.png" class="delete_img" @click="deleteImg(index, 1)" />
           </div>
-          <img @click="uploadPic(1)" v-if="boolAnd(2, 1) || !flag" src="../icons/addPic.png" style="margin: 0.3rem 0;width: 3rem; height: 3rem; vertical-align: middle;"
-          />
+          <img @click="uploadPic(1)" v-if="boolAnd(2, 1) || !flag" src="../icons/addPic.png" style="margin: 0.3rem 0;width: 3rem; height: 3rem; vertical-align: middle;" />
         </div>
       </div>
       <div class="ad-status" v-if="flag">
@@ -170,12 +169,11 @@
         <div class="noti-title" style="border-bottom: 1px solid #ccc;padding: 0.3rem 0;" v-if="(ads === 3 || ads === 4 || ads === 5) && flag">实景相册</div>
         <div class="picArea flex">
           <div v-for="(item, index) in submitForm.pic" style="margin: 0.3rem 0.2rem;position: relative;">
-            <img :src="HOST + item.path" :key="index" class="uimg" style="width: 3rem; height: 3rem; vertical-align: middle;" @click="galleryShow2(index)"/>
-            <img v-if="(ads === 3) && userType == 1" src="../icons/delete_active.png" class="delete_img" @click.stop="deleteImg(index, 2)"
-            />
+            <img :src="HOST + item.path" :key="index" class="uimg" style="width: 3rem; height: 3rem; vertical-align: middle;"
+              @click="galleryShow2(index)" />
+            <img v-if="(ads === 3) && userType == 1" src="../icons/delete_active.png" class="delete_img" @click.stop="deleteImg(index, 2)" />
           </div>
-          <img @click="uploadPic(2)" v-if="(ads === 3) && userType == 1" src="../icons/addPic.png" style="margin: 0.3rem 0;width: 3rem; height: 3rem; vertical-align: middle;"
-          />
+          <img @click="uploadPic(2)" v-if="(ads === 3) && userType == 1" src="../icons/addPic.png" style="margin: 0.3rem 0;width: 3rem; height: 3rem; vertical-align: middle;" />
         </div>
       </div>
       <div class="w-100 interact_area">
@@ -233,85 +231,94 @@
       }
       toast(mes);
     }
-  }, { enableHighAccuracy: true })
+  }, {
+    enableHighAccuracy: true
+  })
 
   new Vue({
     el: '#resource_add',
     data: {
       selected: -1,
-      detail_title: 'A459环城公路与封疆大道汇合圆盘处',
       lineArray: [
-      {
-        title: '序号',
-        type: 'input',
-      },
-      {
-        title: '地址',
-        key: 'address',
-        index: -1,
-        type: 'address',
-      },
-      {
-        title: '宣传牌类型',
-        src: '../icons/notify_active.png',
-        key: 'adType',
-        index: 0,
-      },
-      {
-        title: '设置规格',
-        src: '../icons/statistics.png',
-        key: 'adSpec',
-        index: 1,
-      },
-      {
-        title: '是否放置国家领导人头像',
-        src: '../icons/watcher_active.png',
-        key: 'hasLeaderPortrait',
-        index: 2,
-      },
-      {
-        title: '宣传牌内容',
-        type: 'textarea',
-      },
-      {
-        title: '周边摄像头',
-        type: 'input',
-      },
-      {
-        title: '周边派出所',
-        type: 'input',
-      },
+        {
+          title: '序号',
+          type: 'input',
+          value: 'serialNum',
+        },
+        {
+          title: '地址',
+          key: 'address',
+          index: -1,
+          type: 'address',
+        },
+        {
+          title: '单位',
+          key: 'companyName',
+          index: 3,
+        },
+        {
+          title: '宣传牌类型',
+          src: '../icons/notify_active.png',
+          key: 'adType',
+          index: 0,
+        },
+        {
+          title: '设置规格',
+          src: '../icons/statistics.png',
+          key: 'adSpec',
+          index: 1,
+        },
+        {
+          title: '是否放置国家领导人头像',
+          src: '../icons/watcher_active.png',
+          key: 'hasLeaderPortrait',
+          index: 2,
+        },
+        {
+          title: '周边摄像头',
+          type: 'input',
+          value: 'nearCamera',
+        },
+        {
+          title: '周边派出所',
+          type: 'input',
+          value: 'nearPolice',
+        },
+        {
+          title: '宣传牌内容',
+          type: 'textarea',
+        },
+        
       ],
       typeArray: [{
-        label: '普通',
-        value: '1',
-        key: 'adType',
-      },
-      {
-        label: 'T型',
-        value: '2',
-      },
-      {
-        label: '灯箱',
-        value: '3',
-      },
-      {
-        label: '宣传栏',
-        value: '4',
-      },
+          label: '普通',
+          value: '1',
+          key: 'adType',
+        },
+        {
+          label: 'T型',
+          value: '2',
+        },
+        {
+          label: '灯箱',
+          value: '3',
+        },
+        {
+          label: '宣传栏',
+          value: '4',
+        },
       ],
       confArray: [{
-        label: '单面',
-        value: '1',
-        key: 'adSpec',
-      },
-      {
-        label: '双面',
-        value: '2',
-      },
-      ],
-      avatarArray: [
+          label: '单面',
+          value: '1',
+          key: 'adSpec',
+        },
         {
+          label: '双面',
+          value: '2',
+        },
+      ],
+      avatarArray: [{
           label: '是',
           value: '1',
           key: 'hasLeaderPortrait',
@@ -326,6 +333,8 @@
       submitForm: {
         userId: infoGet('userId'),
         serialNum: '',
+        nearCamera: '',
+        nearPolice: '',
         address: '',
         lontitude: '102.759',
         latitude: '65.123',
@@ -335,6 +344,8 @@
         adContent: '',
         designPic: [],
         pic: [],
+        companyId: '',
+        companyName: '',
       },
       HOST: 'http://39.108.245.130:9090/',
       uploadUrl: 'http://39.108.245.130:9090/pic/uploadPic',
@@ -363,7 +374,12 @@
       var self = this;
       h5(function () {
         var webview = plus.webview.currentWebview();
-        console.log('h5', webview.ad, webview.ads);
+        window.addEventListener('org', function (e) {
+          var label = e.detail.label;
+          var org = e.detail.value;
+          self.submitForm.companyId = org;
+          self.submitForm.companyName = label;
+        })
         if (webview.ad) {
           if (webview.ad === 'add') { // 添加
           } else { // 修改
@@ -393,7 +409,7 @@
     methods: {
       galleryShow(index) {
         var self = this;
-        h5(function() {
+        h5(function () {
           var urls = [];
           self.submitForm.designPic.forEach(ele => {
             var url = self.HOST + ele.path;
@@ -408,7 +424,7 @@
       },
       galleryShow2(index) {
         var self = this;
-        h5(function() {
+        h5(function () {
           var urls = [];
           self.submitForm.pic.forEach(ele => {
             var url = self.HOST + ele.path;
@@ -442,7 +458,8 @@
           map.centerAndZoom(point, 14);
           map.panBy(200, 400);
           // var info = '<div class="info-win-content"><span style="font-weight:bold;color:#666;">管理单位</span><br>' + res.result.company_name +
-          var info = '<div class="info-win-content"><span style="font-weight:bold;color:#666;">所在地址：' + self.submitForm.address + '</span> ' +
+          var info = '<div class="info-win-content"><span style="font-weight:bold;color:#666;">所在地址：' + self.submitForm
+            .address + '</span> ' +
             '</div>';
           // var opts = {
           //     title: '<span class="info-win-title">' + self.infoData.name +
@@ -480,7 +497,8 @@
         self.submitForm.latitude = pt.lat;
         geoc.getLocation(pt, function (rs) {
           var addComp = rs.addressComponents;
-          self.submitForm.address = addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber;
+          self.submitForm.address = addComp.province + ", " + addComp.city + ", " + addComp.district + ", " +
+            addComp.street + ", " + addComp.streetNumber;
         });
       },
       refresh() {
@@ -551,13 +569,15 @@
             case 2:
               return '双面';
           }
-        } else {
+        } else if (key === 'hasLeaderPortrait') {
           switch (self.submitForm[key]) {
             case 1:
               return '是';
             case 2:
               return '否';
           }
+        } else if (key === 'companyName') {
+          return self.submitForm.companyName;
         }
       },
       getAdDetail() {
@@ -637,6 +657,8 @@
               return temp.label
             }
             return '';
+          case 'companyName':
+            return self.submitForm.companyName;
         }
       },
       handleSelect(index) {
@@ -654,6 +676,16 @@
           case 2:
             this.selectArray = this.avatarArray;
             break;
+          case 3:
+            h5(function () {
+              jumpTo({
+                to: 'org_select.html',
+                data: {
+                  atype: 'resource'
+                }
+              });
+            })
+            return;
         }
         this.isSelect = true;
       },

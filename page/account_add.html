@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>添加宣传位</title>
+    <title>添加帐号</title>
     <script src="../js/polyfill.min.js"></script>
     <script src="../js/axios.min.js"></script>
     <script src="../api/api.js"></script>
@@ -62,7 +62,7 @@
             <div class="flex j-b line" v-for="(item, index) in lineArray" :key="index" @click="handleSelect(item.index)">
                 <div class="flex j-b w_100" v-if="!item.type">
                     <span class="noti-title">{{item.title}}</span>
-                    <span>{{format(item.key)}}</span>
+                    <span style="width: 80%;white-space: nowrap; text-overflow: ellipsis;overflow: hidden;text-align: end;">{{format(item.key)}}</span>
                 </div>
                 <div v-else-if="item.type === 'input'" class="flex w_100">
                     <span class="noti-title" style="width: 2.5rem;">{{item.title}}</span>
@@ -107,7 +107,7 @@
                 },
                 {
                     title: '单位',
-                    key: 'companyId',
+                    key: 'companyName',
                     index: 0,
                 },
                 {
@@ -134,9 +134,9 @@
                 },
 
             ],
-            orgArray: [
+            // orgArray: [
 
-            ],
+            // ],
             roleArray: [
                 {
                     label: '管理者',
@@ -157,6 +157,7 @@
                 password: '',
                 password2: '',
                 companyId: '',
+                companyName: '',
                 userType: '',
                 superiorUserId: '',
             },
@@ -167,6 +168,12 @@
         },
         created: function () {
             var self = this;
+            window.addEventListener('org', function (e) {
+              var label = e.detail.label;
+              var org = e.detail.value;
+              self.submitForm.companyId = org;
+              self.submitForm.companyName = label;
+            })
             h5(function () {
                 var webview = plus.webview.currentWebview();
                 if (webview.userId) {
@@ -185,6 +192,7 @@
             updateUser() {
                 var self = this;
                 self.submitForm.userId = self.userId;
+                var old = self.submitForm.password;
                 if (self.submitForm.password !== self.submitForm.password2) {
                     var mes = {
                         message: '两次密码不一致'
@@ -201,7 +209,11 @@
                         mui.back();
                     }, 1000)
                 }, err => {
+                    self.submitForm.password = old;
                     console.log(err);
+                }, res => {
+                    self.submitForm.password = old;
+                    console.log(res);
                 })
             },
             getUserInfo() {
@@ -298,14 +310,14 @@
             format(key) {
                 var self = this;
                 switch (key) {
-                    case 'companyId':
-                        var temp = self.orgArray.filter(function (ele) {
-                            return ele.value == self.submitForm.companyId;
-                        })[0];
-                        if (temp) {
-                            return temp.label
-                        }
-                        return '';
+                    // case 'companyId':
+                    //     var temp = self.orgArray.filter(function (ele) {
+                    //         return ele.value == self.submitForm.companyId;
+                    //     })[0];
+                    //     if (temp) {
+                    //         return temp.label
+                    //     }
+                    //     return '';
                     case 'userType':
                         var temp = self.roleArray.filter(function (ele) {
                             return ele.value == self.submitForm.userType;
@@ -322,16 +334,25 @@
                             return temp.label
                         }
                         return '';
+                    case 'companyName':
+                        return self.submitForm.companyName;
                 }
             },
             handleSelect(index) {
                 if (index === undefined) {
                     return;
                 }
+                var self = this;
                 switch (index) {
                     case 0:
                         h5(function() {
-                          jumpTo({to: 'org_select.html'});
+                          jumpTo({
+                            to: 'org_select.html', 
+                            data: { 
+                              atype: 'account',
+                              companyId: self.submitForm.companyId || '', 
+                              companyName: self.submitForm.companyName || ''
+                            }});
                         })
                         return;
                     case 1:
