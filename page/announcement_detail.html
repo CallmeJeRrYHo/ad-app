@@ -23,7 +23,7 @@
     <style adType="text/css">
         .container {
             position: relative;
-            top: 1.2rem;
+            top: 1.8rem;
         }
 
         .alert-content,
@@ -96,8 +96,8 @@
         }
 
         .card_imgs {
-            width: 2rem;
-            height: 2rem;
+            width: 3rem;
+            height: 3rem;
         }
     </style>
 </head>
@@ -109,11 +109,11 @@
         <div class="container">
             <div class="content flex w-100">
                 <div style="align-self: flex-start;">
-                    <img src="../icons/alert.png" style="height: 0.8rem; width: 0.8rem;margin-right: 0.3rem;">
+                    <img src="../icons/notify.png" style="height: 0.8rem; width: 0.8rem;margin-right: 0.3rem;">
                 </div>
                 <div class="w-100">
-                    <p style="font-size: 0.5rem; color: #000;">{{contentData.content}}</p>
-                    <img v-for="(item, index) in contentData.picFiles" v-if="contentData.picFiles.length > 0" class="card_imgs" :src="HOST + item.path"
+                    <p style="font-size: 0.5rem; color: #000;">{{mdata.content}}</p>
+                    <img v-for="(item, index) in mdata.picFiles" v-if="mdata.picFiles.length > 0" class="card_imgs" :src="HOST + item.path"
                         @click="galleryShow(index)">
                 </div>
 
@@ -122,11 +122,11 @@
                 <dl>
                     <dt>
                         <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">发布时间</span>
-                        <span>{{contentData.createTime }}</span>
+                        <span>{{mdata.createTime}}</span>
                     </dt>
                     <dt>
                         <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">发布者</span>
-                        <span>{{contentData.createUserName}}</span>
+                        <span>{{mdata.createUserName}}</span>
                     </dt>
                 </dl>
             </div>
@@ -146,7 +146,6 @@
         data: {
             selected: -1,
             title: '通知公告',
-            detail_title: 'A459环城公路与封疆大道汇合圆盘处',
             lineArray: [{
                 title: '序号',
                 adType: 'input',
@@ -234,7 +233,7 @@
             },
             HOST: 'http://39.108.245.130:9090/',
             uploadUrl: 'http://39.108.245.130:9090/pic/uploadPic',
-            mid: '',
+            mdata: null,
             userType: infoGet('userType'),
             contentData: {},
             HOST: api.HOST,
@@ -244,9 +243,11 @@
             var self = this;
             h5(function () {
                 var webview = plus.webview.currentWebview();
-                if (webview.mid) {
-                    self.mid = webview.mid;
-                    self.getWarningDetail();
+                if (webview.mdata) {
+                    self.mdata = webview.mdata;
+                    self.readMsg();
+                } else {
+                  toast('未传入具体数据')
                 }
             });
         },
@@ -276,7 +277,7 @@
                 var self = this;
                 h5(function () {
                     var urls = [];
-                    self.contentData.picFiles.forEach(ele => {
+                    self.mdata.picFiles.forEach(ele => {
                         var url = self.HOST + ele.path;
                         urls.push(url);
                     });
@@ -368,12 +369,13 @@
                     }
                 }
             },
-            getWarningDetail() {
+            readMsg() {
                 var self = this;
-                pm(api.getWarningDetail, {
-                    warningId: self.mid,
+                pm(api.readMsg, {
+                    userId: infoGet('userId'),
+                    msgId: self.mdata.msgId,
                 }, function (res) {
-                    self.contentData = res.result;
+                    console.log(res);
                 }, function (err) {
                     console.log(err);
                 })

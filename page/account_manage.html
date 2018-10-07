@@ -266,6 +266,10 @@
         methods: {
             deleteUser(id) {
                 var self = this;
+                if (infoGet('userType') !== '3') {
+                  toast('您没有权限执行操作');
+                  return;
+                }
                 mui.confirm('确定删除该帐号吗？', '', ['取消', '确认'], function (e) {
                     if (e.index == 1) { // 如果点击的是确认
                         pm(api.deleteUser, {
@@ -321,6 +325,10 @@
                 })
             },
             edit(id) {
+                if (infoGet('userType') !== '3') {
+                  toast('您没有权限执行操作');
+                  return;
+                }
                 this.addAccount(id);
             },
             handleFilter(val) {

@@ -59,7 +59,9 @@
 	},
 	"page/announcement.html": {
 		"refer": [
-			"page/alert_detail.html"
+			"page/alert_detail.html",
+			"page/announcement_detail.html",
+			"page/announcement_add.html"
 		]
 	},
 	"page/account_add.html": {
@@ -70,6 +72,11 @@
 	"page/org_select.html": {
 		"refer": [
 			"page/account_add.html"
+		]
+	},
+	"page/announcement_add.html": {
+		"refer": [
+			"page/org_select.html"
 		]
 	}
 }

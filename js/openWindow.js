@@ -373,7 +373,12 @@
     window.localStorage.clear();
   }
 	w.toast = function (res) {
-		mui.toast(res.message, {duration: 'long', type: 'div'});
+    if (!res.message) {
+      mui.toast(res, {duration: 'long', type: 'div'})
+    } else {
+      mui.toast(res.message, {duration: 'long', type: 'div'});
+    }
+		
 	}
 	// 对象属性转为驼峰
 	w.transformKeyHump = function(obj) {

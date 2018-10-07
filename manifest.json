@@ -229,7 +229,9 @@
 			"page/announcement.html": {
 				"resources": [],
 				"refer": [
-					"page/alert_detail.html"
+					"page/alert_detail.html",
+					"page/announcement_detail.html",
+					"page/announcement_add.html"
 				],
 				"priority": 0
 			},
@@ -244,6 +246,13 @@
 				"resources": [],
 				"refer": [
 					"page/account_add.html"
+				],
+				"priority": 0
+			},
+			"page/announcement_add.html": {
+				"resources": [],
+				"refer": [
+					"page/org_select.html"
 				],
 				"priority": 0
 			}

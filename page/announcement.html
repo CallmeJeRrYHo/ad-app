@@ -198,24 +198,26 @@
             margin-top: 0.2rem;
         }
         .card_content {
-            font-size: 0.5rem; 
+            font-size: 0.5rem;
+            line-height: 0.9rem; 
             margin-left: 0.5rem;
             color: #000; 
             width: 90%;
-            max-height: 1.6rem;
+            max-height: 1.8rem;
             overflow: hidden;
             word-wrap: break-word;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             text-overflow: ellipsis;
+            margin-bottom: 0;
         }
     </style>
 </head>
 
 <body ontouchstart>
     <div id="announce" @click="isFilter = 0">
-        <c-header :title="title"></c-header>
+        <c-header :title="title" :plus="userType != 1" :plusf="announceAdd"></c-header>
         <div class="container">
             <div v-if="contentData.length > 0" class="account-card" v-for="(item, index) in contentData" :key="index">
                 <!-- <div class="flex" style="height: 2rem;">
@@ -223,12 +225,12 @@
                     <span style="font-size: 0.5rem;font-weight: bold;margin-left: 0.5rem;color: #1296DB;">{{item.label}}</span>
                 </div> -->
                 <div class="flex">
-                    <img :src="(item.rStatus ? '../icons/notify.png' : '../icons/notify_active.png')" class="icon-normal" />
+                    <img :src="(item.readStatus === '1' ? '../icons/notify.png' : '../icons/notify_active.png')" class="icon-normal" />
                     <p class="card_content">{{item.content}}</p> 
                 </div>
                 <div class="card_interact flex j-b">
-                    <span style="margin-right: 0.3rem;" class="noti-title">{{item.rStatus | statusFilter}}</span>
-                    <span class="check" @click="checkMessage(item.msgId)">查看</span>
+                    <span style="margin-right: 0.3rem;" class="noti-title">{{item.readStatus | statusFilter}}</span>
+                    <span class="check" @click="checkMessage(item)">查看</span>
                 </div>
             </div>
             <div v-if="contentData.length === 0" style="height: 1rem;width:4rem;margin: 0 auto;white-space: nowrap;">
@@ -252,6 +254,7 @@
             query: '',
             contentData: [],
             selectForm: {
+                userId: infoGet('userId'),
                 index: 1,
                 pageSize: 1000,
             },
@@ -266,9 +269,14 @@
             this.selectMsg();
         },
         methods: {
-            checkMessage(id) {
+            announceAdd() {
+              h5(function() {
+                jumpTo({ to: 'announcement_add.html', data: {}})
+              })
+            },
+            checkMessage(data) {
                 h5(function () {
-                    jumpTo({to: 'announcement_detail.html', data: { mid: id || ''}})
+                    jumpTo({to: 'announcement_detail.html', data: { mdata: data || {}}})
                 })
             },
             resetForm() {
@@ -286,11 +294,7 @@
                 pm(api.selectMsg, self.selectForm, res => {
                     self.contentData = [];
                     res.result.forEach(function (ele) {
-                        var temp = {};
-                        temp.content = ele.content;
-                        temp.rStatus = ele.read_status;
-                        temp.msgId = ele.msgId;
-                        self.contentData.push(temp);
+                        self.contentData.push(ele);
                     })
                 }, err => {
                     console.log(err);
@@ -338,9 +342,9 @@
         filters: {
             statusFilter(val) {
                 switch (val) {
-                    case 0:
+                    case '0':
                         return '未读';
-                    case 1:
+                    case '1':
                         return '已读';
                     default: 
                         return '未读';

@@ -89,8 +89,8 @@
       position: fixed;
       z-index: 10001;
       top: 1rem;
-      right: 1rem;
-      width: 3rem;
+      right: 0.2rem;
+      width: 2.5rem;
       height: 1rem;
       line-height: 1rem;
       background: #1296DB;
@@ -98,16 +98,36 @@
       color: #fff;
       border-radius: 0.2rem;
     }
+    #search {
+      position: fixed;
+      z-index: 10001;
+      top: 1rem;
+      left: 0.2rem;
+      width: 8rem;
+      height: 1rem;
+      border-radius: 0.2rem;
+    }
+    #searchResultPanel {
+      border:1px solid #C0C0C0;
+      width:8rem;
+      top:2rem;
+      left: 0.2rem;
+      z-index: 10001;
+      position: fixed;
+    }
   </style>
 </head>
 
 <body ontouchstart>
   <div id="allmap" style="display: none;"></div>
-
+  <input id="search" type="text" style="display: none;" placeholder="请输入搜索地址" @click.stop="" />
+  <div id="searchResultPanel" style="display: none;"></div>
   <div id="resource_add">
+    
     <div id="map-buttons" v-if="activeMap" @click="confirmAdd">
       {{flag ? '返回':'确认选点'}}
     </div>
+
     <c-header v-if="!activeMap" :title="flag ? '修改宣传位':'添加宣传位'">
     </c-header>
     <div class="container" v-if="!activeMap">
@@ -122,7 +142,8 @@
         </div>
         <div v-else-if="item.type === 'input'" class="flex w_100">
           <span class="noti-title">{{item.title}}</span>
-          <input class="t-input" adType="text" :placeholder="'请输入' + item.title" v-model="submitForm[item.value]" :disabled="(!boolAnd(2, 1)) && flag" />
+          <input class="t-input" adType="text" :placeholder="'请输入' + item.title" v-model="submitForm[item.value]"
+            :disabled="(!boolAnd(2, 1)) && flag" />
         </div>
         <div v-else-if="item.type === 'textarea'" class="w_100" style="height: 3rem;">
           <span class="noti-title">{{item.title}}</span>
@@ -234,13 +255,69 @@
   }, {
     enableHighAccuracy: true
   })
+  function G(id) {
+		return document.getElementById(id);
+	}
+  var ac = new BMap.Autocomplete( //建立一个自动完成的对象
+    {
+      "input": "search",
+      "location": map,
+    });
 
+  // ac.addEventListener("onhighlight", function (e) { //鼠标放在下拉列表上的事件
+  //   var str = "";
+  //   var _value = e.fromitem.value;
+  //   var value = "";
+  //   if (e.fromitem.index > -1) {
+  //     value = _value.province + _value.city + _value.district + _value.street + _value.business;
+  //   }
+  //   str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+
+  //   value = "";
+  //   if (e.toitem.index > -1) {
+  //     _value = e.toitem.value;
+  //     value = _value.province + _value.city + _value.district + _value.street + _value.business;
+  //   }
+  //   str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+  //   G("searchResultPanel").innerHTML = str;
+  // });
+
+  var myValue;
+  ac.addEventListener("onconfirm", function (e) { //鼠标点击下拉列表后的事件
+    var _value = e.item.value;
+    myValue = _value.province + _value.city + _value.district + _value.street + _value.business;
+    // G("searchResultPanel").innerHTML = "onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+
+    setPlace();
+  });
+
+  function setPlace() {
+    map.clearOverlays(); //清除地图上所有覆盖物
+    function myFun() {
+      var pp = local.getResults().getPoi(0).point; //获取第一个智能搜索的结果
+      map.centerAndZoom(pp, 18);
+      marker= new BMap.Marker(pp)
+      map.addOverlay(marker); //添加标注
+      marker.enableDragging();
+    }
+    var local = new BMap.LocalSearch(map, { //智能搜索
+      onSearchComplete: myFun
+    });
+    local.search(myValue);
+  }
+
+
+
+  // document.getElementsByTagName('body')[0].addEventListener('click', function() {
+  //   alert('map-click');
+  //   var input = document.getElementById('search');
+  //   input.blur();  
+  // })
   new Vue({
     el: '#resource_add',
     data: {
       selected: -1,
-      lineArray: [
-        {
+      lineArray: [{
           title: '序号',
           type: 'input',
           value: 'serialNum',
@@ -288,7 +365,7 @@
           title: '宣传牌内容',
           type: 'textarea',
         },
-        
+
       ],
       typeArray: [{
           label: '普通',
@@ -365,8 +442,15 @@
       activeMap(val) {
         if (val) {
           document.getElementById('allmap').style.display = 'block';
+          if (!this.flag) {
+            document.getElementById('search').style.display = 'block';
+            document.getElementById('searchResultPanel').style.display = 'block';
+          }
+          
         } else {
           document.getElementById('allmap').style.display = 'none';
+          document.getElementById('search').style.display = 'none';
+          document.getElementById('searchResultPanel').style.display = 'none';
         }
       }
     },
@@ -450,7 +534,7 @@
       },
       handleAddress() {
         var self = this;
-        if (this.flag) {
+        if (this.flag) { // 这里是修改广告时显示具体地址的逻辑
           map.clearOverlays();
           var point = new BMap.Point(self.submitForm.lontitude, self.submitForm.latitude);
           marker = new BMap.Marker(point);
@@ -483,7 +567,7 @@
         if (!this.flag) {
           this.marker = marker;
           this.activeMap = false;
-          this.getAddress(self.marker && self.marker.getPosition());
+          this.getAddress(this.marker && this.marker.getPosition());
           this.marker = null;
         } else {
           this.activeMap = false;
@@ -497,8 +581,13 @@
         self.submitForm.latitude = pt.lat;
         geoc.getLocation(pt, function (rs) {
           var addComp = rs.addressComponents;
-          self.submitForm.address = addComp.province + ", " + addComp.city + ", " + addComp.district + ", " +
-            addComp.street + ", " + addComp.streetNumber;
+          if (myValue) {
+            self.submitForm.address = myValue;
+          } else {
+            self.submitForm.address = addComp.province  + addComp.city + addComp.district +
+            addComp.street + addComp.streetNumber;
+          }
+          
         });
       },
       refresh() {

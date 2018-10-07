@@ -251,11 +251,18 @@
           self.cname = webview.companyName;
           self.selectCompanyFormat();
           if (webview.atype === 'resource') { // 添加帐号
-            self.selectedComps.push(webview.companyName);
-            self.selectedCompsId.push(webview.companyId);
+            if (webview.companyName && webview.companyId) {
+              self.selectedComps.push(webview.companyName);
+              self.selectedCompsId.push(webview.companyId);
+            }
+            
           } else { // 修改
-            self.selectedComps = webview.companyName.split(',');
-            self.selectedCompsId = webview.companyId.split(',');
+            if (!webview.companyName) {
+              return;
+            } else {
+              self.selectedComps = webview.companyName.split(',');
+              self.selectedCompsId = webview.companyId.split(',');
+            }
           }
         }
       });
@@ -283,8 +290,13 @@
     methods: {
       headerConfirm() {
         var data = {};
-        data.label = this.selectedComps.join(',');
-        data.value = this.selectedCompsId.join(',');
+        if (this.selectedComps.length <= 1) {
+          data.label = this.selectedComps[0];
+          data.value = this.selectedCompsId[0];
+        } else {
+          data.label = this.selectedComps.join(',');
+          data.value = this.selectedCompsId.join(',');
+        }
         orgBack(data);
       },
       selectCompanyFormat(key) {
@@ -316,10 +328,10 @@
       handleClick(item) {
         var self = this;
         if (this.atype === 'resource') {
-          if (self.selectedComps.length < 1) {
+          if (self.selectedComps.length < 1) { // 第一个
             self.selectedComps.push(item.label);
             self.selectedCompsId.push(item.value);
-          } else {
+          } else { // 后面重复的就直接修改
             self.selectedComps[0] = item.label;
             self.selectedCompsId[0] = item.value; 
           }  

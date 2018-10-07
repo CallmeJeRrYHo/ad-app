@@ -39,6 +39,14 @@
       font-weight: bold;
       padding: 0.2rem;
     }
+    .noData {
+      position: fixed;
+      top: 3rem;
+      width: 100%;
+      text-align: center;
+      white-space: nowrap;
+
+    }
   </style>
 </head>
 
@@ -49,6 +57,7 @@
     <div class="container">
       <ve-pie :data="chartData" :settings="chartSetting"></ve-pie>
     </div>
+    <span v-if="chartData.rows.length < 1" class="noData">暂无数据显示</span>
   </div>
 </body>
 
@@ -59,7 +68,7 @@
     el: '#detail',
     data: {
       chartSetting: {
-        dataType: 'percent'
+        dataType: '',
       },
       selected: -1,
       title: infoGet('companyName') || '默认',

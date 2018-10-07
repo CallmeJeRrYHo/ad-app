@@ -134,9 +134,9 @@
                 },
 
             ],
-            // orgArray: [
+            orgArray: [
 
-            // ],
+            ],
             roleArray: [
                 {
                     label: '管理者',
@@ -310,14 +310,14 @@
             format(key) {
                 var self = this;
                 switch (key) {
-                    // case 'companyId':
-                    //     var temp = self.orgArray.filter(function (ele) {
-                    //         return ele.value == self.submitForm.companyId;
-                    //     })[0];
-                    //     if (temp) {
-                    //         return temp.label
-                    //     }
-                    //     return '';
+                    case 'companyId':
+                        var temp = self.orgArray.filter(function (ele) {
+                            return ele.value == self.submitForm.companyId;
+                        })[0];
+                        if (temp) {
+                            return temp.label
+                        }
+                        return '';
                     case 'userType':
                         var temp = self.roleArray.filter(function (ele) {
                             return ele.value == self.submitForm.userType;
@@ -356,6 +356,9 @@
                         })
                         return;
                     case 1:
+                        if (infoGet('userType') == '2') {
+                          this.roleArray = this.roleArray.slice(0, 1);
+                        }
                         this.selectArray = this.roleArray;
                         break;
                     case 2:
