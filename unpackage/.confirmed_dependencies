@@ -14,7 +14,8 @@
 			"page/message.html",
 			"page/my_data.html",
 			"page/announcement.html",
-			"page/statistics.html"
+			"page/statistics.html",
+			"page/moniter_add.html"
 		],
 		"resources": []
 	},

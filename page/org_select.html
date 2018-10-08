@@ -301,7 +301,7 @@
       },
       selectCompanyFormat(key) {
         var self = this;
-        if (self.atype === 'account') {
+        if (self.atype === 'account' || ((infoGet('userType') == '3' && self.atype === 'announcement'))) {
           this.selectCompany(key);
         } else {
           this.selectUserCompany(key);
