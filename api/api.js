@@ -114,6 +114,9 @@
         selectUserCompany: function (data) {
             return apiHttp.fetchPost(apiConfig.selectUserCompany, data);
         },
+        selectMyCompany: function (data) {
+            return apiHttp.fetchPost(apiConfig.selectMyCompany, data);
+        },
         adMonitor: function (data) {
             return apiHttp.fetchPost(apiConfig.adMonitor, data);
         },

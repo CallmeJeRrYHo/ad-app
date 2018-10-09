@@ -228,7 +228,7 @@
 				// }
 				zipFile(path.files[0]);
 			},function(error) {
-		 		alert( "Capture image failed: " + error.message );
+		 		console.log( "Capture image failed: " + error.message );
 			},{filename:"file:///storage/sdcard0/DCIM/Camera/"+"ra/",multiple:true,maximum:1,system:false});
 		}
 		

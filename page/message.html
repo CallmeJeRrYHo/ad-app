@@ -195,6 +195,14 @@
             border-top: 1px solid #ccc;
             margin-top: 0.2rem;
         }
+        .card-content {
+          font-size: 0.5rem; 
+          margin-left: 0.5rem;
+          color: #ccc;
+        }
+        .card-content-active {
+          color: red;
+        }
     </style>
 </head>
 
@@ -209,7 +217,7 @@
                 </div>
                 <div class="flex">
                     <img src="../icons/alert.png" class="icon-normal" />
-                    <span style="font-size: 0.5rem; margin-left: 0.5rem;color: #000;">{{item.content}}</span> 
+                    <span :class="item.readStatus ? 'card-content': 'card-content card-content-active'">{{item.content}}</span> 
                 </div>
                 <div class="card_interact flex j-b">
                     <span style="margin-right: 0.3rem;">{{item.wStatus | statusFilter}}</span>
@@ -276,6 +284,7 @@
                         temp.label = ele.address;
                         temp.content = ele.content;
                         temp.wStatus = ele.warningStatus;
+                        temp.readStatus = ele.readStatus;
                         temp.value = ele.warningId;
                         self.contentData.push(temp);
                     })

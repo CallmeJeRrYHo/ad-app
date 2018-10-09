@@ -417,6 +417,7 @@
                 var self = this;
                 pm(api.getWarningDetail, {
                     warningId: self.aid,
+                    userId: infoGet('userId'),
                 }, function (res) {
                     self.contentData = res.result;
                 }, function (err) {

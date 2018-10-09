@@ -197,11 +197,11 @@
             border-top: 1px solid #ccc;
             margin-top: 0.2rem;
         }
-        .card_content {
+        .card-content {
             font-size: 0.5rem;
             line-height: 0.9rem; 
             margin-left: 0.5rem;
-            color: #000; 
+            color: #ccc; 
             width: 90%;
             max-height: 1.8rem;
             overflow: hidden;
@@ -211,6 +211,9 @@
             -webkit-box-orient: vertical;
             text-overflow: ellipsis;
             margin-bottom: 0;
+        }
+        .card-content-active {
+          color: red;
         }
     </style>
 </head>
@@ -226,7 +229,7 @@
                 </div> -->
                 <div class="flex">
                     <img :src="(item.readStatus === '1' ? '../icons/notify.png' : '../icons/notify_active.png')" class="icon-normal" />
-                    <p class="card_content">{{item.content}}</p> 
+                    <p :class="(item.readStatus === '1' ? 'card-content' : 'card-content card-content-active')">{{item.content}}</p> 
                 </div>
                 <div class="card_interact flex j-b">
                     <span style="margin-right: 0.3rem;" class="noti-title">{{item.readStatus | statusFilter}}</span>

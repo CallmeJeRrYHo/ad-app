@@ -276,9 +276,9 @@
       typeFilter(val) {
         switch (val) {
           case 1:
-            return '管理者';
+            return '执行人';
           case 2:
-            return '监管者';
+            return '管理责任人';
         }
       }
     },
@@ -301,7 +301,9 @@
       },
       selectCompanyFormat(key) {
         var self = this;
-        if (self.atype === 'account' || ((infoGet('userType') == '3' && self.atype === 'announcement'))) {
+        if (self.atype === 'account') {
+          this.selectMyCompany();
+        }else if ((infoGet('userType') == '3' && self.atype === 'announcement')) {
           this.selectCompany(key);
         } else {
           this.selectUserCompany(key);
@@ -319,6 +321,25 @@
             var temp = {};
             temp.label = ele.company_name;
             temp.value = ele.company_id;
+            self.orgArray.push(temp);
+          })
+        }, err => {
+          console.log(err);
+        })
+      },
+      selectMyCompany() {
+        var self = this;
+        pm(api.selectMyCompany, {
+          keyWord: '',
+          userId: infoGet('userId'),
+          index: 1,
+          pageSize: 1000,
+        }, res => {
+          self.orgArray = [];
+          res.result.forEach(function (ele, index) {
+            var temp = {};
+            temp.label = ele.companyName;
+            temp.value = ele.companyId;
             self.orgArray.push(temp);
           })
         }, err => {
@@ -397,10 +418,6 @@
       //     this.filterOption2 = -1;
       //     this.filterOption3 = -1;
       // },
-      refresh() {
-        this.contentData = [];
-        this.selectUsers();
-      }
     },
   })
 </script>

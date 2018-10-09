@@ -49,6 +49,7 @@
         removeUserCompany: '/user/removeUserCompany',
         selectUserCompany: '/user/selectUserCompany',
         adMonitor: '/user/adMonitor',
+        selectMyCompany: '/user/selectMyCompany',
 
         // 统计类
         adStatistics: '/statistics/adStatistics',

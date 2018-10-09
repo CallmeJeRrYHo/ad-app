@@ -127,11 +127,11 @@
                     placeholder: '请再次输入密码',
                     key: 'password2',
                 },
-                {
-                    title: '上级监管者',
-                    key: 'superiorUserId',
-                    index: 2,
-                },
+                // {
+                //     title: '上级监管者',
+                //     key: 'superiorUserId',
+                //     index: 2,
+                // },
 
             ],
             orgArray: [
@@ -139,12 +139,12 @@
             ],
             roleArray: [
                 {
-                    label: '管理者',
+                    label: '执行人',
                     value: '1',
                     key: 'userType',
                 },
                 {
-                    label: '监管者',
+                    label: '管理责任人',
                     value: '2',
                 },
             ],
@@ -159,7 +159,7 @@
                 companyId: '',
                 companyName: '',
                 userType: '',
-                superiorUserId: '',
+                userId: infoGet('userId'),
             },
             flag: false,
             userId: '',
@@ -241,6 +241,7 @@
                     index: 1,
                     pageSize: 1000,
                     companyId: '',
+                    userId: infoGet('userId'),
                     userType: 2,
                 }, res => {
                     console.log(res.result);
@@ -358,6 +359,8 @@
                     case 1:
                         if (infoGet('userType') == '2') {
                           this.roleArray = this.roleArray.slice(0, 1);
+                        } else {
+                          this.roleArray = this.roleArray.slice(1);
                         }
                         this.selectArray = this.roleArray;
                         break;
