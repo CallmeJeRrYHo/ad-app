@@ -112,7 +112,7 @@
                     <img src="../icons/notify.png" style="height: 0.8rem; width: 0.8rem;margin-right: 0.3rem;">
                 </div>
                 <div class="w-100">
-                    <p style="font-size: 0.5rem; color: #000;">{{mdata.content}}</p>
+                    <p style="font-size: 0.5rem; color: #000;">{{mdata && mdata.content}}</p>
                     <img v-for="(item, index) in mdata.picFiles" v-if="mdata.picFiles.length > 0" class="card_imgs" :src="HOST + item.path"
                         @click="galleryShow(index)">
                 </div>

@@ -217,7 +217,7 @@
                 </div>
                 <div class="flex">
                     <img src="../icons/alert.png" class="icon-normal" />
-                    <span :class="item.readStatus ? 'card-content': 'card-content card-content-active'">{{item.content}}</span> 
+                    <span :class="item.readStatus === '1' ? 'card-content': 'card-content card-content-active'">{{item.content}}</span> 
                 </div>
                 <div class="card_interact flex j-b">
                     <span style="margin-right: 0.3rem;">{{item.wStatus | statusFilter}}</span>

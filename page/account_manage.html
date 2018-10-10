@@ -235,7 +235,7 @@
             ],
             HOST: 'http://39.108.245.130:9090/',
             selectForm: {
-                userType:  '',
+                userType:  (infoGet('userType') == 3 ? '' : 1),
                 userId: infoGet('userId'),
                 companyId: '',
                 index: 1,
@@ -325,10 +325,10 @@
                 })
             },
             edit(id) {
-                if (infoGet('userType') !== '3') {
-                  toast('您没有权限执行操作');
-                  return;
-                }
+                // if (infoGet('userType') !== '3') {
+                //   toast('您没有权限执行操作');
+                //   return;
+                // }
                 this.addAccount(id);
             },
             handleFilter(val) {

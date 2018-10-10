@@ -14,6 +14,7 @@
         // 广告类
         auditLiveView: '/advertisement/auditLiveView',
         addAdvertisement: '/advertisement/addAdvertisement',
+        updateAdvertisement: '/advertisement/updateAdvertisement',
         selectMyAd: '/advertisement/selectMyAd', 
         sendWarning: '/advertisement/sendWarning',
         getAdDetail: '/advertisement/getAdDetail',

@@ -123,9 +123,10 @@
   <input id="search" type="text" style="display: none;" placeholder="请输入搜索地址" @click.stop="" />
   <div id="searchResultPanel" style="display: none;"></div>
   <div id="resource_add">
-    
+
     <div id="map-buttons" v-if="activeMap" @click="confirmAdd">
-      {{flag ? '返回':'确认选点'}}
+      确认选点
+      <!-- {{flag ? '返回':'确认选点'}} -->
     </div>
 
     <c-header v-if="!activeMap" :title="flag ? '修改宣传位':'添加宣传位'">
@@ -134,7 +135,7 @@
       <div class="flex j-b line" v-for="(item, index) in lineArray" :key="index" @click="handleSelect(item.index)">
         <div class="flex j-b w_100" v-if="!item.type">
           <span class="noti-title">{{item.title}}</span>
-          <span>{{(!boolAnd(2, 1) && flag) ? formFill(item.key) : format(item.key)}}</span>
+          <span>{{format(item.key)}}</span> 
         </div>
         <div class="flex j-b" style="width: 90%" v-else-if="item.type === 'address'" @click.stop="handleAddress">
           <span class="noti-title">地址</span>
@@ -142,16 +143,15 @@
         </div>
         <div v-else-if="item.type === 'input'" class="flex w_100">
           <span class="noti-title">{{item.title}}</span>
-          <input class="t-input" adType="text" :placeholder="'请输入' + item.title" v-model="submitForm[item.value]"
-            :disabled="(!boolAnd(2, 1)) && flag" />
+          <input class="t-input" adType="text" :placeholder="'请输入' + item.title" v-model="submitForm[item.value]" />
         </div>
         <div v-else-if="item.type === 'textarea'" class="w_100" style="height: 3rem;">
           <span class="noti-title">{{item.title}}</span>
-          <textarea class="t-input" type="text" placeholder="请输入内容" v-model="submitForm.adContent" :disabled="(!boolAnd(2, 1)) && flag"></textarea>
+          <textarea class="t-input" type="text" placeholder="请输入内容" v-model="submitForm.adContent"></textarea>
         </div>
         <div v-else-if="item.type === 'textarea'" class="w_100" style="height: 3rem;">
           <span class="noti-title">{{item.title}}</span>
-          <textarea class="t-input" type="text" placeholder="请输入内容" v-model="submitForm.adContent" :disabled="(!boolAnd(2, 1)) && flag"></textarea>
+          <textarea class="t-input" type="text" placeholder="请输入内容" v-model="submitForm.adContent"></textarea>
         </div>
         <img v-if="!item.adType" src="../icons/forward.png" class="icon-small" />
       </div>
@@ -200,6 +200,9 @@
       <div class="w-100 interact_area">
         <div v-if="!flag" class="submit" @click="addAdvertisement">
           创建
+        </div>
+        <div v-else class="submit" @click="updateAdvertisement">
+          修改
         </div>
         <div class="w-100" v-if="boolAnd(1, 2) && flag">
           <div class="submit" @click="designAudit(2)" style="margin-bottom: 0.3rem;">
@@ -255,9 +258,10 @@
   }, {
     enableHighAccuracy: true
   })
+
   function G(id) {
-		return document.getElementById(id);
-	}
+    return document.getElementById(id);
+  }
   var ac = new BMap.Autocomplete( //建立一个自动完成的对象
     {
       "input": "search",
@@ -278,7 +282,7 @@
     function myFun() {
       var pp = local.getResults().getPoi(0).point; //获取第一个智能搜索的结果
       map.centerAndZoom(pp, 18);
-      marker= new BMap.Marker(pp)
+      marker = new BMap.Marker(pp)
       map.addOverlay(marker); //添加标注
       marker.enableDragging();
     }
@@ -314,6 +318,11 @@
           title: '单位',
           key: 'companyName',
           index: 3,
+        },
+        {
+          title: '管理责任人',
+          key: 'monitorUserId',
+          index: 4,
         },
         {
           title: '宣传牌类型',
@@ -387,6 +396,9 @@
           value: '2',
         },
       ],
+      monitorUserArray: [
+
+      ],
       selectArray: [],
       isSelect: false,
       submitForm: {
@@ -395,8 +407,8 @@
         nearCamera: '',
         nearPolice: '',
         address: '',
-        lontitude: '102.759',
-        latitude: '65.123',
+        lontitude: '',
+        latitude: '',
         adType: '',
         adSpec: '',
         hasLeaderPortrait: '',
@@ -405,6 +417,7 @@
         pic: [],
         companyId: '',
         companyName: '',
+        monitorUserId: '',
       },
       HOST: 'http://39.108.245.130:9090/',
       uploadUrl: 'http://39.108.245.130:9090/pic/uploadPic',
@@ -424,16 +437,21 @@
       activeMap(val) {
         if (val) {
           document.getElementById('allmap').style.display = 'block';
-          if (!this.flag) {
-            document.getElementById('search').style.display = 'block';
-            document.getElementById('searchResultPanel').style.display = 'block';
-          }
-          
+          document.getElementById('search').style.display = 'block';
+          document.getElementById('searchResultPanel').style.display = 'block';
         } else {
           document.getElementById('allmap').style.display = 'none';
           document.getElementById('search').style.display = 'none';
           document.getElementById('searchResultPanel').style.display = 'none';
         }
+      },
+      'submitForm.companyId': {
+        handler(val) {
+          if (val) {
+            this.selectUsers();
+          }
+        },
+        deep: true,
       }
     },
     created: function () {
@@ -546,15 +564,11 @@
         this.activeMap = true;
       },
       confirmAdd() {
-        if (!this.flag) {
-          this.marker = marker;
-          this.activeMap = false;
-          this.getAddress(this.marker && this.marker.getPosition());
-          this.marker = null;
-        } else {
-          this.activeMap = false;
-        }
-
+        this.marker = marker;
+        this.activeMap = false;
+        this.getAddress(this.marker && this.marker.getPosition());
+        this.marker = null;
+        this.activeMap = false;
       },
       getAddress(pt) { // pt = {lat: (number), lng: number}
         var geoc = new BMap.Geocoder();
@@ -566,10 +580,10 @@
           if (myValue) {
             self.submitForm.address = myValue;
           } else {
-            self.submitForm.address = addComp.province  + addComp.city + addComp.district +
-            addComp.street + addComp.streetNumber;
+            self.submitForm.address = addComp.province + addComp.city + addComp.district +
+              addComp.street + addComp.streetNumber;
           }
-          
+
         });
       },
       refresh() {
@@ -649,6 +663,8 @@
           }
         } else if (key === 'companyName') {
           return self.submitForm.companyName;
+        } else if (key === 'monitorUserId') {
+          return self.submitForm.monitorUserId;
         }
       },
       getAdDetail() {
@@ -663,7 +679,7 @@
             temp[ele] = self.preloadData[ele];
           })
           self.submitForm = temp;
-
+          console.log('test', self.submitForm);
         }, function (err) {
           console.log(err);
         })
@@ -673,6 +689,24 @@
         var cache = this.submitForm.designPic;
         this.submitForm.designPic = JSON.stringify(self.submitForm.designPic);
         pm(api.addAdvertisement, self.submitForm, res => {
+          toast(res);
+          setTimeout(function () {
+            mui.back();
+          }, 1000)
+          this.submitForm.designPic = cache;
+        }, err => {
+          console.log(err);
+          this.submitForm.designPic = cache;
+        }, res => {
+          toast(res);
+          this.submitForm.designPic = cache;
+        });
+      },
+      updateAdvertisement() {
+        var self = this;
+        var cache = this.submitForm.designPic;
+        this.submitForm.designPic = JSON.stringify(self.submitForm.designPic);
+        pm(api.updateAdvertisement, self.submitForm, res => {
           toast(res);
           setTimeout(function () {
             mui.back();
@@ -730,10 +764,21 @@
             return '';
           case 'companyName':
             return self.submitForm.companyName;
+          case 'monitorUserId':
+            var temp = self.monitorUserArray.filter(function (ele) {
+              return ele.value == self.submitForm.monitorUserId;
+            })[0];
+            if (temp) {
+              return temp.label
+            }
+            return '';
         }
       },
       handleSelect(index) {
-        if (index === undefined || (!this.boolAnd(2, 1) && this.flag)) {
+        if (index === undefined) { //判断没有index,
+          return;
+        } else if  ((index === 4 && !this.submitForm.companyId)) {  // 以及管理责任人无单位时的处理
+          toast('请先选择单位');
           return;
         }
         console.log('index', index);
@@ -757,6 +802,9 @@
               });
             })
             return;
+          case 4:
+            this.selectArray = this.monitorUserArray;
+            break;
         }
         this.isSelect = true;
       },
@@ -788,6 +836,28 @@
         } else {
           this.submitForm.pic.splice(index, 1)
         }
+      },
+      selectUsers() {
+        var self = this;
+        pm(api.selectUsers, {
+          companyId: self.submitForm.companyId,
+          userType: 2,
+          userId: infoGet('userId'),
+          index: 1,
+          pageSize: 1000,
+        }, res => {
+          res.result.forEach(function (ele, index) {
+            var temp = {};
+            temp.label = ele.name;
+            temp.value = ele.userId;
+            if (index === 0) {
+              temp.key = 'monitorUserId';
+            }
+            self.monitorUserArray.push(temp);
+          })
+        }, err => {
+          console.log(err);
+        })
       },
     },
   })

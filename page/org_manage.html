@@ -175,8 +175,8 @@
                     <span style="font-size: 0.5rem; font-weight: bold; margin-right: 0.5rem;color: #000;">{{item.label}}</span>
                 </div>  
                 <div class="card_interact flex j-e">
-                    <img class="f-r icon-normal" src="../icons/delete.png" @click="deleteCompany(item.value)">
-                    <img style="margin-left: 0.5rem;" class="f-r icon-normal" @click="edit(item.value, item.label)" src="../icons/edit.png">
+                    <img v-if="userType == 3" class="f-r icon-normal" src="../icons/delete.png" @click="deleteCompany(item.value)">
+                    <img v-if="userType == 3" style="margin-left: 0.5rem;" class="f-r icon-normal" @click="edit(item.value, item.label)" src="../icons/edit.png">
                 </div>
             </div>
         </div>

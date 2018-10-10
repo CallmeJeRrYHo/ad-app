@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-  <title>主页</title>
+  <title>宣传位</title>
   <script src="../js/polyfill.min.js"></script>
   <script src="../js/axios.min.js"></script>
   <script src="../api/api.js"></script>
@@ -133,7 +133,6 @@
       position: relative;
       height: 7.5rem;
       overflow: hidden;
-      margin-bottom: 2rem;
       position: relative;
     }
     .card_label {
@@ -174,7 +173,7 @@
 
 <body ontouchstart>
   <div id="resource" @click="isFilter = 0">
-    <c-header :title="title" :plus="userType !== '2'" :plusf="addResource"></c-header>
+    <c-header :title="title" :plus="userType === '1'" :plusf="addResource"></c-header>
     <div class="header">
       <div class="filter flex j-e">
         <span @click.stop="handleFilter(2)">
@@ -224,11 +223,10 @@
     <div class="container">     
       <div class="card" v-for="(item, index) in contentData" :key="index">
         <span class="card_label">{{item.label}}</span>
-        <img :src="item.src" width="100%"/>
-        <div v-if="item.type === 1" class="card_interact flex j-b">
+        <img :src="item.src" width="100%"/><div v-if="item.type === 1" class="card_interact flex j-b">
           <span class="f-l">{{item.status | statusFilter}}</span>
-          <img class="f-r icon-normal" src="../icons/delete.png" @click="deleteAd(item.value)">
-          <img style="color: #999;" class="f-r icon-normal" @click="edit(item.value)" src="../icons/edit.png">
+          <img v-if="userType === '1'" class="f-r icon-normal" src="../icons/delete.png" @click="deleteAd(item.value)">
+          <img v-if="userType === '1'" style="color: #999;" class="f-r icon-normal" @click="edit(item.value)" src="../icons/edit.png">
         </div>
       </div>
     </div>

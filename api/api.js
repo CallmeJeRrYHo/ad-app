@@ -23,6 +23,9 @@
         addAdvertisement: function (data) {
             return apiHttp.fetchPost(apiConfig.addAdvertisement, data);
         },
+        updateAdvertisement: function (data) {
+            return apiHttp.fetchPost(apiConfig.updateAdvertisement, data);
+        },
         selectMyAd: function (data) {
             return apiHttp.fetchPost(apiConfig.selectMyAd, data);
         },

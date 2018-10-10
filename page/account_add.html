@@ -146,6 +146,7 @@
                 {
                     label: '管理责任人',
                     value: '2',
+                    key: 'userType',
                 },
             ],
             leaderArray: [],
@@ -358,11 +359,10 @@
                         return;
                     case 1:
                         if (infoGet('userType') == '2') {
-                          this.roleArray = this.roleArray.slice(0, 1);
+                          this.selectArray = this.roleArray.slice(0, 1);
                         } else {
-                          this.roleArray = this.roleArray.slice(1);
+                          this.selectArray = this.roleArray.slice(1);
                         }
-                        this.selectArray = this.roleArray;
                         break;
                     case 2:
                         this.selectArray = this.leaderArray;
