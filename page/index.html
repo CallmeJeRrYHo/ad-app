@@ -19,7 +19,6 @@
   <script src="../js/index.js"></script>
   <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=HGqKSY9gSA70ZrwS5uTZnbjA"></script>
   <script type="text/javascript" charset="utf-8">
-    mui.init();
     document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
   </script>
   <style type="text/css">
@@ -356,7 +355,7 @@
     </div>
 
     <div class="tab">
-      <div class="page_1" v-if="activeTab === 0">
+      <div class="page_1" v-show="activeTab === 0">
         <input id="search" type="text" ref="search" placeholder="请输入搜索地址" @click.stop="" v-model="selectForm.keyWord" />
         <div id="searchResultPanel" v-if="selectForm.keyWord && isPanel">
           <dl>
@@ -369,7 +368,7 @@
           </dl>
         </div>
       </div>
-      <div class="page page_2" v-if="activeTab === 1">
+      <div class="page page_2" id="page2" v-show="activeTab === 1">
         <div class="no_content" v-if="contentData.length < 1">找不到相关宣传牌</div>
         <div class="container">
           <div class="card" v-for="(item, index) in contentData" :key="index" @click="jumpToDetail(item.value)">
@@ -383,7 +382,7 @@
           </div>
         </div>
       </div>
-      <div class="page page_3" v-if="activeTab === 2">
+      <div class="page page_3" v-show="activeTab === 2">
         <div class="manage-header flex" @click="jumpTo('my_data.html')">
           <img :src="avatar" class="avatar" />
           <div class="title">
@@ -527,6 +526,7 @@
       map: null,
       isPanel: true,
       keyword: '',
+      div: null,
     },
     watch: {
       activeTab(val) {
@@ -556,7 +556,7 @@
         console.log('callback refresh');
         self.getUserInfo();
       })
-      document.getElementById('l-map').addEventListener('click', function() {
+      document.getElementById('l-map').addEventListener('click', function () {
         console.log('blur', self.$refs.search);
         self.$refs.search.blur();
       })
@@ -577,6 +577,115 @@
 
     },
     methods: {
+      /** 
+       * option是初始化的参数对象 
+       * option.target是需要滚动的的外容器,传入的应该是可以作为选择器的字符串，并且应该唯一
+       * option.contentLoading 正在加载中显示的字符
+       * option.contentNoMore 没有更多数据的时候显示的字符
+       * option.callback 下拉后需要调用的回调(根据return的布尔值来判断是否加载全部)
+       */
+      handlePullRefresh(options) {
+        var self = this;
+        let target = options.target,
+          contentLoading = options.contentLoading,
+          contentNoMore = options.contentNoMore,
+          callback = options.callback;
+        let element = document.querySelector(target);
+        let scrollTop = element.scrollTop;
+        let scrollHeight = element.scrollHeight;
+        let clientHeight = element.clientHeight;
+        if (scrollTop + clientHeight == scrollHeight) {
+          // 判断到了底部
+          if (self.div) {
+            self.div.ele.style.display = 'block';
+          } else {
+            let div = document.createElement('div');
+            div.style.width = "100%";
+            div.style.textAlign = 'center';
+            div.innerHTML = contentLoading;
+            self.div = {
+              ele: div,
+              options: options,
+            };
+            element.appendChild(div);
+          }
+          return true;
+          // window.setTimeout(function() {
+          //   if (callback()) {
+          //     div.innerHTML = contenNoMore;
+          //   } else {
+
+          //   }  
+
+          // }, 100)  
+        } else {
+          return false;
+        }
+        // function getScrollTop() { // 滚动条的长度
+        //   var scrollTop = 0;
+        //   // if (document.documentElement && document.documentElement.scrollTop) {
+        //   //   scrollTop = document.documentElement.scrollTop;
+        //   // } else if (document.body) {
+        //   //   scrollTop = document.body.scrollTop;
+        //   // }
+        //   return scrollTop;
+        // }
+
+        // //获取当前可视范围的高度 
+        // function getClientHeight() { // 可视范围的高度
+        //   var clientHeight = 0;
+        //   if (document.body.clientHeight && document.documentElement.clientHeight) {
+        //     clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+        //   } else {
+        //     clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+        //   }
+        //   return clientHeight;
+        // }
+
+        // //获取文档完整的高度 
+        // function getScrollHeight() { // 总高度
+        //   return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+        // }
+
+
+      },
+      handleEndPullRefresh(bool) {
+        var self = this;
+        if (bool) {
+          this.div.ele.innerHTML = this.div.options.contentNoMore;
+        } else {
+          // var element = document.querySelector(self.div.options.target)
+          // element.removeChild(self.div.ele);
+          this.div.ele.style.display = 'none';
+        }
+      },
+      countSelectAdList() {
+        var self = this;
+        self.selectForm.index += 1;
+        pm(api.selectAdList, self.selectForm, function (res) {
+          if (res.result.length > 0) {
+            self.handleEndPullRefresh(false);
+          } else {
+            self.handleEndPullRefresh(true);
+          }
+          res.result.forEach(function (ele) {
+            var temp = {};
+            temp.src = api.HOST + ele.path;
+            temp.name = ele.name
+            temp.label = ele.address;
+            temp.type = 0;
+            temp.value = ele.advertisement_id;
+            temp.lng = ele.lontitude;
+            temp.lat = ele.latitude;
+            temp.company = ele.company_name;
+            temp.serial_num = ele.serial_num;
+            self.contentData.push(temp);
+            self.adList.push(temp);
+          })
+        }, function (err) {
+          console.log(err);
+        })
+      },
       searchItemClick(item) {
         var self = this;
         let lat = item.lat,
@@ -615,7 +724,7 @@
         var map = new BMap.Map("l-map");
         map.centerAndZoom(self.initMapAddress, 15);
         map.enableScrollWheelZoom(true);
-        
+
         map.addEventListener('dragend', function () {
           var cp = map.getCenter();
           var temp = {};
@@ -628,6 +737,7 @@
           self.$refs.search.blur();
         })
         this.map = map;
+
         function renderMarker(self) {
           var _this = this;
           var infoWindows = {};
@@ -665,7 +775,7 @@
 
           });
         }
-        
+
         renderMarker(this);
 
       },
@@ -745,6 +855,21 @@
           case 1:
             self.activeTab = 1;
             self.selectForm.pageSize = 20;
+            document.getElementById('page2') && document.getElementById('page2').addEventListener('scroll',
+              function () {
+                var handle = self.handlePullRefresh({
+                  target: '#page2',
+                  contentLoading: '数据加载中...',
+                  contentNoMore: '已无更多数据',
+                });
+                if (handle) {
+                  setTimeout(function () {
+                    self.countSelectAdList();
+                  }, 1000);
+                } else {
+                  return;
+                }
+              })
             self.selectAdList();
             break;
           case 2:
