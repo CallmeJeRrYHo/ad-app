@@ -192,17 +192,14 @@
           <div v-for="(item, index) in submitForm.pic" style="margin: 0.3rem 0.2rem;position: relative;">
             <img :src="HOST + item.path" :key="index" class="uimg" style="width: 3rem; height: 3rem; vertical-align: middle;"
               @click="galleryShow2(index)" />
-            <img v-if="(ads === 3) && userType == 1" src="../icons/delete_active.png" class="delete_img" @click.stop="deleteImg(index, 2)" />
+            <img v-if="((ads === 3 || ads === 5) && userType == 1)" src="../icons/delete_active.png" class="delete_img" @click.stop="deleteImg(index, 2)" />
           </div>
-          <img @click="uploadPic(2)" v-if="(ads === 3) && userType == 1" src="../icons/addPic.png" style="margin: 0.3rem 0;width: 3rem; height: 3rem; vertical-align: middle;" />
+          <img @click="uploadPic(2)" v-if="((ads === 3 || ads === 5) && userType == 1)" src="../icons/addPic.png" style="margin: 0.3rem 0;width: 3rem; height: 3rem; vertical-align: middle;" />
         </div>
       </div>
       <div class="w-100 interact_area">
         <div v-if="!flag" class="submit" @click="addAdvertisement">
           创建
-        </div>
-        <div v-else class="submit" @click="updateAdvertisement">
-          修改
         </div>
         <div class="w-100" v-if="boolAnd(1, 2) && flag">
           <div class="submit" @click="designAudit(2)" style="margin-bottom: 0.3rem;">
@@ -221,14 +218,14 @@
         <div class="submit" v-if="boolAnd(4, 2) && flag" @click="auditLiveView">
           已审核
         </div>
-        <!-- <div class="submit" v-if="boolAnd(5, 1) && flag" @click="save">
-          保存
-        </div> -->
+        <div v-if="boolAnd(5, 1) && flag" class="submit" @click="updateAdvertisement">
+          修改
+        </div>
       </div>
 
     </div>
     <select-item v-if="!activeMap" :itemdata="selectArray" :show="isSelect" @selected="handleSelected"></select-item>
-    <v-mask v-if="!activeMap" :show="isSelect"></v-mask>
+    <v-mask v-if="!activeMap" :show="isSelect" @close="isSelect = false"></v-mask>
   </div>
 </body>
 
@@ -705,19 +702,24 @@
       updateAdvertisement() {
         var self = this;
         var cache = this.submitForm.designPic;
+        var cache2 = this.submitForm.pic;
         this.submitForm.designPic = JSON.stringify(self.submitForm.designPic);
+        this.submitForm.pic = JSON.stringify(self.submitForm.pic);
         pm(api.updateAdvertisement, self.submitForm, res => {
           toast(res);
           setTimeout(function () {
             mui.back();
           }, 1000)
-          this.submitForm.designPic = cache;
+          self.submitForm.designPic = cache;
+          self.submitForm.pic = cache2;
         }, err => {
           console.log(err);
-          this.submitForm.designPic = cache;
+          self.submitForm.designPic = cache;
+          self.submitForm.pic = cache2;
         }, res => {
           toast(res);
-          this.submitForm.designPic = cache;
+          self.submitForm.designPic = cache;
+          self.submitForm.pic = cache2;
         });
       },
       resetForm() {
@@ -777,10 +779,16 @@
       handleSelect(index) {
         if (index === undefined) { //判断没有index,
           return;
-        } else if  ((index === 4 && !this.submitForm.companyId)) {  // 以及管理责任人无单位时的处理
-          toast('请先选择单位');
-          return;
-        }
+        } else if  (index === 4) {  // 以及管理责任人无单位时的处理
+          if (!this.submitForm.companyId) {
+            toast('请先选择单位');
+            return;
+          }
+          if (this.monitorUserArray.length < 1) {
+            toast('无管理责任人，请联系管理员');
+            return;
+          }          
+        } 
         console.log('index', index);
         switch (index) {
           case 0:

@@ -26,8 +26,13 @@ Vue.component('v-mask', {
             required: true,
         },	
     },
+    methods: {
+      closeMask() {
+        this.$emit('close');
+      }
+    },
     template: '\
-    <div :style="style.div" v-if="show">\
+    <div :style="style.div" v-if="show" @click="closeMask">\
     </div>\
     ',
 })

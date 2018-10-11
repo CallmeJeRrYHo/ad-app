@@ -302,7 +302,7 @@
       selectCompanyFormat(key) {
         var self = this;
         if (self.atype === 'account') {
-          this.selectMyCompany();
+          this.selectMyCompany(key);
         }else if ((infoGet('userType') == '3' && self.atype === 'announcement')) {
           this.selectCompany(key);
         } else {
@@ -327,10 +327,10 @@
           console.log(err);
         })
       },
-      selectMyCompany() {
+      selectMyCompany(key) {
         var self = this;
         pm(api.selectMyCompany, {
-          keyWord: '',
+          keyWord: key || '',
           userId: infoGet('userId'),
           index: 1,
           pageSize: 1000,

@@ -280,20 +280,21 @@
       left: 0.2rem;
       z-index: 10001;
       position: fixed;
-      
+
     }
+
     .search-item {
       border: 1px solid #C0C0C0;
       height: 1rem;
       padding: 0.2rem;
       white-space: nowrap;
       text-overflow: ellipsis;
-      overflow:hidden;
+      overflow: hidden;
     }
   </style>
 </head>
 
-<body ontouchstart>
+<body ontouchstart ontouchmove>
   <div id="l-map"></div>
   <div id="index" @click="isFilter = 0">
     <div class="header" v-if="activeTab === 1">
@@ -354,7 +355,7 @@
 
     <div class="tab">
       <div class="page_1" v-if="activeTab === 0">
-        <input id="search" type="text" placeholder="请输入搜索地址" @click.stop="" v-model="selectForm.keyWord"/>
+        <input id="search" type="text" ref="search" placeholder="请输入搜索地址" @click.stop="" v-model="selectForm.keyWord" />
         <div id="searchResultPanel" v-if="selectForm.keyWord && isPanel">
           <dl>
             <dt v-for="(item, index) in contentData" class="search-item" @click="searchItemClick(item)">
@@ -477,7 +478,7 @@
           title: '单位管理',
           src: '../icons/watcher_active.png',
           to: 'org_manage.html',
-          auth: '2',
+          auth: '3',
         },
         {
           title: '管理宣传位',
@@ -511,7 +512,9 @@
         adSpec: '',
         keyWord: '',
         index: 1,
-        pageSize: 1000,
+        pageSize: 15,
+        lon: '',
+        lat: '',
       },
       mobile: '',
       userType: '',
@@ -551,6 +554,10 @@
         console.log('callback refresh');
         self.getUserInfo();
       })
+      document.getElementById('l-map').addEventListener('click', function() {
+        console.log('blur', self.$refs.search);
+        self.$refs.search.blur();
+      })
       h5(function () {
         var webview = plus.webview.currentWebview();
         if (webview.type === 1) {
@@ -571,7 +578,7 @@
       searchItemClick(item) {
         var self = this;
         let lat = item.lat,
-            lng = item.lng ;
+          lng = item.lng;
         let pp = new BMap.Point(lng, lat);
         this.keyword = item.label;
         this.selectForm.keyWord = item.label;
@@ -596,46 +603,69 @@
         })
       },
       initMap(initAdd) {
+        if (initAdd) {
+          this.map.setCenter(initAdd);
+          this.map.clearOverlays();
+          renderMarker(this);
+          return;
+        }
         var self = this;
         var map = new BMap.Map("l-map");
-        map.centerAndZoom(initAdd || self.initMapAddress, 15);
+        map.centerAndZoom(self.initMapAddress, 15);
         map.enableScrollWheelZoom(true);
-        var infoWindows = {};
-        this.map = map;
-        self.adList.forEach(function (ele) {
-          var poiPoint = new BMap.Point(ele.lng, ele.lat);
-          var poiMarker = new BMap.Marker(poiPoint);
-          var size = new BMap.Size(6, 2);
-          var letter = ele.serial_num.slice(0, 1);
-          poiMarker.setLabel(new BMap.Label(letter, {
-            offset: size
-          }));
-          var info = '<div class="info-win-content"><span style="font-weight:bold;color:#666;">管理单位</span> ' +
-            ele.company +
-            '<br/><span style="font-weight:bold;color:#666;">所在地址</span> ' + ele.label +
-            '</div>';
-          var opts = {
-            title: '<span class="info-win-title">' + ele.name +
-              ' <a href="detail.html?ad_id=' + ele.value +
-              '" style="text-decoration:none;">查看详情</a><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>' +
-              '</span>'
-          };
-          var infoWindow = new BMap.InfoWindow(info, opts);
-          poiMarker.addEventListener("click", function (event) {
-            // console.log(event);
-            var marker = event.target;
-            var label = marker.getLabel().getContent();
-            marker.openInfoWindow(infoWindows[label]);
-          });
-          map.addOverlay(poiMarker);
-
-          infoWindows[letter] = infoWindow;
-          // if (i == 0) {
-          //   poiMarker.openInfoWindow(infoWindow);
-          // }
-
-        });
         
+        map.addEventListener('dragend', function () {
+          var cp = map.getCenter();
+          var temp = {};
+          temp.lng = cp.lng;
+          temp.lat = cp.lat;
+          var point = new BMap.Point(cp.lng, cp.lat);
+          self.selectAdList(temp, point);
+        })
+        map.addEventListener('click', function () {
+          self.$refs.search.blur();
+        })
+        this.map = map;
+        function renderMarker(self) {
+          var _this = this;
+          var infoWindows = {};
+          self.adList.forEach(function (ele) {
+            var poiPoint = new BMap.Point(ele.lng, ele.lat);
+            var poiMarker = new BMap.Marker(poiPoint);
+            var size = new BMap.Size(6, 2);
+            var letter = '' + ele.serial_num;
+            poiMarker.setLabel(new BMap.Label(letter, {
+              offset: size
+            }));
+            var info = '<div class="info-win-content"><span style="font-weight:bold;color:#666;">管理单位</span> ' +
+              ele.company +
+              '<br/><span style="font-weight:bold;color:#666;">所在地址</span> ' + ele.label +
+              '</div>';
+            var opts = {
+              title: '<span class="info-win-title">' + ele.name +
+                ' <a href="detail.html?ad_id=' + ele.value +
+                '" style="text-decoration:none;">查看详情</a><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>' +
+                '</span>'
+            };
+            var infoWindow = new BMap.InfoWindow(info, opts);
+            poiMarker.addEventListener("click", function (event) {
+              // console.log(event);
+              var marker = event.target;
+              var label = marker.getLabel().getContent();
+              marker.openInfoWindow(infoWindows[label]);
+            });
+            self.map.addOverlay(poiMarker);
+
+            infoWindows[letter] = infoWindow;
+            // if (i == 0) {
+            //   poiMarker.openInfoWindow(infoWindow);
+            // }
+
+          });
+        }
+        
+        renderMarker(this);
+
       },
       jumpToDetail(val) {
         h5(function () {
@@ -649,6 +679,7 @@
       },
       resetContent() {
         this.contentData = []
+        this.adList = [];
       },
       selectCompany() {
         var self = this;
@@ -663,9 +694,13 @@
           console.log(err);
         })
       },
-      selectAdList() {
+      selectAdList(addr, point) {
         var self = this;
         this.resetContent();
+        if (addr) {
+          self.selectForm.lon = addr.lng;
+          self.selectForm.lat = addr.lat;
+        }
         pm(api.selectAdList, self.selectForm, function (res) {
           res.result.forEach(function (ele) {
             var temp = {};
@@ -681,7 +716,10 @@
             self.contentData.push(temp);
             self.adList.push(temp);
           })
-          console.log(self.adList);
+          if (point) {
+            self.initMap(point);
+            return;
+          }
           self.initMap();
         }, function (err) {
           console.log(err);
@@ -698,10 +736,13 @@
         var self = this;
         switch (index) {
           case 0:
+            self.selectForm.pageSize = 15;
             self.activeTab = 0;
+            self.selectAdList();
             break;
           case 1:
             self.activeTab = 1;
+            self.selectForm.pageSize = 1000;
             self.selectAdList();
             break;
           case 2:
