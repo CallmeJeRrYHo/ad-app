@@ -137,7 +137,7 @@
   <div id="resource_add">
 
     <div id="map-buttons" v-if="activeMap" @click="confirmAdd">
-      {{ ((flag && userType != 1) || !(boolAnd(5, 1) && flag))? '返回':'确认选点'}}
+      {{ ((flag && userType != 1) || (boolAnd(5, 1) && flag))? '返回':'确认选点'}}
     </div>
 
     <c-header v-if="!activeMap" :title="flag ? '修改宣传位':'添加宣传位'">
@@ -806,7 +806,7 @@
         }
       },
       handleSelect(index) {
-        if (index === undefined || this.userType != 1 || !(this.boolAnd(5, 1) && this.flag)) { //判断没有index 或者不是执行人
+        if (index === undefined || this.userType != 1 || (this.boolAnd(5, 1) && this.flag)) { //判断没有index 或者不是执行人
           return;
         } else if (index === 4) { // 以及管理责任人无单位时的处理
           if (!this.submitForm.companyId) {
