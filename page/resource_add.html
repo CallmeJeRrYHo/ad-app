@@ -67,6 +67,18 @@
       right: 0.3rem;
       bottom: 0.3rem;
     }
+    .select_one {
+      width: 0.7rem;
+      height: 0.7rem;
+      position: absolute;
+      left: 0.3rem;
+      bottom: 0.3rem;
+      background: #fff;
+    }
+    .selected_one {
+      width: 0.7rem;
+      height: 0.7rem;
+    }
 
     .line {
       background-color: #fff;
@@ -125,8 +137,7 @@
   <div id="resource_add">
 
     <div id="map-buttons" v-if="activeMap" @click="confirmAdd">
-      确认选点
-      <!-- {{flag ? '返回':'确认选点'}} -->
+      {{ ((flag && userType != 1) || !(boolAnd(5, 1) && flag))? '返回':'确认选点'}}
     </div>
 
     <c-header v-if="!activeMap" :title="flag ? '修改宣传位':'添加宣传位'">
@@ -135,7 +146,7 @@
       <div class="flex j-b line" v-for="(item, index) in lineArray" :key="index" @click="handleSelect(item.index)">
         <div class="flex j-b w_100" v-if="!item.type">
           <span class="noti-title">{{item.title}}</span>
-          <span>{{format(item.key)}}</span> 
+          <span>{{format(item.key)}}</span>
         </div>
         <div class="flex j-b" style="width: 90%" v-else-if="item.type === 'address'" @click.stop="handleAddress">
           <span class="noti-title">地址</span>
@@ -143,15 +154,13 @@
         </div>
         <div v-else-if="item.type === 'input'" class="flex w_100">
           <span class="noti-title">{{item.title}}</span>
-          <input class="t-input" adType="text" :placeholder="'请输入' + item.title" v-model="submitForm[item.value]" />
+          <input class="t-input" adType="text" :placeholder="'请输入' + item.title"
+            v-model="submitForm[item.value]" />
         </div>
         <div v-else-if="item.type === 'textarea'" class="w_100" style="height: 3rem;">
           <span class="noti-title">{{item.title}}</span>
-          <textarea class="t-input" type="text" placeholder="请输入内容" v-model="submitForm.adContent"></textarea>
-        </div>
-        <div v-else-if="item.type === 'textarea'" class="w_100" style="height: 3rem;">
-          <span class="noti-title">{{item.title}}</span>
-          <textarea class="t-input" type="text" placeholder="请输入内容" v-model="submitForm.adContent"></textarea>
+          <textarea class="t-input" type="text" placeholder="请输入内容"
+            v-model="submitForm.adContent"></textarea>
         </div>
         <img v-if="!item.adType" src="../icons/forward.png" class="icon-small" />
       </div>
@@ -192,7 +201,11 @@
           <div v-for="(item, index) in submitForm.pic" style="margin: 0.3rem 0.2rem;position: relative;">
             <img :src="HOST + item.path" :key="index" class="uimg" style="width: 3rem; height: 3rem; vertical-align: middle;"
               @click="galleryShow2(index)" />
-            <img v-if="((ads === 3 || ads === 5) && userType == 1)" src="../icons/delete_active.png" class="delete_img" @click.stop="deleteImg(index, 2)" />
+            <div class="select_one" @click.stop="selectFirstPic(index)" v-if="((ads === 3 || ads === 5) && userType == 1)">
+              <img class="selected_one" src="../icons/select.png" v-if="firstPic === index">
+            </div>
+            <img v-if="((ads === 3 || ads === 5) && userType == 1)" src="../icons/delete_active.png" class="delete_img"
+              @click.stop="deleteImg(index, 2)" />
           </div>
           <img @click="uploadPic(2)" v-if="((ads === 3 || ads === 5) && userType == 1)" src="../icons/addPic.png" style="margin: 0.3rem 0;width: 3rem; height: 3rem; vertical-align: middle;" />
         </div>
@@ -429,6 +442,7 @@
       activeMap: false,
       marker: null,
       mapAddress: null,
+      firstPic: 0,
     },
     watch: {
       activeMap(val) {
@@ -488,6 +502,9 @@
       }
     },
     methods: {
+      selectFirstPic(index) {
+        this.firstPic = index;
+      },
       galleryShow(index) {
         var self = this;
         h5(function () {
@@ -561,10 +578,12 @@
         this.activeMap = true;
       },
       confirmAdd() {
-        this.marker = marker;
-        this.activeMap = false;
-        this.getAddress(this.marker && this.marker.getPosition());
-        this.marker = null;
+        if (this.userType == 1 || (this.boolAnd(5, 1) && this.flag)) {
+          this.marker = marker;
+          this.activeMap = false;
+          this.getAddress(this.marker && this.marker.getPosition());
+          this.marker = null;
+        }
         this.activeMap = false;
       },
       getAddress(pt) { // pt = {lat: (number), lng: number}
@@ -602,6 +621,7 @@
       submitLiveViewAudit() {
         var self = this;
         this.submitForm.designPic = JSON.stringify(self.submitForm.designPic);
+        this.submitForm.pic[this.firstPic].is_first = 1;
         pm(api.submitLiveViewAudit, {
           userId: infoGet('userId'),
           advertisementId: self.ad,
@@ -676,7 +696,6 @@
             temp[ele] = self.preloadData[ele];
           })
           self.submitForm = temp;
-          console.log('test', self.submitForm);
         }, function (err) {
           console.log(err);
         })
@@ -703,24 +722,34 @@
         var self = this;
         var cache = this.submitForm.designPic;
         var cache2 = this.submitForm.pic;
-        this.submitForm.designPic = JSON.stringify(self.submitForm.designPic);
-        this.submitForm.pic = JSON.stringify(self.submitForm.pic);
-        pm(api.updateAdvertisement, self.submitForm, res => {
-          toast(res);
-          setTimeout(function () {
-            mui.back();
-          }, 1000)
-          self.submitForm.designPic = cache;
-          self.submitForm.pic = cache2;
-        }, err => {
-          console.log(err);
-          self.submitForm.designPic = cache;
-          self.submitForm.pic = cache2;
-        }, res => {
-          toast(res);
-          self.submitForm.designPic = cache;
-          self.submitForm.pic = cache2;
-        });
+        this.submitForm.pic.forEach((ele, index) => {
+          console.log('test', index, self.firstPic);
+          if (self.firstPic === index) {
+            ele.is_first = 1;
+          } else {
+            ele.is_first = 0;
+          }
+        })
+        this.$nextTick(() => {
+          this.submitForm.designPic = JSON.stringify(self.submitForm.designPic);
+          this.submitForm.pic = JSON.stringify(self.submitForm.pic);
+          pm(api.updateAdvertisement, self.submitForm, res => {
+            toast(res);
+            setTimeout(function () {
+              mui.back();
+            }, 1000)
+            self.submitForm.designPic = cache;
+            self.submitForm.pic = cache2;
+          }, err => {
+            console.log(err);
+            self.submitForm.designPic = cache;
+            self.submitForm.pic = cache2;
+          }, res => {
+            toast(res);
+            self.submitForm.designPic = cache;
+            self.submitForm.pic = cache2;
+          });
+        })
       },
       resetForm() {
         this.submitForm = {
@@ -777,9 +806,9 @@
         }
       },
       handleSelect(index) {
-        if (index === undefined) { //判断没有index,
+        if (index === undefined || this.userType != 1 || !(this.boolAnd(5, 1) && this.flag)) { //判断没有index 或者不是执行人
           return;
-        } else if  (index === 4) {  // 以及管理责任人无单位时的处理
+        } else if (index === 4) { // 以及管理责任人无单位时的处理
           if (!this.submitForm.companyId) {
             toast('请先选择单位');
             return;
@@ -787,8 +816,8 @@
           if (this.monitorUserArray.length < 1) {
             toast('无管理责任人，请联系管理员');
             return;
-          }          
-        } 
+          }
+        }
         console.log('index', index);
         switch (index) {
           case 0:

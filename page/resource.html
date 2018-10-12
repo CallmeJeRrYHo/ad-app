@@ -222,11 +222,11 @@
     </div>
     <div class="container">     
       <div class="card" v-for="(item, index) in contentData" :key="index">
-        <span class="card_label">{{item.label}}</span>
+        <span class="card_label">{{item.serial_num}}</span>
         <img :src="item.src" width="100%"/><div v-if="item.type === 1" class="card_interact flex j-b">
           <span class="f-l">{{item.status | statusFilter}}</span>
-          <img v-if="userType === '1'" class="f-r icon-normal" src="../icons/delete.png" @click="deleteAd(item.value)">
-          <img v-if="userType === '1'" style="color: #999;" class="f-r icon-normal" @click="edit(item.value)" src="../icons/edit.png">
+          <img v-if="userType !== '3'" class="f-r icon-normal" src="../icons/delete.png" @click="deleteAd(item.value)">
+          <img v-if="userType !== '3'" style="color: #999;" class="f-r icon-normal" @click="edit(item.value)" src="../icons/edit.png">
         </div>
       </div>
     </div>
@@ -287,6 +287,8 @@
             temp.type = 1;
             temp.value = ele.advertisement_id;
             temp.status = ele.ad_status;
+            temp.content = ele.ad_content;
+            temp.serial_num = ele.serial_num;
             self.contentData.push(temp);
           })
         }, err => {

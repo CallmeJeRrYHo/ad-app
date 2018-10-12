@@ -360,7 +360,7 @@
         <div id="searchResultPanel" v-if="selectForm.keyWord && isPanel">
           <dl>
             <dt v-for="(item, index) in contentData" class="search-item" @click="searchItemClick(item)">
-              <span>{{item.serial_num + ' ' + item.label}}</span>
+              <span>{{item.serial_num}}</span>
             </dt>
             <dt v-if="contentData.length < 1" class="search-item">
               <span>无搜索匹配结果</span>
@@ -372,7 +372,7 @@
         <div class="no_content" v-if="contentData.length < 1">找不到相关宣传牌</div>
         <div class="container">
           <div class="card" v-for="(item, index) in contentData" :key="index" @click="jumpToDetail(item.value)">
-            <span class="card_label">{{item.label}}</span>
+            <span class="card_label">{{item.serial_num}}</span>
             <img :src="item.src" class="card_img" />
             <div v-if="item.type === 1" class="card_interact flex j-b">
               <span class="f-l">{{item.status}}</span>
@@ -679,6 +679,7 @@
             temp.lat = ele.latitude;
             temp.company = ele.company_name;
             temp.serial_num = ele.serial_num;
+            temp.content = ele.ad_content;
             self.contentData.push(temp);
             self.adList.push(temp);
           })
@@ -825,6 +826,7 @@
             temp.lat = ele.latitude;
             temp.company = ele.company_name;
             temp.serial_num = ele.serial_num;
+            temp.content = ele.ad_content;
             self.contentData.push(temp);
             self.adList.push(temp);
           })
