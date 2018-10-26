@@ -4,7 +4,7 @@
 	(global.apiHttp = factory());
 }(this, (function () {
     axios.defaults.timeout =  10000;
-    axios.defaults.baseURL = 'http://39.108.245.130:9090'; // 39.108.245.130:9090 192.168.3.223:9090
+    axios.defaults.baseURL = 'http://219.132.139.116:9090'; // 219.132.139.116:9090 192.168.3.223:9090
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     axios.defaults.transformRequest = [function (data) {
         let newData = '';
