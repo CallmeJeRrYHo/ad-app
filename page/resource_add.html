@@ -168,7 +168,7 @@
         <div class="picArea flex">
           <div v-for="(item, index) in submitForm.designPic" style="margin: 0.3rem 0.2rem;position: relative;">
             <img :src="HOST + item.path" :key="index" class="uimg" style="width: 3rem; height: 3rem; vertical-align: middle;"
-              @click="galleryShow(index)" />
+              @click="galleryShow(index)" @longtap="imgSave(index)"/>
             <img v-if="boolAnd(2, 1) || !flag" src="../icons/delete_active.png" class="delete_img" @click="deleteImg(index, 1)" />
           </div>
           <img @click="uploadPic(1)" v-if="boolAnd(2, 1) || !flag" src="../icons/addPic.png" style="margin: 0.3rem 0;width: 3rem; height: 3rem; vertical-align: middle;" />
@@ -428,8 +428,8 @@
         companyName: '',
         monitorUserId: '',
       },
-      HOST: 'http://219.132.139.116:9090/',
-      uploadUrl: 'http://219.132.139.116:9090/pic/uploadPic',
+      HOST: 'http://39.108.245.130:9090/',
+      uploadUrl: 'http://39.108.245.130:9090/pic/uploadPic',
       preloadData: {
 
       },
@@ -466,6 +466,13 @@
     },
     created: function () {
       var self = this;
+      mui.init({
+        gestureConfig: {
+          tap: true, //默认为true
+          doubletap: true, //默认为false
+          longtap: true, //默认为false
+        }
+      });
       h5(function () {
         var webview = plus.webview.currentWebview();
         window.addEventListener('org', function (e) {
@@ -503,6 +510,18 @@
     methods: {
       selectFirstPic(index) {
         this.firstPic = index;
+      },
+      imgSave(index) {
+        var self = this;
+        var name = self.HOST + self.submitForm.designPic[index].path;
+        h5(function () {
+          plus.gallery.save(name, function() {
+            plus.nativeUI.toast('图片保存成功');
+          }, function(e) {
+            console.log(e);
+            plus.nativeUI.toast('图片保存失败');
+          })
+        })
       },
       galleryShow(index) {
         var self = this;

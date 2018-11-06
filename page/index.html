@@ -99,7 +99,6 @@
       margin-bottom: 0.3rem;
       z-index: 10001;
     }
-
     .filter {
       padding: 0 0.3rem;
       background-color: #fff;
@@ -315,6 +314,10 @@
       </div>
       <div class="filter_content_1" v-if="isFilter === 1" @click.stop="1">
         <div class="weui-cells">
+          <div class="search flex">
+            <img src="../icons/search.png" class="icon-small" />
+            <input type="text" class="search-input" v-model="orgKeyWord" placeholder="请输入单位关键字" />
+          </div>
           <div v-for="(item, index) in orgArray" :key="index">
             <label class="weui-cell weui-check__label" for="x11" @click="handleSelect(index, item.value)">
               <div class="weui-cell__bd">
@@ -526,7 +529,9 @@
       map: null,
       isPanel: true,
       keyword: '',
+      orgKeyWord: '',
       div: null,
+      listener: null,
     },
     watch: {
       activeTab(val) {
@@ -545,6 +550,9 @@
           this.isPanel = true;
         },
         deep: true,
+      },
+      orgKeyWord(val) {
+        this.selectCompany(val);
       }
     },
     created: function () {
@@ -794,9 +802,20 @@
         this.contentData = []
         this.adList = [];
       },
-      selectCompany() {
+      selectCompany(key) {
         var self = this;
-        pm(api.selectCompany, self.selectForm, function (res) {
+        var form = key ? {
+          companyId: '',
+          adType: '',
+          adSpec: '',
+          keyWord: key,
+          index: 1,
+          pageSize: 15,
+          lon: '',
+          lat: '',
+        } : self.selectForm;
+        pm(api.selectCompany, form, function (res) {
+          self.orgArray = [];
           res.result.forEach(function (ele) {
             var temp = {};
             temp.label = ele.companyName;
@@ -848,6 +867,7 @@
       },
       switchTo(index) {
         var self = this;
+
         switch (index) {
           case 0:
             self.selectForm.pageSize = 15;
@@ -857,8 +877,11 @@
           case 1:
             self.activeTab = 1;
             self.selectForm.pageSize = 20;
-            document.getElementById('page2') && document.getElementById('page2').addEventListener('scroll',
-              function () {
+            if (self.listener) {
+              document.getElementById('page2') && document.getElementById('page2').removeEventListener('scroll',
+                self.listener);
+            } else {
+              self.listener = function () {
                 var handle = self.handlePullRefresh({
                   target: '#page2',
                   contentLoading: '数据加载中...',
@@ -871,7 +894,11 @@
                 } else {
                   return;
                 }
-              })
+              }
+            }
+            document.getElementById('page2') && document.getElementById('page2').addEventListener('scroll', self.listener);
+            self.resetForm();
+            self.resetFilter();
             self.selectAdList();
             break;
           case 2:
@@ -918,6 +945,10 @@
       resetFilter() {
         this.selectForm.adSpec = '';
         this.selectForm.adType = '';
+      },
+      resetForm() {
+        this.selectForm.keyWord = '';
+        this.selectForm.index = 1;
       },
       refresh() {
         this.selectAdList();

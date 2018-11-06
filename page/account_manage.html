@@ -2,363 +2,404 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>帐号管理</title>
-    <script src="../js/polyfill.min.js"></script>
-    <script src="../js/axios.min.js"></script>
-    <script src="../api/api.js"></script>
-    <script src="../api/apiConfig.js"></script>
-    <script src="../api/apiHttp.js"></script>
-    <script src="../js/mui.min.js"></script>
-    <link href="../css/reset.css" rel="stylesheet" />
-    <link href="../css/mui.min.css" rel="stylesheet" />
-    <link href="../css/weui.min.css" rel="stylesheet" />
-    <script src="../js/vue.js"></script>
-    <script src="../js/openWindow.js"></script>
-    <script type="text/javascript" charset="utf-8">
-        mui.init();
-        document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
-    </script>
-    <style type="text/css">
-        body {
-            background-color: #F2F2F2;
-        }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>帐号管理</title>
+  <script src="../js/polyfill.min.js"></script>
+  <script src="../js/axios.min.js"></script>
+  <script src="../api/api.js"></script>
+  <script src="../api/apiConfig.js"></script>
+  <script src="../api/apiHttp.js"></script>
+  <script src="../js/mui.min.js"></script>
+  <link href="../css/reset.css" rel="stylesheet" />
+  <link href="../css/mui.min.css" rel="stylesheet" />
+  <link href="../css/weui.min.css" rel="stylesheet" />
+  <script src="../js/vue.js"></script>
+  <script src="../js/openWindow.js"></script>
+  <script type="text/javascript" charset="utf-8">
+    mui.init();
+    document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
+  </script>
+  <style type="text/css">
+    body {
+      background-color: #F2F2F2;
+    }
 
-        #resource {
-            width: 100%;
-            height: 100%;
-        }
+    #resource {
+      width: 100%;
+      height: 100%;
+    }
 
-        .tab {
-            position: fixed;
-            height: 100%;
-            bottom: 0;
-            left: 0;
-            right: 0;
-        }
+    .tab {
+      position: fixed;
+      height: 100%;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
 
-        .container {
-            position: relative;
-            top: 3rem;
-        }
+    .container {
+      position: relative;
+      top: 4.5rem;
+      margin-bottom: 1rem;
+    }
 
-        .page_1 {
-            padding-top: 0.5rem;
-        }
+    .page_1 {
+      padding-top: 0.5rem;
+    }
 
-        .search {
-            width: 95%;
-            height: 1.2rem;
-            margin: 0 auto;
-            background-color: #F2F2F2;
-            border-radius: 0.5rem;
-            padding: 0 0.3rem;
-            box-sizing: border-box;
-            margin-bottom: 0.3rem;
-        }
+    .search {
+      width: 95%;
+      height: 1.2rem;
+      margin: 0 auto;
+      background-color: #F2F2F2;
+      border-radius: 0.5rem;
+      padding: 0 0.3rem;
+      box-sizing: border-box;
+      margin-bottom: 0.3rem;
+    }
 
-        .filter {
-            padding: 0 0.3rem;
-            background-color: #fff;
-            z-index: 10001;
-            width: 100%;
-            height: 1.5rem;
-            text-align: center;
-            border-top: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
+    .filter {
+      padding: 0 0.3rem;
+      background-color: #fff;
+      z-index: 10001;
+      width: 100%;
+      height: 1.5rem;
+      text-align: center;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
 
-        }
+    }
 
-        .search-input {
-            flex: 1 0 auto;
-            width: auto !important;
-            height: auto !important;
-            padding: 0 !important;
-            border: 1px solid transparent !important;
-            background: transparent !important;
-            font-size: 0.37rem;
-            margin: 0 !important;
-            line-height: 1 !important;
-            outline: 0 !important;
-        }
+    .search-input {
+      flex: 1 0 auto;
+      width: auto !important;
+      height: auto !important;
+      padding: 0 !important;
+      border: 1px solid transparent !important;
+      background: transparent !important;
+      font-size: 0.37rem;
+      margin: 0 !important;
+      line-height: 1 !important;
+      outline: 0 !important;
+    }
 
-        .filter_content_1 {
-            height: 5rem;
-            overflow: scroll;
-            z-index: 10001;
-            background: #F2F2F2;
-            border-bottom: 1px solid #ccc;
-        }
+    .filter_content_1 {
+      height: 5rem;
+      overflow: scroll;
+      z-index: 10001;
+      background: #F2F2F2;
+      border-bottom: 1px solid #ccc;
+    }
 
-        .filter_content_2 {
-            border-bottom: 1px solid #ccc;
-        }
+    .filter_content_2 {
+      border-bottom: 1px solid #ccc;
+    }
 
-        .filter-item {
-            width: 100%;
-            height: 0.5rem;
-            margin-bottom: 1rem;
-            padding: 0.3rem;
-            clear: both;
-        }
+    .filter-item {
+      width: 100%;
+      height: 0.5rem;
+      margin-bottom: 1rem;
+      padding: 0.3rem;
+      clear: both;
+    }
 
-        .filter-item-lb {
-            font-size: 0.5rem;
-            line-height: 1rem;
-            color: #ccc;
-        }
+    .filter-item-lb {
+      font-size: 0.5rem;
+      line-height: 1rem;
+      color: #ccc;
+    }
 
-        .filter-item-ob {
-            float: left;
-            margin-right: 0.3rem;
-            width: 1.6rem;
-            background-color: #F2F2F2;
-            text-align: center;
-        }
+    .filter-item-ob {
+      float: left;
+      margin-right: 0.3rem;
+      width: 1.6rem;
+      background-color: #F2F2F2;
+      text-align: center;
+    }
 
-        .filter-button {
-            width: 100%;
-            clear: both;
-            margin-top: 1.5rem;
-        }
+    .filter-button {
+      width: 100%;
+      clear: both;
+      margin-top: 1.5rem;
+    }
 
-        .filter-button-ob {
-            width: 49%;
-            display: inline-block;
-            padding: 0.3rem 0;
-            text-align: center;
-            background-color: #F2F2F2;
-        }
+    .filter-button-ob {
+      width: 49%;
+      display: inline-block;
+      padding: 0.3rem 0;
+      text-align: center;
+      background-color: #F2F2F2;
+    }
 
-        .filter-item-ob-active {
-            background-color: yellow;
-            color: #1296DB;
-        }
+    .filter-item-ob-active {
+      background-color: yellow;
+      color: #1296DB;
+    }
 
-        .account-card {
-            width: 100%;
-            height:4.5rem;
-            margin-bottom: 0.3rem;
-            background: #fff;
-            padding: 0.5rem;
+    .account-card {
+      width: 100%;
+      height: 4.5rem;
+      margin-bottom: 0.3rem;
+      background: #fff;
+      padding: 0.5rem;
 
-        }
+    }
 
 
-        .card_interact {
-            width: 100%;
-            height: 1.2rem;
-            padding: 0.2rem;
-            background-color: #fff;
-            border-top: 1px solid #ccc;
-        }
+    .card_interact {
+      width: 100%;
+      height: 1.2rem;
+      padding: 0.2rem;
+      border-top: 1px solid #ccc;
+    }
 
-        .header {
-            position: fixed;
-            top: 1.5rem;
-            right: 0;
-            left: 0;
-            z-index: 10001;
-            background: #fff;
-        }
-    </style>
+    .header {
+      position: fixed;
+      top: 1.5rem;
+      right: 0;
+      left: 0;
+      z-index: 10001;
+      background: #fff;
+    }
+    .account-card-selected {
+      background-color: #1296DB;
+      color: #fff !important;
+    }
+  </style>
 </head>
 
 <body ontouchstart>
-    <div id="account" @click="isFilter = 0">
-        <c-header :title="title" :plus="true" :plusf="addAccount"></c-header>
-        <div class="header">
-            <div class="filter flex j-a">
-                <span @click.stop="handleFilter(1)">
-                    {{ (orgArray[selected] && orgArray[selected].label) || '所有单位'}}
-                    <img src="../icons/down_full.png" class="icon-small" />
+  <div id="account" @click="isFilter = 0">
+    <c-header :title="title" :plus="true" :plusf="addAccount" :remove="true"></c-header>
+    <div class="header">
+      <div class="search flex">
+        <img src="../icons/search.png" class="icon" />
+        <input type="text" class="search-input" v-model="selectForm.keyWord" placeholder="请输入帐号关键字" />
+      </div>
+      <div class="filter flex j-a">
+        <span @click.stop="handleFilter(1)">
+          {{ (orgArray[selected] && orgArray[selected].label) || '所有单位'}}
+          <img src="../icons/down_full.png" class="icon-small" />
+        </span>
+      </div>
+      <div class="filter_content_1" v-if="isFilter === 1" @click.stop="1">
+        <div class="weui-cells">
+          <div v-for="(item, index) in orgArray" :key="index".stop>
+            <label class="weui-cell weui-check__label" for="x11" @click="handleSelect(index, item.value)">
+              <div class="weui-cell__bd">
+                <p>{{item.label}}</p>
+              </div>
+              <div class="weui-cell__ft">
+                <span v-if="selected === index" class="weui-icon-checked">
+                  <img src="../icons/select.png" class="icon-small" />
                 </span>
-            </div>
-            <div class="filter_content_1" v-if="isFilter === 1" @click.stop="1">
-                <div class="weui-cells">
-                    <div v-for="(item, index) in orgArray" :key="index">
-                        <label class="weui-cell weui-check__label" for="x11" @click="handleSelect(index, item.value)">
-                            <div class="weui-cell__bd">
-                                <p>{{item.label}}</p>
-                            </div>
-                            <div class="weui-cell__ft">
-                                <span v-if="selected === index" class="weui-icon-checked">
-                                    <img src="../icons/select.png" class="icon-small" />
-                                </span>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-            </div>
+              </div>
+            </label>
+          </div>
         </div>
-        <div class="container">
-            <div class="account-card noti-title" v-for="(item, index) in contentData" :key="index">
-                <div class="flex" style="height: 2rem;">
-                    <img :src="item.src" class="icon" />
-                    <span style="font-size: 0.5rem; font-weight: bold; margin-right: 0.5rem;color: #000;">{{item.name}}</span>
-                    <span>{{item.mobile}}</span>
-                </div>
-                <div class="flex j-e">
-                    <span style="margin-right: 0.3rem;">{{item.org}}</span>
-                    <span>{{item.type | typeFilter}}</span>
-                </div>            
-                <div class="card_interact flex j-e">
-                    <img class="f-r icon-normal" src="../icons/delete.png" @click="deleteUser(item.userId)">
-                    <img style="margin-left: 0.5rem;" class="f-r icon-normal" @click="edit(item.userId)" src="../icons/edit.png">
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="container">
+      <div :class="deleteArray.indexOf(item.userId) !== -1 ? 'account-card noti-title account-card-selected' : 'account-card noti-title'" v-for="(item, index) in contentData" :key="index" @click="handleClick(item)">
+        <div class="flex" style="height: 2rem;">
+          <img :src="item.src" class="icon" />
+          <span style="font-size: 0.5rem; font-weight: bold; margin-right: 0.5rem;color: #000;">{{item.name}}</span>
+          <span>{{item.mobile}}</span>
+        </div>
+        <div class="flex j-e">
+          <span style="margin-right: 0.3rem;">{{item.org}}</span>
+          <span>{{item.type | typeFilter}}</span>
+        </div>
+        <div class="card_interact flex j-e">
+          <img class="f-r icon-normal" src="../icons/delete.png" @click.stop="deleteUser(item.userId)">
+          <img style="margin-left: 0.5rem;" class="f-r icon-normal" @click.stop="edit(item.userId)" src="../icons/edit.png">
+        </div>
+      </div>
+    </div>
+    <div class="flex j_C" @click.stop="deleteUser(deleteArray.join(','), 'many')" style="position: fixed; bottom: 0; width: 100%; height: 1rem; border-top: 1px solid #fff; background: #1295DB; color: #fff;">
+      批量删除
+    </div>
+  </div>
 </body>
 
 <script src="../components/cHeader.js"></script>
 <script>
-    new Vue({
-        el: '#account',
-        data: {
-            title: '帐号管理',
-            selected: -1,
-            isFilter: 0,
-            orgArray: [
-                {
-                    label: '全部单位',
-                    value: '',
-                }
-            ],
-            filterOption1: -1,
-            filterOption2: -1,
-            filterOption3: -1,
-            query: '',
-            contentData: [
-                     
-            ],
-            HOST: 'http://219.132.139.116:9090/',
-            selectForm: {
-                userType:  (infoGet('userType') == 3 ? '' : 1),
-                userId: infoGet('userId'),
-                companyId: '',
-                index: 1,
-                pageSize: 1000,
-            }
+  new Vue({
+    el: '#account',
+    data: {
+      title: '帐号管理',
+      selected: -1,
+      isFilter: 0,
+      orgArray: [{
+        label: '全部单位',
+        value: '',
+      }],
+      filterOption1: -1,
+      filterOption2: -1,
+      filterOption3: -1,
+      query: '',
+      contentData: [
 
-        },
-        created: function () { 
-            
-            var self = this;
-            window.addEventListener('refresh', function() {
-                console.log('account cb');
-                self.refresh();
-            });
-            this.selectCompany();
-            this.selectUsers();
-        },
-        filters: {
-            typeFilter(val) {
-                switch (val) {
-                    case 1: 
-                        return '执行人';
-                    case 2:
-                        return '管理责任人';
-                }
-            }
-        },
-        methods: {
-            deleteUser(id) {
-                var self = this;
-                // if (infoGet('userType') !== '3') {
-                //   toast('您没有权限执行操作');
-                //   return;
-                // }
-                mui.confirm('确定删除该帐号吗？', '', ['取消', '确认'], function (e) {
-                    if (e.index == 1) { // 如果点击的是确认
-                        pm(api.deleteUser, {
-                            userId: infoGet('userId'),
-                            deleteUserId: id,
-                        }, function(res) {
-                            toast(res);
-                            self.refresh()
-                        }, function(err) {
-                            console.log(err);
-                        })
-                    } else {
-                        return;
-                    }
-                }, 'div');
-            },
-            selectUsers() {
-                var self = this;
-                pm(api.selectUsers, self.selectForm, res => {
-                    res.result.forEach(function(ele) {
-                        var temp = {};
-                        temp.src = self.HOST + ele.portraitUrl;
-                        temp.type = ele.userType;
-                        temp.org = ele.companyName;
-                        temp.name = ele.name;
-                        temp.mobile = ele.mobile;
-                        temp.userId = ele.userId;
-                        self.contentData.push(temp);
+      ],
+      HOST: 'http://39.108.245.130:9090/',
+      selectForm: {
+        userType: (infoGet('userType') == 3 ? '' : 1),
+        userId: infoGet('userId'),
+        companyId: '',
+        keyWord: '',
+        index: 1,
+        pageSize: 1000,
+      },
+      deleteArray: [],
 
-                    })
-                }, err => {
-                    console.log(err);
-                })
-            },
-            selectCompany() {
-                var self = this;
-                pm(api.selectCompany, self.selectForm, function (res) {
-                    res.result.forEach(function (ele, index) {
-                        
-                        var temp = {};
-                        
-                        temp.label = ele.companyName;
-                        temp.value = ele.companyId;
-                        self.orgArray.push(temp);
-                    })
-                }, function (err) {
-                    console.log(err);
-                })
-            },
-            addAccount(id) {
-                h5(function () {
-                    jumpTo({ to: 'account_add.html', data: { userId: id || 'none'}});
-                })
-            },
-            edit(id) {
-                // if (infoGet('userType') !== '3') {
-                //   toast('您没有权限执行操作');
-                //   return;
-                // }
-                this.addAccount(id);
-            },
-            handleFilter(val) {
-                this.isFilter = val;
-            },
-            handleFilter2(filter, option) {
-                var temp = 'filterOption' + filter;
-                if (this[temp] === option) {
-                    this[temp] = -1;
-                    return;
-                }
-                this[temp] = option;
-            },
-            handleSelect(index, val) {
-                this.selected = index;
-                this.selectForm.companyId = val;
-                this.handleFilter(0);
-                this.refresh();
-            },
-            // resetFilter() {
-            //     this.filterOption1 = -1;
-            //     this.filterOption2 = -1;
-            //     this.filterOption3 = -1;
-            // },
-            refresh() {
-                this.contentData = [];
-                this.selectUsers();
-            }
+    },
+    created: function () {
+
+      var self = this;
+      window.addEventListener('refresh', function () {
+        console.log('account cb');
+        self.refresh();
+      });
+      this.selectCompany();
+      this.selectUsers();
+    },
+    filters: {
+      typeFilter(val) {
+        switch (val) {
+          case 1:
+            return '执行人';
+          case 2:
+            return '管理责任人';
+        }
+      }
+    },
+    watch: {
+      'selectForm.keyWord': {
+        handler: function (val) {
+          this.selectUsers();
+          this.isFilter = 0;
         },
-    })
+        deep: true,
+      }
+    },
+    methods: {
+      handleClick(item) {
+        var self = this;
+        this.toggle(self.deleteArray, item.userId);
+      },
+      toggle(arr, val) { // 有就去除，没有就添加
+        if (arr.indexOf(val) !== -1) {
+          arr.splice(arr.indexOf(val), 1);
+        } else {
+          arr.push(val);
+        }
+      },
+      deleteUser(id, type) {
+        var self = this;
+        var msg = type ? '确认批量删除这些帐号吗？' : '确定删除该帐号吗？'
+        if (!id) {
+          mui.toast('请先选择帐号！');
+          return;
+        }
+        // if (infoGet('userType') !== '3') {
+        //   toast('您没有权限执行操作');
+        //   return;
+        // }
+        mui.confirm(msg, '', ['取消', '确认'], function (e) {
+          if (e.index == 1) { // 如果点击的是确认
+            pm(api.deleteUser, {
+              userId: infoGet('userId'),
+              deleteUserId: id,
+            }, function (res) {
+              toast(res);
+              self.refresh()
+            }, function (err) {
+              console.log(err);
+            })
+          } else {
+            return;
+          }
+        }, 'div');
+      },
+      selectUsers() {
+        var self = this;
+        pm(api.selectUsers, self.selectForm, res => {
+          self.contentData = [];
+          res.result.forEach(function (ele) {
+            var temp = {};
+            temp.src = self.HOST + ele.portraitUrl;
+            temp.type = ele.userType;
+            temp.org = ele.companyName;
+            temp.name = ele.name;
+            temp.mobile = ele.mobile;
+            temp.userId = ele.userId;
+            self.contentData.push(temp);
+          })
+        }, err => {
+          console.log(err);
+        })
+      },
+      selectCompany() {
+        var self = this;
+        pm(api.selectCompany, self.selectForm, function (res) {
+          res.result.forEach(function (ele, index) {
+
+            var temp = {};
+
+            temp.label = ele.companyName;
+            temp.value = ele.companyId;
+            self.orgArray.push(temp);
+          })
+        }, function (err) {
+          console.log(err);
+        })
+      },
+      addAccount(id) {
+        h5(function () {
+          jumpTo({
+            to: 'account_add.html',
+            data: {
+              userId: id || 'none'
+            }
+          });
+        })
+      },
+      edit(id) {
+        // if (infoGet('userType') !== '3') {
+        //   toast('您没有权限执行操作');
+        //   return;
+        // }
+        this.addAccount(id);
+      },
+      handleFilter(val) {
+        this.isFilter = val;
+      },
+      handleFilter2(filter, option) {
+        var temp = 'filterOption' + filter;
+        if (this[temp] === option) {
+          this[temp] = -1;
+          return;
+        }
+        this[temp] = option;
+      },
+      handleSelect(index, val) {
+        this.selected = index;
+        this.selectForm.companyId = val;
+        this.handleFilter(0);
+        this.refresh();
+      },
+      // resetFilter() {
+      //     this.filterOption1 = -1;
+      //     this.filterOption2 = -1;
+      //     this.filterOption3 = -1;
+      // },
+      refresh() {
+        this.contentData = [];
+        this.selectUsers();
+      }
+    },
+  })
 </script>
 
 </html>

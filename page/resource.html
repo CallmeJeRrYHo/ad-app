@@ -40,7 +40,7 @@
 
     .container {
       position: relative;
-      top: 2rem;
+      top: 4rem;
     }
 
     .page_1 {
@@ -85,7 +85,7 @@
       border-bottom: 1px solid #ccc;
     }
 
-    
+
 
     .filter-item {
       width: 100%;
@@ -135,6 +135,7 @@
       overflow: hidden;
       position: relative;
     }
+
     .card_label {
       position: absolute;
       top: 0.5rem;
@@ -160,6 +161,7 @@
       padding: 0.2rem;
       background-color: #fff;
     }
+
     .header {
       position: fixed;
       top: 1.5rem;
@@ -175,6 +177,10 @@
   <div id="resource" @click="isFilter = 0">
     <c-header :title="title" :plus="userType === '1'" :plusf="addResource"></c-header>
     <div class="header">
+      <div class="search flex">
+        <img src="../icons/search.png" class="icon" />
+        <input type="text" class="search-input" v-model="selectForm.key" placeholder="请输入宣传位关键字" />
+      </div>
       <div class="filter flex j-e">
         <span @click.stop="handleFilter(2)">
           筛选
@@ -220,12 +226,13 @@
         </div>
       </div>
     </div>
-    <div class="container">     
+    <div class="container">
       <div class="card" v-for="(item, index) in contentData" :key="index">
         <span class="card_label">{{item.serial_num}}</span>
-        <img :src="item.src" width="100%"/><div v-if="item.type === 1" class="card_interact flex j-b">
+        <img :src="item.src" width="100%" />
+        <div v-if="item.type === 1" class="card_interact flex j-b">
           <span class="f-l">{{item.status | statusFilter}}</span>
-          <img v-if="userType !== '3'" class="f-r icon-normal" src="../icons/delete.png" @click="deleteAd(item.value)">
+          <img class="f-r icon-normal" src="../icons/delete.png" @click="deleteAd(item.value)">
           <img v-if="userType !== '3'" style="color: #999;" class="f-r icon-normal" @click="edit(item.value)" src="../icons/edit.png">
         </div>
       </div>
@@ -252,6 +259,7 @@
         adType: '',
         adSpec: '',
         adStatus: '',
+        key: '',
         index: 1,
         pageSize: 1000,
       },
@@ -259,11 +267,20 @@
     },
     created: function () {
       var self = this;
-      window.addEventListener('refresh', function() {
+      window.addEventListener('refresh', function () {
         console.log('callback refresh');
         self.selectMyAd();
       })
       this.selectMyAd();
+    },
+    watch: {
+      'selectForm.key': {
+        handler: function (val) {
+          this.selectMyAd();
+          this.isFilter = 0;
+        },
+        deep: true,
+      }
     },
     methods: {
       resetForm() {
@@ -280,7 +297,7 @@
         var self = this;
         pm(api.selectMyAd, self.selectForm, res => {
           self.contentData = [];
-          res.result.forEach(function(ele) {
+          res.result.forEach(function (ele) {
             var temp = {};
             temp.src = api.HOST + ele.path;
             temp.label = ele.address;
@@ -296,8 +313,13 @@
         })
       },
       addResource(data) {
-        h5(function() {
-          jumpTo({to: 'resource_add.html', data: data || {ad: 'add'}});
+        h5(function () {
+          jumpTo({
+            to: 'resource_add.html',
+            data: data || {
+              ad: 'add'
+            }
+          });
         })
       },
       deleteAd(id) {
@@ -307,10 +329,10 @@
             pm(api.deleteAd, {
               userId: infoGet('userId'),
               advertisementId: id,
-            }, function(res) {
+            }, function (res) {
               toast(res);
               self.refresh()
-            }, function(err) {
+            }, function (err) {
               console.log(err);
             })
           } else {
@@ -319,7 +341,9 @@
         }, 'div');
       },
       edit(val) {
-        this.addResource({ad: val});
+        this.addResource({
+          ad: val
+        });
       },
       handleFilter(val) {
         this.isFilter = val;
@@ -361,7 +385,7 @@
     },
     filters: {
       statusFilter(val) {
-        switch(val) {
+        switch (val) {
           case 1:
             return '设计稿待审核';
           case 2:
