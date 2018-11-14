@@ -1,961 +1,968 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-  <title>主页</title>
-  <script src="../js/polyfill.min.js"></script>
-  <script src="../js/axios.min.js"></script>
-  <script src="../api/api.js"></script>
-  <script src="../api/apiConfig.js"></script>
-  <script src="../api/apiHttp.js"></script>
-  <script src="../js/mui.min.js"></script>
-  <link href="../css/reset.css" rel="stylesheet" />
-  <link href="../css/mui.min.css" rel="stylesheet" />
-  <link href="../css/weui.min.css" rel="stylesheet" />
-  <script src="../js/vue.js"></script>
-  <script src="../js/openWindow.js"></script>
-  <script src="../js/index.js"></script>
-  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=HGqKSY9gSA70ZrwS5uTZnbjA"></script>
-  <script type="text/javascript" charset="utf-8">
-    document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
-  </script>
-  <style type="text/css">
-    body {
-      background-color: #fff;
-    }
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>主页</title>
+		<script src="../js/polyfill.min.js"></script>
+		<script src="../js/axios.min.js"></script>
+		<script src="../api/api.js"></script>
+		<script src="../api/apiConfig.js"></script>
+		<script src="../api/apiHttp.js"></script>
+		<script src="../js/mui.min.js"></script>
+		<link href="../css/reset.css" rel="stylesheet" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/weui.min.css" rel="stylesheet" />
+		<script src="../js/vue.js"></script>
+		<script src="../js/openWindow.js"></script>
+		<script src="../js/index.js"></script>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=HGqKSY9gSA70ZrwS5uTZnbjA"></script>
+		<script type="text/javascript" charset="utf-8">
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
+		</script>
+		<style type="text/css">
+			body {
+				background-color: #fff;
+			}
 
-    body,
-    html {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      font-family: "微软雅黑";
-    }
+			body,
+			html {
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				font-family: "微软雅黑";
+			}
 
-    .page {
-      position: fixed;
-      top: 2.8rem;
-      bottom: 1.8rem;
-      right: 0;
-      left: 0;
-      overflow: scroll;
-    }
+			.page {
+				position: fixed;
+				top: 2.8rem;
+				bottom: 1.8rem;
+				right: 0;
+				left: 0;
+				overflow: scroll;
+			}
 
-    .header {
-      position: fixed;
-      top: 0;
-      right: 0;
-      left: 0;
-      z-index: 10001;
-      background: #fff;
-    }
+			.header {
+				position: fixed;
+				top: 0;
+				right: 0;
+				left: 0;
+				z-index: 10001;
+				background: #fff;
+			}
 
-    .tabbar {
-      position: fixed;
-      width: 100%;
-      bottom: 0;
-      z-index: 10001;
-    }
-
-
-
-    .tab {
-      position: relative;
-      bottom: 1rem;
-      top: 0.5rem;
-      left: 0;
-      right: 0;
-      overflow: scroll;
-    }
+			.tabbar {
+				position: fixed;
+				width: 100%;
+				bottom: 0;
+				z-index: 10001;
+			}
 
 
-    #l-map {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      margin: 0;
-      font-family: "微软雅黑";
-    }
 
-    .page_1 {}
-
-    .page_3 {
-      position: relative;
-      top: 0;
-      max-height: 19rem;
-      overflow: scroll;
-    }
-
-    .search {
-      width: 95%;
-      height: 1.2rem;
-      margin: 0 auto;
-      background-color: #F2F2F2;
-      border-radius: 0.5rem;
-      padding: 0 0.3rem;
-      box-sizing: border-box;
-      margin-bottom: 0.3rem;
-      z-index: 10001;
-    }
-    .filter {
-      padding: 0 0.3rem;
-      background-color: #fff;
-      z-index: 10001;
-    }
-
-    .search-input {
-      flex: 1 0 auto;
-      width: auto !important;
-      height: auto !important;
-      padding: 0 !important;
-      border: 1px solid transparent !important;
-      background: transparent !important;
-      font-size: 0.37rem;
-      margin: 0 !important;
-      line-height: 1 !important;
-      outline: 0 !important;
-    }
-
-    .filter_content_1 {
-      height: 5rem;
-      overflow: scroll;
-      z-index: 10001;
-      background: #fff;
-      border-bottom: 1px solid #ccc;
-    }
-
-    .filter_content_2 {
-      border-bottom: 1px solid #ccc;
-      background: #fff;
-    }
-
-    .filter-item {
-      width: 100%;
-      height: 0.5rem;
-      margin-bottom: 1rem;
-      padding: 0.3rem;
-      clear: both;
-    }
-
-    .filter-item-lb {
-      font-size: 0.5rem;
-      line-height: 1rem;
-      color: #ccc;
-    }
-
-    .filter-item-ob {
-      float: left;
-      margin-right: 0.3rem;
-      width: 1.6rem;
-      background-color: #F2F2F2;
-      text-align: center;
-    }
-
-    .filter-button {
-      width: 100%;
-      clear: both;
-      margin-top: 1.5rem;
-    }
-
-    .filter-button-ob {
-      width: 49%;
-      display: inline-block;
-      padding: 0.3rem 0;
-      text-align: center;
-      background-color: #F2F2F2;
-    }
-
-    .filter-item-ob-active {
-      background-color: yellow;
-      color: #1296DB;
-    }
-
-    .card {
-      width: 100%;
-      height: 6rem;
-      margin-bottom: 1.2rem;
-      position: relative;
-    }
-
-    .card_label {
-      position: absolute;
-      top: 0.5rem;
-      left: 0.5rem;
-      height: 1.2rem;
-      background-color: rgba(0, 0, 0, 0.3);
-      color: #fff;
-      font-size: 0.4rem;
-      line-height: 1.2rem;
-      padding: 0 0.3rem;
-
-    }
+			.tab {
+				position: relative;
+				bottom: 1rem;
+				top: 0.5rem;
+				left: 0;
+				right: 0;
+				overflow: scroll;
+			}
 
 
-    .card_img {
-      width: 100%;
-      height: 6.8rem;
-    }
+			#l-map {
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+				margin: 0;
+				font-family: "微软雅黑";
+			}
 
-    .card_interact {
-      width: 100%;
-      height: 1.2rem;
-      padding: 0.2rem;
-      background-color: #fff;
-    }
+			.page_1 {}
 
-    .manage-header {
-      height: 3rem;
-      width: 90%;
-      margin: 0 auto;
-      padding: 0.5rem;
-      background-color: #fff;
-      position: relative;
-      top: 1rem;
-      margin-bottom: 2rem;
-      border: 1px solid #ccc;
+			.page_3 {
+				position: relative;
+				top: 0;
+				max-height: 19rem;
+				overflow: scroll;
+			}
 
-    }
+			.search {
+				width: 95%;
+				height: 1.2rem;
+				margin: 0 auto;
+				background-color: #F2F2F2;
+				border-radius: 0.5rem;
+				padding: 0 0.3rem;
+				box-sizing: border-box;
+				margin-bottom: 0.3rem;
+				z-index: 10001;
+			}
 
-    .manage-header::after {
-      content: '>';
-      font-size: 0.4rem;
-      position: absolute;
-      right: 0.5rem;
+			.filter {
+				padding: 0 0.3rem;
+				background-color: #fff;
+				z-index: 10001;
+			}
 
-    }
+			.search-input {
+				flex: 1 0 auto;
+				width: auto !important;
+				height: auto !important;
+				padding: 0 !important;
+				border: 1px solid transparent !important;
+				background: transparent !important;
+				font-size: 0.37rem;
+				margin: 0 !important;
+				line-height: 1 !important;
+				outline: 0 !important;
+			}
 
-    .avatar {
-      height: 2rem;
-      width: 2rem;
-      border-radius: 50%;
-    }
+			.filter_content_1 {
+				height: 5rem;
+				overflow: scroll;
+				z-index: 10001;
+				background: #fff;
+				border-bottom: 1px solid #ccc;
+			}
 
-    .title {
-      flex-wrap: wrap;
-    }
+			.filter_content_2 {
+				border-bottom: 1px solid #ccc;
+				background: #fff;
+			}
 
-    .line {
-      background-color: #fff;
-      height: 2rem;
-      padding: 0.4rem;
-      width: 100%;
-    }
+			.filter-item {
+				width: 100%;
+				height: 0.5rem;
+				margin-bottom: 1rem;
+				padding: 0.3rem;
+				clear: both;
+			}
 
-    .manage-login {
-      height: 1.5rem;
-      padding: 0.4rem;
-      text-align: center;
-      background-color: #1296DB;
-      color: #fff;
-    }
+			.filter-item-lb {
+				font-size: 0.5rem;
+				line-height: 1rem;
+				color: #ccc;
+			}
 
-    .no_content {
-      position: relative;
-      top: 3rem;
-      left: 35%;
-      height: 2rem;
-      width: 10rem;
-      white-space: nowrap;
-      color: #333;
-      overflow: visible;
-    }
+			.filter-item-ob {
+				float: left;
+				margin-right: 0.3rem;
+				width: 1.6rem;
+				background-color: #F2F2F2;
+				text-align: center;
+			}
 
-    #search {
-      position: fixed;
-      z-index: 10001;
-      top: 1rem;
-      left: 0.2rem;
-      width: 8rem;
-      height: 1rem;
-      border-radius: 0.2rem;
-    }
+			.filter-button {
+				width: 100%;
+				clear: both;
+				margin-top: 1.5rem;
+			}
 
-    #searchResultPanel {
-      border: 1px solid #C0C0C0;
-      background: #fff;
-      width: 8rem;
-      top: 2rem;
-      left: 0.2rem;
-      z-index: 10001;
-      position: fixed;
+			.filter-button-ob {
+				width: 49%;
+				display: inline-block;
+				padding: 0.3rem 0;
+				text-align: center;
+				background-color: #F2F2F2;
+			}
 
-    }
+			.filter-item-ob-active {
+				background-color: yellow;
+				color: #1296DB;
+			}
 
-    .search-item {
-      border: 1px solid #C0C0C0;
-      height: 1rem;
-      padding: 0.2rem;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-  </style>
-</head>
+			.card {
+				width: 100%;
+				height: 6rem;
+				margin-bottom: 1.2rem;
+				position: relative;
+			}
 
-<body ontouchstart ontouchmove>
-  <div id="l-map"></div>
-  <div id="index" @click="isFilter = 0">
-    <div class="header" v-if="activeTab === 1">
-      <div class="search flex">
-        <img src="../icons/search.png" class="icon" />
-        <input type="text" class="search-input" v-model="selectForm.keyWord" placeholder="请输入宣传位序号" />
-      </div>
-      <div class="filter flex j-b w-100">
-        <span @click.stop="handleFilter(1)">
-          {{ (orgArray[selected] && orgArray[selected].label) || '管理单位'}}
-          <img src="../icons/down_full.png" class="icon-small" />
-        </span>
-        <span @click.stop="handleFilter(2)">
-          筛选
-          <img src="../icons/filter.png" class="icon-small" />
-        </span>
-      </div>
-      <div class="filter_content_1" v-if="isFilter === 1" @click.stop="1">
-        <div class="weui-cells">
-          <div class="search flex">
-            <img src="../icons/search.png" class="icon-small" />
-            <input type="text" class="search-input" v-model="orgKeyWord" placeholder="请输入单位关键字" />
-          </div>
-          <div v-for="(item, index) in orgArray" :key="index">
-            <label class="weui-cell weui-check__label" for="x11" @click="handleSelect(index, item.value)">
-              <div class="weui-cell__bd">
-                <p>{{item.label}}</p>
-              </div>
-              <div class="weui-cell__ft">
-                <span v-if="selected === index" class="weui-icon-checked">
-                  <img src="../icons/select.png" class="icon-small" />
-                </span>
-              </div>
-            </label>
-          </div>
-        </div>
-      </div>
-      <div class="filter_content_2" v-if="isFilter === 2" @click.stop="1">
-        <div class="filter-item">
-          <label class="filter-item-lb">宣传牌样式</label>
-          <dl>
-            <dt class="filter-item-ob" :class="selectForm.adType === 1 ? 'filter-item-ob-active' : ''" @click="handleFilter2(1, 1)">普通</dt>
-            <dt class="filter-item-ob" :class="selectForm.adType === 2 ? 'filter-item-ob-active' : ''" @click="handleFilter2(1, 2)">T型</dt>
-            <dt class="filter-item-ob" :class="selectForm.adType === 3 ? 'filter-item-ob-active' : ''" @click="handleFilter2(1, 3)">灯箱</dt>
-            <dt class="filter-item-ob" :class="selectForm.adType === 4 ? 'filter-item-ob-active' : ''" @click="handleFilter2(1, 4)">宣传栏</dt>
-          </dl>
-        </div>
-        <div class="filter-item">
-          <label class="filter-item-lb">宣传牌规格</label>
-          <dl>
-            <dt class="filter-item-ob" :class="selectForm.adSpec === 1 ? 'filter-item-ob-active' : ''" @click="handleFilter2(2, 1)">单面</dt>
-            <dt class="filter-item-ob" :class="selectForm.adSpec === 2 ? 'filter-item-ob-active' : ''" @click="handleFilter2(2, 2)"
-              @click="">双面</dt>
-          </dl>
-        </div>
-        <div class="filter-button">
-          <div class="filter-button-ob" @click="resetFilter">重置</div>
-          <div class="filter-button-ob" style="background-color: #1296DB" @click="refresh">确定</div>
-        </div>
-      </div>
-    </div>
+			.card_label {
+				position: absolute;
+				top: 0.5rem;
+				left: 0.5rem;
+				height: 1.2rem;
+				background-color: rgba(0, 0, 0, 0.3);
+				color: #fff;
+				font-size: 0.4rem;
+				line-height: 1.2rem;
+				padding: 0 0.3rem;
 
-    <div class="tab">
-      <div class="page_1" v-show="activeTab === 0">
-        <input id="search" type="text" ref="search" placeholder="请输入搜索地址" @click.stop="" v-model="selectForm.keyWord" />
-        <div id="searchResultPanel" v-if="selectForm.keyWord && isPanel">
-          <dl>
-            <dt v-for="(item, index) in contentData" class="search-item" @click="searchItemClick(item)">
-              <span>{{item.serial_num}}</span>
-            </dt>
-            <dt v-if="contentData.length < 1" class="search-item">
-              <span>无搜索匹配结果</span>
-            </dt>
-          </dl>
-        </div>
-      </div>
-      <div class="page page_2" id="page2" v-show="activeTab === 1">
-        <div class="no_content" v-if="contentData.length < 1">找不到相关宣传牌</div>
-        <div class="container">
-          <div class="card" v-for="(item, index) in contentData" :key="index" @click="jumpToDetail(item.value)">
-            <span class="card_label">{{item.serial_num}}</span>
-            <img :src="item.src" class="card_img" />
-            <div v-if="item.type === 1" class="card_interact flex j-b">
-              <span class="f-l">{{item.status}}</span>
-              <img class="f-r icon-normal" src="../icons/delete.png" @click="remove">
-              <img style="color: #999;" class="f-r icon-normal" @click="edit" src="../icons/edit.png">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="page page_3" v-show="activeTab === 2">
-        <div class="manage-header flex" @click="jumpTo('my_data.html')">
-          <img :src="avatar" class="avatar" />
-          <div class="title">
-            <div>
-              <label>{{name}}</label>
-            </div>
-            <div>
-              <label>{{mobile}}</label>
-            </div>
-          </div>
-        </div>
-        <div class="manage-content">
-          <div class="flex j-b line" v-for="(item, index) in lineArray" :key="index" v-if="+item.auth <= +userType"
-            @click="jumpTo(item.to)">
-            <div class="flex">
-              <img :src="item.src" class="icon-small" style="margin-right: 0.2rem" />
-              <span>{{item.title}}</span>
-            </div>
-            <img src="../icons/forward.png" class="icon-small" />
-          </div>
-        </div>
-        <div class="manage-login w-100" @click="logout">
-          退出登录
-        </div>
-      </div>
-
-    </div>
-    <div class="weui-tabbar tabbar">
-      <a href="javascript:;" class="weui-tabbar__item" @click="switchTo(0)">
-        <img src="../icons/address.png" alt="" class="weui-tabbar__icon">
-        <p class="weui-tabbar__label">地图</p>
-      </a>
-      <a href="javascript:;" class="weui-tabbar__item" @click="switchTo(1)">
-        <img src="../icons/resource.png" alt="" class="weui-tabbar__icon">
-        <p class="weui-tabbar__label">宣传位</p>
-      </a>
-      <a href="javascript:;" class="weui-tabbar__item" @click="switchTo(2)">
-        <img src="../icons/manager.png" alt="" class="weui-tabbar__icon">
-        <p class="weui-tabbar__label">管理</p>
-      </a>
-    </div>
-  </div>
-</body>
-
-<script>
-  new Vue({
-    el: '#index',
-    data: {
-      isFilter: 0,
-      orgArray: [{
-          label: '全部单位',
-          value: '',
-        },
-
-      ],
-      filterOption1: -1,
-      filterOption2: -1,
-      query: '',
-      contentData: [
-
-      ],
-      activeTab: 0,
-      selected: -1,
-      lineArray: [
-        // {
-        //   title: '本单位宣传栏',
-        //   src: '../icons/advertisement.png'
-        // },
-        // {
-        //   title: '我的消息',
-        //   src: '../icons/alert.png'
-        // },
-        // {
-        //   title: '通知公告',
-        //   src: '../icons/notify_active.png'
-        // },
-        // {
-        //   title: '统计分析',
-        //   src: '../icons/statistics.png'
-        // },
-        {
-          title: '账户管理',
-          src: '../icons/watcher_active.png',
-          to: 'account_manage.html',
-          auth: '2',
-        },
-        {
-          title: '我的消息',
-          src: '../icons/alert.png',
-          to: 'message.html',
-          auth: '1',
-        },
-        {
-          title: '单位管理',
-          src: '../icons/watcher_active.png',
-          to: 'org_manage.html',
-          auth: '3',
-        },
-        {
-          title: '管理宣传位',
-          src: '../icons/watcher_active.png',
-          to: 'resource.html',
-          auth: '1',
-        },
-        {
-          title: '通知公告',
-          src: '../icons/watcher_active.png',
-          to: 'announcement.html',
-          auth: '1',
-        },
-        {
-          title: '统计分析',
-          src: '../icons/statistics.png',
-          to: 'statistics.html',
-          auth: '1',
-        },
-        {
-          title: '投放监测',
-          src: '../icons/statistics.png',
-          to: 'moniter_add.html',
-          auth: '1',
-        },
-
-      ],
-      selectForm: {
-        companyId: '',
-        adType: '',
-        adSpec: '',
-        keyWord: '',
-        index: 1,
-        pageSize: 15,
-        lon: '',
-        lat: '',
-      },
-      mobile: '',
-      userType: '',
-      name: '',
-      avatar: '',
-      adList: [],
-      initMapAddress: '蕉岭县',
-      map: null,
-      isPanel: true,
-      keyword: '',
-      orgKeyWord: '',
-      div: null,
-      listener: null,
-    },
-    watch: {
-      activeTab(val) {
-        if (val !== 0) {
-          document.getElementById('l-map').style.display = 'none';
-        } else {
-          document.getElementById('l-map').style.display = 'block';
-        }
-      },
-      'selectForm.keyWord': {
-        handler: function (val) {
-          if (val === this.keyword) {
-            return;
-          }
-          this.selectAdList();
-          this.isPanel = true;
-        },
-        deep: true,
-      },
-      orgKeyWord(val) {
-        this.selectCompany(val);
-      }
-    },
-    created: function () {
-      var self = this;
-      this.selectCompany();
-      this.selectAdList();
-      this.getUserInfo();
-      window.addEventListener('refresh', function () {
-        console.log('callback refresh');
-        self.getUserInfo();
-      })
-      document.getElementById('l-map').addEventListener('click', function () {
-        console.log('blur', self.$refs.search);
-        self.$refs.search.blur();
-      })
-      h5(function () {
-        var webview = plus.webview.currentWebview();
-        if (webview.type === 1) {
-          self.activeTab = 1;
-          var ind;
-          self.orgArray.forEach(function (ele, index) {
-            if (ele.value === webview.value) {
-              ind = index;
-              return;
-            }
-          })
-          self.handleSelect(ind, webview.value);
-        }
-      });
-
-    },
-    methods: {
-      /** 
-       * option是初始化的参数对象 
-       * option.target是需要滚动的的外容器,传入的应该是可以作为选择器的字符串，并且应该唯一
-       * option.contentLoading 正在加载中显示的字符
-       * option.contentNoMore 没有更多数据的时候显示的字符
-       * option.callback 下拉后需要调用的回调(根据return的布尔值来判断是否加载全部)
-       */
-      handlePullRefresh(options) {
-        var self = this;
-        let target = options.target,
-          contentLoading = options.contentLoading,
-          contentNoMore = options.contentNoMore,
-          callback = options.callback;
-        let element = document.querySelector(target);
-        let scrollTop = element.scrollTop;
-        let scrollHeight = element.scrollHeight;
-        let clientHeight = element.clientHeight;
-        if (scrollTop + clientHeight == scrollHeight) {
-          // 判断到了底部
-          if (self.div) {
-            self.div.ele.style.display = 'block';
-          } else {
-            let div = document.createElement('div');
-            div.style.width = "100%";
-            div.style.textAlign = 'center';
-            div.innerHTML = contentLoading;
-            self.div = {
-              ele: div,
-              options: options,
-            };
-            element.appendChild(div);
-          }
-          return true;
-          // window.setTimeout(function() {
-          //   if (callback()) {
-          //     div.innerHTML = contenNoMore;
-          //   } else {
-
-          //   }  
-
-          // }, 100)  
-        } else {
-          return false;
-        }
-        // function getScrollTop() { // 滚动条的长度
-        //   var scrollTop = 0;
-        //   // if (document.documentElement && document.documentElement.scrollTop) {
-        //   //   scrollTop = document.documentElement.scrollTop;
-        //   // } else if (document.body) {
-        //   //   scrollTop = document.body.scrollTop;
-        //   // }
-        //   return scrollTop;
-        // }
-
-        // //获取当前可视范围的高度 
-        // function getClientHeight() { // 可视范围的高度
-        //   var clientHeight = 0;
-        //   if (document.body.clientHeight && document.documentElement.clientHeight) {
-        //     clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
-        //   } else {
-        //     clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
-        //   }
-        //   return clientHeight;
-        // }
-
-        // //获取文档完整的高度 
-        // function getScrollHeight() { // 总高度
-        //   return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
-        // }
+			}
 
 
-      },
-      handleEndPullRefresh(bool) {
-        var self = this;
-        if (bool) {
-          this.div.ele.innerHTML = this.div.options.contentNoMore;
-        } else {
-          // var element = document.querySelector(self.div.options.target)
-          // element.removeChild(self.div.ele);
-          this.div.ele.style.display = 'none';
-        }
-      },
-      countSelectAdList() {
-        var self = this;
-        self.selectForm.index += 1;
-        pm(api.selectAdList, self.selectForm, function (res) {
-          if (res.result.length > 0) {
-            self.handleEndPullRefresh(false);
-          } else {
-            self.handleEndPullRefresh(true);
-          }
-          res.result.forEach(function (ele) {
-            var temp = {};
-            temp.src = api.HOST + ele.path;
-            temp.name = ele.name
-            temp.label = ele.address;
-            temp.type = 0;
-            temp.value = ele.advertisement_id;
-            temp.lng = ele.lontitude;
-            temp.lat = ele.latitude;
-            temp.company = ele.company_name;
-            temp.serial_num = ele.serial_num;
-            temp.content = ele.ad_content;
-            self.contentData.push(temp);
-            self.adList.push(temp);
-          })
-        }, function (err) {
-          console.log(err);
-        })
-      },
-      searchItemClick(item) {
-        var self = this;
-        let lat = item.lat,
-          lng = item.lng;
-        let pp = new BMap.Point(lng, lat);
-        this.keyword = item.label;
-        this.selectForm.keyWord = item.label;
-        this.map.centerAndZoom(pp, 18);
-        this.isPanel = false;
-      },
-      logout() {
-        infoClear();
-        mui.back();
-      },
-      getUserInfo() {
-        var self = this;
-        pm(api.getUserInfo, {
-          userId: infoGet('userId')
-        }, res => {
-          self.mobile = res.result[0].mobile;
-          self.userType = res.result[0].userType;
-          self.name = res.result[0].name;
-          self.avatar = api.HOST + res.result[0].portraitUrl;
-        }, err => {
-          console.log(err);
-        })
-      },
-      initMap(initAdd) {
-        if (initAdd) {
-          this.map.setCenter(initAdd);
-          this.map.clearOverlays();
-          renderMarker(this);
-          return;
-        }
-        var self = this;
-        var map = new BMap.Map("l-map");
-        map.centerAndZoom(self.initMapAddress, 15);
-        map.enableScrollWheelZoom(true);
+			.card_img {
+				width: 100%;
+				height: 6.8rem;
+			}
 
-        map.addEventListener('dragend', function () {
-          var cp = map.getCenter();
-          var temp = {};
-          temp.lng = cp.lng;
-          temp.lat = cp.lat;
-          var point = new BMap.Point(cp.lng, cp.lat);
-          self.selectAdList(temp, point);
-        })
-        map.addEventListener('click', function () {
-          self.$refs.search.blur();
-        })
-        this.map = map;
+			.card_interact {
+				width: 100%;
+				height: 1.2rem;
+				padding: 0.2rem;
+				background-color: #fff;
+			}
 
-        function renderMarker(self) {
-          var _this = this;
-          var infoWindows = {};
-          self.adList.forEach(function (ele) {
-            var poiPoint = new BMap.Point(ele.lng, ele.lat);
-            var poiMarker = new BMap.Marker(poiPoint);
-            var size = new BMap.Size(6, 2);
-            var letter = '' + ele.serial_num;
-            poiMarker.setLabel(new BMap.Label(letter, {
-              offset: size
-            }));
-            var info = '<div class="info-win-content"><span style="font-weight:bold;color:#666;">管理单位</span> ' +
-              ele.company +
-              '<br/><span style="font-weight:bold;color:#666;">所在地址</span> ' + ele.label +
-              '</div>';
-            var opts = {
-              title: '<span class="info-win-title">' + ele.name +
-                ' <a href="detail.html?ad_id=' + ele.value +
-                '" style="text-decoration:none;">查看详情</a><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>' +
-                '</span>'
-            };
-            var infoWindow = new BMap.InfoWindow(info, opts);
-            poiMarker.addEventListener("click", function (event) {
-              // console.log(event);
-              var marker = event.target;
-              var label = marker.getLabel().getContent();
-              marker.openInfoWindow(infoWindows[label]);
-            });
-            self.map.addOverlay(poiMarker);
+			.manage-header {
+				height: 3rem;
+				width: 90%;
+				margin: 0 auto;
+				padding: 0.5rem;
+				background-color: #fff;
+				position: relative;
+				top: 1rem;
+				margin-bottom: 2rem;
+				border: 1px solid #ccc;
 
-            infoWindows[letter] = infoWindow;
-            // if (i == 0) {
-            //   poiMarker.openInfoWindow(infoWindow);
-            // }
+			}
 
-          });
-        }
+			.manage-header::after {
+				content: '>';
+				font-size: 0.4rem;
+				position: absolute;
+				right: 0.5rem;
 
-        renderMarker(this);
+			}
 
-      },
-      jumpToDetail(val) {
-        h5(function () {
-          jumpTo({
-            to: 'detail.html',
-            data: {
-              ad: val
-            }
-          })
-        })
-      },
-      resetContent() {
-        this.contentData = []
-        this.adList = [];
-      },
-      selectCompany(key) {
-        var self = this;
-        var form = key ? {
-          companyId: '',
-          adType: '',
-          adSpec: '',
-          keyWord: key,
-          index: 1,
-          pageSize: 15,
-          lon: '',
-          lat: '',
-        } : self.selectForm;
-        pm(api.selectCompany, form, function (res) {
-          self.orgArray = [];
-          res.result.forEach(function (ele) {
-            var temp = {};
-            temp.label = ele.companyName;
-            temp.value = ele.companyId;
-            self.orgArray.push(temp);
-          })
-        }, function (err) {
-          console.log(err);
-        })
-      },
-      selectAdList(addr, point) {
-        var self = this;
-        this.resetContent();
-        if (addr) {
-          self.selectForm.lon = addr.lng;
-          self.selectForm.lat = addr.lat;
-        }
-        pm(api.selectAdList, self.selectForm, function (res) {
-          res.result.forEach(function (ele) {
-            var temp = {};
-            temp.src = api.HOST + ele.path;
-            temp.name = ele.name
-            temp.label = ele.address;
-            temp.type = 0;
-            temp.value = ele.advertisement_id;
-            temp.lng = ele.lontitude;
-            temp.lat = ele.latitude;
-            temp.company = ele.company_name;
-            temp.serial_num = ele.serial_num;
-            temp.content = ele.ad_content;
-            self.contentData.push(temp);
-            self.adList.push(temp);
-          })
-          if (point) {
-            self.initMap(point);
-            return;
-          }
-          self.initMap();
-        }, function (err) {
-          console.log(err);
-        })
-      },
-      jumpTo(to) {
-        h5(function () {
-          jumpTo({
-            to: to
-          });
-        })
-      },
-      switchTo(index) {
-        var self = this;
+			.avatar {
+				height: 2rem;
+				width: 2rem;
+				border-radius: 50%;
+			}
 
-        switch (index) {
-          case 0:
-            self.selectForm.pageSize = 15;
-            self.activeTab = 0;
-            self.selectAdList();
-            break;
-          case 1:
-            self.activeTab = 1;
-            self.selectForm.pageSize = 20;
-            if (self.listener) {
-              document.getElementById('page2') && document.getElementById('page2').removeEventListener('scroll',
-                self.listener);
-            } else {
-              self.listener = function () {
-                var handle = self.handlePullRefresh({
-                  target: '#page2',
-                  contentLoading: '数据加载中...',
-                  contentNoMore: '已无更多数据',
-                });
-                if (handle) {
-                  setTimeout(function () {
-                    self.countSelectAdList();
-                  }, 1000);
-                } else {
-                  return;
-                }
-              }
-            }
-            document.getElementById('page2') && document.getElementById('page2').addEventListener('scroll', self.listener);
-            self.resetForm();
-            self.resetFilter();
-            self.selectAdList();
-            break;
-          case 2:
-            self.activeTab = 2;
-            break;
-        }
-      },
-      remove() {
-        mui.confirm('确定删除该宣传位吗？', '', ['取消', '确认'], function (e) {
-          if (e.index == 1) { // 如果点击的是确认
+			.title {
+				flex-wrap: wrap;
+			}
 
-          } else {
-            return;
-          }
-        }, 'div');
-      },
-      edit() {
+			.line {
+				background-color: #fff;
+				height: 2rem;
+				padding: 0.4rem;
+				width: 100%;
+			}
 
-      },
-      handleFilter(val) {
-        this.isFilter = val;
-      },
-      handleFilter2(filter, option) {
-        if (filter === 1) {
-          if (this.selectForm.adType === option) {
-            this.selectForm.adType = '';
-            return;
-          }
-          this.selectForm.adType = option;
-        } else {
-          if (this.selectForm.adSpec === option) {
-            this.selectForm.adSpec = '';
-            return;
-          }
-          this.selectForm.adSpec = option;
-        }
-      },
-      handleSelect(index, val) {
-        this.selected = index;
-        this.selectForm.companyId = val;
-        this.handleFilter(0);
-        this.refresh();
-      },
-      resetFilter() {
-        this.selectForm.adSpec = '';
-        this.selectForm.adType = '';
-      },
-      resetForm() {
-        this.selectForm.keyWord = '';
-        this.selectForm.index = 1;
-      },
-      refresh() {
-        this.selectAdList();
-        this.isFilter = 0;
-      }
-    }
-  })
-</script>
+			.manage-login {
+				height: 1.5rem;
+				padding: 0.4rem;
+				text-align: center;
+				background-color: #1296DB;
+				color: #fff;
+			}
+
+			.no_content {
+				position: relative;
+				top: 3rem;
+				left: 35%;
+				height: 2rem;
+				width: 10rem;
+				white-space: nowrap;
+				color: #333;
+				overflow: visible;
+			}
+
+			#search {
+				position: fixed;
+				z-index: 10001;
+				top: 1rem;
+				left: 0.2rem;
+				width: 8rem;
+				height: 1rem;
+				border-radius: 0.2rem;
+			}
+
+			#searchResultPanel {
+				border: 1px solid #C0C0C0;
+				background: #fff;
+				width: 8rem;
+				top: 2rem;
+				left: 0.2rem;
+				z-index: 10001;
+				position: fixed;
+
+			}
+
+			.search-item {
+				border: 1px solid #C0C0C0;
+				height: 1rem;
+				padding: 0.2rem;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+
+	<body ontouchstart ontouchmove>
+		<div id="l-map"></div>
+		<div id="index" @click="isFilter = 0">
+			<div class="header" v-if="activeTab === 1">
+				<div class="search flex">
+					<img src="../icons/search.png" class="icon" />
+					<input type="text" class="search-input" v-model="selectForm.keyWord" placeholder="请输入宣传位序号" />
+				</div>
+				<div class="filter flex j-b w-100">
+					<span @click.stop="handleFilter(1)">
+						{{ (orgArray[selected] && orgArray[selected].label) || '管理单位'}}
+						<img src="../icons/down_full.png" class="icon-small" />
+					</span>
+					<span @click.stop="handleFilter(2)">
+						筛选
+						<img src="../icons/filter.png" class="icon-small" />
+					</span>
+				</div>
+				<div class="filter_content_1" v-if="isFilter === 1" @click.stop="1">
+					<div class="weui-cells">
+						<div class="search flex">
+							<img src="../icons/search.png" class="icon-small" />
+							<input type="text" class="search-input" v-model="orgKeyWord" placeholder="请输入单位关键字" />
+						</div>
+						<div v-for="(item, index) in orgArray" :key="index">
+							<label class="weui-cell weui-check__label" for="x11" @click="handleSelect(index, item.value)">
+								<div class="weui-cell__bd">
+									<p>{{item.label}}</p>
+								</div>
+								<div class="weui-cell__ft">
+									<span v-if="selected === index" class="weui-icon-checked">
+										<img src="../icons/select.png" class="icon-small" />
+									</span>
+								</div>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="filter_content_2" v-if="isFilter === 2" @click.stop="1">
+					<div class="filter-item">
+						<label class="filter-item-lb">宣传牌样式</label>
+						<dl>
+							<dt class="filter-item-ob" :class="selectForm.adType === 1 ? 'filter-item-ob-active' : ''" @click="handleFilter2(1, 1)">普通</dt>
+							<dt class="filter-item-ob" :class="selectForm.adType === 2 ? 'filter-item-ob-active' : ''" @click="handleFilter2(1, 2)">T型</dt>
+							<dt class="filter-item-ob" :class="selectForm.adType === 3 ? 'filter-item-ob-active' : ''" @click="handleFilter2(1, 3)">灯箱</dt>
+							<dt class="filter-item-ob" :class="selectForm.adType === 4 ? 'filter-item-ob-active' : ''" @click="handleFilter2(1, 4)">宣传栏</dt>
+						</dl>
+					</div>
+					<div class="filter-item">
+						<label class="filter-item-lb">宣传牌规格</label>
+						<dl>
+							<dt class="filter-item-ob" :class="selectForm.adSpec === 1 ? 'filter-item-ob-active' : ''" @click="handleFilter2(2, 1)">单面</dt>
+							<dt class="filter-item-ob" :class="selectForm.adSpec === 2 ? 'filter-item-ob-active' : ''" @click="handleFilter2(2, 2)"
+							 @click="">双面</dt>
+						</dl>
+					</div>
+					<div class="filter-button">
+						<div class="filter-button-ob" @click="resetFilter">重置</div>
+						<div class="filter-button-ob" style="background-color: #1296DB" @click="refresh">确定</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="tab">
+				<div class="page_1" v-show="activeTab === 0">
+					<input id="search" type="text" ref="search" placeholder="请输入搜索地址" @click.stop="" v-model="selectForm.keyWord" />
+					<div id="searchResultPanel" v-if="selectForm.keyWord && isPanel">
+						<dl>
+							<dt v-for="(item, index) in contentData" class="search-item" @click="searchItemClick(item)">
+								<span>{{item.serial_num}}</span>
+							</dt>
+							<dt v-if="contentData.length < 1" class="search-item">
+								<span>无搜索匹配结果</span>
+							</dt>
+						</dl>
+					</div>
+				</div>
+				<div class="page page_2" id="page2" v-show="activeTab === 1">
+					<div class="no_content" v-if="contentData.length < 1">找不到相关宣传牌</div>
+					<div class="container">
+						<div class="card" v-for="(item, index) in contentData" :key="index" @click="jumpToDetail(item.value)">
+							<span class="card_label">{{item.serial_num}}</span>
+							<img :src="item.src" class="card_img" />
+							<div v-if="item.type === 1" class="card_interact flex j-b">
+								<span class="f-l">{{item.status}}</span>
+								<img class="f-r icon-normal" src="../icons/delete.png" @click="remove">
+								<img style="color: #999;" class="f-r icon-normal" @click="edit" src="../icons/edit.png">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="page page_3" v-show="activeTab === 2">
+					<div class="manage-header flex" @click="jumpTo('my_data.html')">
+						<img :src="avatar" class="avatar" />
+						<div class="title">
+							<div>
+								<label>{{name}}</label>
+							</div>
+							<div>
+								<label>{{mobile}}</label>
+							</div>
+						</div>
+					</div>
+					<div class="manage-content">
+						<div class="flex j-b line" v-for="(item, index) in lineArray" :key="index" v-if="+item.auth <= +userType" @click="jumpTo(item.to)">
+							<div class="flex">
+								<img :src="item.src" class="icon-small" style="margin-right: 0.2rem" />
+								<span>{{item.title}}</span>
+							</div>
+							<img src="../icons/forward.png" class="icon-small" />
+						</div>
+					</div>
+					<div class="manage-login w-100" @click="logout">
+						退出登录
+					</div>
+				</div>
+
+			</div>
+			<div class="weui-tabbar tabbar">
+				<a href="javascript:;" class="weui-tabbar__item" @click="switchTo(0)">
+					<img src="../icons/address.png" alt="" class="weui-tabbar__icon">
+					<p class="weui-tabbar__label">地图</p>
+				</a>
+				<a href="javascript:;" class="weui-tabbar__item" @click="switchTo(1)">
+					<img src="../icons/resource.png" alt="" class="weui-tabbar__icon">
+					<p class="weui-tabbar__label">宣传位</p>
+				</a>
+				<a href="javascript:;" class="weui-tabbar__item" @click="switchTo(2)">
+					<img src="../icons/manager.png" alt="" class="weui-tabbar__icon">
+					<p class="weui-tabbar__label">管理</p>
+				</a>
+			</div>
+		</div>
+	</body>
+
+	<script>
+		new Vue({
+			el: '#index',
+			data: {
+				isFilter: 0,
+				orgArray: [{
+						label: '全部单位',
+						value: '',
+					},
+
+				],
+				filterOption1: -1,
+				filterOption2: -1,
+				query: '',
+				contentData: [
+
+				],
+				activeTab: 0,
+				selected: -1,
+				lineArray: [
+					// {
+					//   title: '本单位宣传栏',
+					//   src: '../icons/advertisement.png'
+					// },
+					// {
+					//   title: '我的消息',
+					//   src: '../icons/alert.png'
+					// },
+					// {
+					//   title: '通知公告',
+					//   src: '../icons/notify_active.png'
+					// },
+					// {
+					//   title: '统计分析',
+					//   src: '../icons/statistics.png'
+					// },
+					{
+						title: '账户管理',
+						src: '../icons/watcher_active.png',
+						to: 'account_manage.html',
+						auth: '2',
+					},
+					{
+						title: '我的消息',
+						src: '../icons/alert.png',
+						to: 'message.html',
+						auth: '1',
+					},
+					{
+						title: '单位管理',
+						src: '../icons/watcher_active.png',
+						to: 'org_manage.html',
+						auth: '3',
+					},
+					{
+						title: '管理宣传位',
+						src: '../icons/watcher_active.png',
+						to: 'resource.html',
+						auth: '1',
+					},
+					{
+						title: '通知公告',
+						src: '../icons/watcher_active.png',
+						to: 'announcement.html',
+						auth: '1',
+					},
+					{
+						title: '统计分析',
+						src: '../icons/statistics.png',
+						to: 'statistics.html',
+						auth: '1',
+					},
+					{
+						title: '投放监测',
+						src: '../icons/statistics.png',
+						to: 'moniter_add.html',
+						auth: '1',
+					},
+
+				],
+				selectForm: {
+					companyId: '',
+					adType: '',
+					adSpec: '',
+					keyWord: '',
+					index: 1,
+					pageSize: 15,
+					lon: '',
+					lat: '',
+				},
+				mobile: '',
+				userType: '',
+				name: '',
+				avatar: '',
+				adList: [],
+				initMapAddress: '蕉岭县',
+				map: null,
+				isPanel: true,
+				keyword: '',
+				orgKeyWord: '',
+				div: null,
+				listener: null,
+			},
+			watch: {
+				activeTab(val) {
+					if (val !== 0) {
+						document.getElementById('l-map').style.display = 'none';
+					} else {
+						document.getElementById('l-map').style.display = 'block';
+					}
+				},
+				'selectForm.keyWord': {
+					handler: function(val) {
+						if (val === this.keyword) {
+							return;
+						}
+						this.selectAdList();
+						this.isPanel = true;
+					},
+					deep: true,
+				},
+				orgKeyWord(val) {
+					this.selectCompany(val);
+				}
+			},
+			created: function() {
+				var self = this;
+				this.selectCompany();
+				this.selectAdList();
+				this.getUserInfo();
+				window.addEventListener('refresh', function() {
+					console.log('callback refresh');
+					self.getUserInfo();
+				})
+				document.getElementById('l-map').addEventListener('click', function() {
+					console.log('blur', self.$refs.search);
+					self.$refs.search.blur();
+				})
+				h5(function() {
+					var webview = plus.webview.currentWebview();
+					if (webview.type === 1) {
+						self.activeTab = 1;
+						var ind;
+						self.orgArray.forEach(function(ele, index) {
+							if (ele.value === webview.value) {
+								ind = index;
+								return;
+							}
+						})
+						self.handleSelect(ind, webview.value);
+					}
+				});
+
+			},
+			methods: {
+				/** 
+				 * option是初始化的参数对象 
+				 * option.target是需要滚动的的外容器,传入的应该是可以作为选择器的字符串，并且应该唯一
+				 * option.contentLoading 正在加载中显示的字符
+				 * option.contentNoMore 没有更多数据的时候显示的字符
+				 * option.callback 下拉后需要调用的回调(根据return的布尔值来判断是否加载全部)
+				 */
+				handlePullRefresh(options) {
+					var self = this;
+					let target = options.target,
+						contentLoading = options.contentLoading,
+						contentNoMore = options.contentNoMore,
+						callback = options.callback;
+					let element = document.querySelector(target);
+					let scrollTop = element.scrollTop;
+					let scrollHeight = element.scrollHeight;
+					let clientHeight = element.clientHeight;
+					if (scrollTop + clientHeight == scrollHeight) {
+						// 判断到了底部
+						if (self.div) {
+							self.div.ele.style.display = 'block';
+						} else {
+							let div = document.createElement('div');
+							div.style.width = "100%";
+							div.style.textAlign = 'center';
+							div.innerHTML = contentLoading;
+							self.div = {
+								ele: div,
+								options: options,
+							};
+							element.appendChild(div);
+						}
+						return true;
+						// window.setTimeout(function() {
+						//   if (callback()) {
+						//     div.innerHTML = contenNoMore;
+						//   } else {
+
+						//   }  
+
+						// }, 100)  
+					} else {
+						return false;
+					}
+					// function getScrollTop() { // 滚动条的长度
+					//   var scrollTop = 0;
+					//   // if (document.documentElement && document.documentElement.scrollTop) {
+					//   //   scrollTop = document.documentElement.scrollTop;
+					//   // } else if (document.body) {
+					//   //   scrollTop = document.body.scrollTop;
+					//   // }
+					//   return scrollTop;
+					// }
+
+					// //获取当前可视范围的高度 
+					// function getClientHeight() { // 可视范围的高度
+					//   var clientHeight = 0;
+					//   if (document.body.clientHeight && document.documentElement.clientHeight) {
+					//     clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+					//   } else {
+					//     clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+					//   }
+					//   return clientHeight;
+					// }
+
+					// //获取文档完整的高度 
+					// function getScrollHeight() { // 总高度
+					//   return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+					// }
+
+
+				},
+				handleEndPullRefresh(bool) {
+					var self = this;
+					if (bool) {
+						this.div.ele.innerHTML = this.div.options.contentNoMore;
+					} else {
+						// var element = document.querySelector(self.div.options.target)
+						// element.removeChild(self.div.ele);
+						this.div.ele.style.display = 'none';
+					}
+				},
+				countSelectAdList() {
+					var self = this;
+					self.selectForm.index += 1;
+					pm(api.selectAdList, self.selectForm, function(res) {
+						if (res.result.length > 0) {
+							self.handleEndPullRefresh(false);
+						} else {
+							self.handleEndPullRefresh(true);
+						}
+						res.result.forEach(function(ele) {
+							var temp = {};
+							temp.src = api.HOST + ele.path;
+							temp.name = ele.name
+							temp.label = ele.address;
+							temp.type = 0;
+							temp.value = ele.advertisement_id;
+							temp.lng = ele.lontitude;
+							temp.lat = ele.latitude;
+							temp.company = ele.company_name;
+							temp.serial_num = ele.serial_num;
+							temp.content = ele.ad_content;
+							self.contentData.push(temp);
+							self.adList.push(temp);
+						})
+					}, function(err) {
+						console.log(err);
+					})
+				},
+				searchItemClick(item) {
+					var self = this;
+					let lat = item.lat,
+						lng = item.lng;
+					let pp = new BMap.Point(lng, lat);
+					this.keyword = item.label;
+					this.selectForm.keyWord = item.label;
+					this.map.centerAndZoom(pp, 18);
+					this.isPanel = false;
+				},
+				logout() {
+					infoClear();
+					mui.back();
+				},
+				getUserInfo() {
+					var self = this;
+					pm(api.getUserInfo, {
+						userId: infoGet('userId')
+					}, res => {
+						self.mobile = res.result[0].mobile;
+						self.userType = res.result[0].userType;
+						self.name = res.result[0].name;
+						self.avatar = api.HOST + res.result[0].portraitUrl;
+					}, err => {
+						console.log(err);
+					})
+				},
+				initMap(initAdd) {
+					if (initAdd) {
+						this.map.setCenter(initAdd);
+						this.map.clearOverlays();
+						renderMarker(this);
+						return;
+					}
+					var self = this;
+					var map = new BMap.Map("l-map");
+					map.centerAndZoom(self.initMapAddress, 15);
+					map.enableScrollWheelZoom(true);
+
+					map.addEventListener('dragend', function() {
+						var cp = map.getCenter();
+						var temp = {};
+						temp.lng = cp.lng;
+						temp.lat = cp.lat;
+						var point = new BMap.Point(cp.lng, cp.lat);
+						self.selectAdList(temp, point);
+					})
+					map.addEventListener('click', function() {
+						self.$refs.search.blur();
+					})
+					this.map = map;
+
+					function renderMarker(self) {
+						var _this = this;
+						var infoWindows = {};
+						self.adList.forEach(function(ele) {
+							var poiPoint = new BMap.Point(ele.lng, ele.lat);
+							var poiMarker = new BMap.Marker(poiPoint);
+							var size = new BMap.Size(6, 2);
+							var letter = '' + ele.serial_num;
+							poiMarker.setLabel(new BMap.Label(letter, {
+								offset: size
+							}));
+							var info = '<div class="info-win-content"><span style="font-weight:bold;color:#666;">管理单位</span> ' +
+								ele.company +
+								'<br/><span style="font-weight:bold;color:#666;">所在地址</span> ' + ele.label +
+								'</div>';
+							var opts = {
+								title: '<span class="info-win-title">' + ele.name +
+									' <a href="detail.html?ad_id=' + ele.value +
+									'" style="text-decoration:none;">查看详情</a><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>' +
+									'</span>'
+							};
+							var infoWindow = new BMap.InfoWindow(info, opts);
+							poiMarker.addEventListener("click", function(event) {
+								// console.log(event);
+								var marker = event.target;
+								var label = marker.getLabel().getContent();
+								marker.openInfoWindow(infoWindows[label]);
+							});
+							self.map.addOverlay(poiMarker);
+
+							infoWindows[letter] = infoWindow;
+							// if (i == 0) {
+							//   poiMarker.openInfoWindow(infoWindow);
+							// }
+
+						});
+					}
+
+					renderMarker(this);
+
+				},
+				jumpToDetail(val) {
+					h5(function() {
+						jumpTo({
+							to: 'detail.html',
+							data: {
+								ad: val
+							}
+						})
+					})
+				},
+				resetContent() {
+					this.contentData = []
+					this.adList = [];
+				},
+				selectCompany(key) {
+					var self = this;
+					var form = typeof key === 'string' ? {
+						companyId: '',
+						adType: '',
+						adSpec: '',
+						keyWord: key,
+						index: 1,
+						pageSize: 15,
+						lon: '',
+						lat: '',
+					} : self.selectForm;
+					pm(api.selectCompany, form, function(res) {
+						self.orgArray = [{
+							label: '全部单位',
+							value: '',
+						}];
+						res.result.forEach(function(ele) {
+							var temp = {};
+							temp.label = ele.companyName;
+							temp.value = ele.companyId;
+							self.orgArray.push(temp);
+						})
+					}, function(err) {
+						console.log(err);
+					})
+				},
+				selectAdList(addr, point) {
+					var self = this;
+					console.log(self.selectForm.companyId)
+					this.resetContent();
+					if (addr) {
+						self.selectForm.lon = addr.lng;
+						self.selectForm.lat = addr.lat;
+					}
+					pm(api.selectAdList, self.selectForm, function(res) {
+						res.result.forEach(function(ele) {
+							var temp = {};
+							temp.src = api.HOST + ele.path;
+							temp.name = ele.name
+							temp.label = ele.address;
+							temp.type = 0;
+							temp.value = ele.advertisement_id;
+							temp.lng = ele.lontitude;
+							temp.lat = ele.latitude;
+							temp.company = ele.company_name;
+							temp.serial_num = ele.serial_num;
+							temp.content = ele.ad_content;
+							self.contentData.push(temp);
+							self.adList.push(temp);
+						})
+						if (point) {
+							self.initMap(point);
+							return;
+						}
+						self.initMap();
+					}, function(err) {
+						console.log(err);
+					})
+				},
+				jumpTo(to) {
+					h5(function() {
+						jumpTo({
+							to: to
+						});
+					})
+				},
+				switchTo(index) {
+					var self = this;
+
+					switch (index) {
+						case 0:
+							self.selectForm.pageSize = 15;
+							self.activeTab = 0;
+							self.selectAdList();
+							break;
+						case 1:
+							this.selected = 0;
+							self.selectForm.companyId = '';
+							this.handleFilter(0);
+							self.activeTab = 1;
+							self.selectForm.pageSize = 20;
+							if (self.listener) {
+								document.getElementById('page2') && document.getElementById('page2').removeEventListener('scroll',
+									self.listener);
+							} else {
+								self.listener = function() {
+									var handle = self.handlePullRefresh({
+										target: '#page2',
+										contentLoading: '数据加载中...',
+										contentNoMore: '已无更多数据',
+									});
+									if (handle) {
+										setTimeout(function() {
+											self.countSelectAdList();
+										}, 1000);
+									} else {
+										return;
+									}
+								}
+							}
+							document.getElementById('page2') && document.getElementById('page2').addEventListener('scroll', self.listener);
+							self.resetForm();
+							self.resetFilter();
+							self.selectAdList();
+							break;
+						case 2:
+							self.activeTab = 2;
+							break;
+					}
+				},
+				remove() {
+					mui.confirm('确定删除该宣传位吗？', '', ['取消', '确认'], function(e) {
+						if (e.index == 1) { // 如果点击的是确认
+
+						} else {
+							return;
+						}
+					}, 'div');
+				},
+				edit() {
+
+				},
+				handleFilter(val) {
+					this.isFilter = val;
+				},
+				handleFilter2(filter, option) {
+					if (filter === 1) {
+						if (this.selectForm.adType === option) {
+							this.selectForm.adType = '';
+							return;
+						}
+						this.selectForm.adType = option;
+					} else {
+						if (this.selectForm.adSpec === option) {
+							this.selectForm.adSpec = '';
+							return;
+						}
+						this.selectForm.adSpec = option;
+					}
+				},
+				handleSelect(index, val) {
+					this.selected = index;
+					this.selectForm.companyId = val;
+					this.handleFilter(0);
+					this.refresh();
+				},
+				resetFilter() {
+					this.selectForm.adSpec = '';
+					this.selectForm.adType = '';
+				},
+				resetForm() {
+					this.selectForm.keyWord = '';
+					this.selectForm.index = 1;
+				},
+				refresh() {
+					this.selectAdList();
+					this.isFilter = 0;
+				}
+			}
+		})
+	</script>
 
 </html>

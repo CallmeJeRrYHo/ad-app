@@ -185,7 +185,7 @@
       </div>
       <div class="filter_content_1" v-if="isFilter === 1" @click.stop="1">
         <div class="weui-cells">
-          <div v-for="(item, index) in orgArray" :key="index".stop>
+          <div v-for="(item, index) in orgArray" :key="index">
             <label class="weui-cell weui-check__label" for="x11" @click="handleSelect(index, item.value)">
               <div class="weui-cell__bd">
                 <p>{{item.label}}</p>
@@ -242,7 +242,7 @@
       contentData: [
 
       ],
-      HOST: 'http://39.108.245.130:9090/',
+      HOST: 'http://219.132.139.116:9080/',
       selectForm: {
         userType: (infoGet('userType') == 3 ? '' : 1),
         userId: infoGet('userId'),

@@ -1,9 +1,9 @@
 {
     "@platforms" : [ "android", "iPhone", "iPad" ],
-    "id" : "H5FB599E7", /*应用的标识，创建应用时自动生成，勿手动修改*/
-    "name" : "蕉岭媒体", /*应用名称，程序桌面图标名称*/
+    "id" : "H5FB599E6", /*应用的标识，创建应用时自动生成，勿手动修改*/
+    "name" : "梅州媒体", /*应用名称，程序桌面图标名称*/
     "version" : {
-        "name" : "1.2", /*应用版本名称*/
+        "name" : "2.0", /*应用版本名称*/
         "code" : ""
     },
     "description" : "", /*应用描述信息*/
@@ -61,7 +61,7 @@
                 "keystore" : "", /*Android应用打包使用的密���库文件*/
                 "password" : "", /*Android应用打包使用密钥库中证书的密码*/
                 "aliasname" : "", /*Android应用打包使用密钥库中证书的别名*/
-                "hardwareAccelerated": true,
+                "hardwareAccelerated" : true,
                 "permissions" : [
                     "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
@@ -92,38 +92,57 @@
             "icons" : {
                 "ios" : {
                     "prerendered" : true, /*应用图标是否已经高亮处理，在iOS6及以下设备上有效*/
-                     /*应用图标，分辨率：512x512，用于自动生成各种尺寸程序图标*/
+
+                    /*应用图标，分辨率：512x512，用于自动生成各种尺寸程序图标*/
                     "iphone" : {
                         "normal" : "", /*iPhone3/3GS程序图标，分辨率：57x57*/
                         "retina" : "", /*iPhone4程序图标，分辨率：114x114*/
-                         /*iPhone4S/5/6程序图标，分辨率：120x120*/
-                         /*iPhone6 Plus程序图标，分辨率：180x180*/
+
+                        /*iPhone4S/5/6程序图标，分辨率：120x120*//*iPhone6 Plus程序图标，分辨率：180x180*/
                         "spotlight-normal" : "", /*iPhone3/3GS Spotlight搜索程序图标，分辨率：29x29*/
                         "spotlight-retina" : "", /*iPhone4 Spotlight搜索程序图标，分辨率：58x58*/
-                         /*iPhone4S/5/6 Spotlight搜索程序图标，分辨率：80x80*/
+
+                        /*iPhone4S/5/6 Spotlight搜索程序图标，分辨率：80x80*/
                         "settings-normal" : "", /*iPhone4设置页面程序图标，分辨率：29x29*/
-                         /*iPhone4S/5/6设置页面程序图标，分辨率：58x58*/
-                        "app@2x":"unpackage/res/icons/120x120.png","app@3x":"unpackage/res/icons/180x180.png","settings@3x":"unpackage/res/icons/87x87.png","settings@2x":"unpackage/res/icons/58x58.png","spotlight@2x":"unpackage/res/icons/80x80.png","spotlight@3x":"unpackage/res/icons/120x120.png","notification@3x":"unpackage/res/icons/60x60.png","notification@2x":"unpackage/res/icons/40x40.png" /*iPhone6Plus设置页面程序图标，分辨率：87x87*/
+
+                        /*iPhone4S/5/6设置页面程序图标，分辨率：58x58*/
+                        "app@2x" : "unpackage/res/icons/120x120.png",
+                        "app@3x" : "unpackage/res/icons/180x180.png",
+                        "settings@3x" : "unpackage/res/icons/87x87.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png",
+                        "spotlight@3x" : "unpackage/res/icons/120x120.png",
+                        "notification@3x" : "unpackage/res/icons/60x60.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png" /*iPhone6Plus设置页面程序图标，分辨率：87x87*/
                     },
                     "ipad" : {
                         "normal" : "", /*iPad普通屏幕程序图标，分辨率：72x72*/
                         "retina" : "", /*iPad高分屏程序图标，分辨率：144x144*/
-                         /*iPad iOS7程序图标，分辨率：76x76*/
-                         /*iPad iOS7高分屏程序图标，分辨率：152x152*/
+
+                        /*iPad iOS7程序图标，分辨率：76x76*//*iPad iOS7高分屏程序图标，分辨率：152x152*/
                         "spotlight-normal" : "", /*iPad Spotlight搜索程序图标，分辨率：50x50*/
                         "spotlight-retina" : "", /*iPad高分屏Spotlight搜索程序图标，分辨率：100x100*/
-                         /*iPad iOS7 Spotlight搜索程序图标，分辨率：40x40*/
-                         /*iPad iOS7高分屏Spotlight搜索程序图标，分辨率：80x80*/
-                         /*iPad设置页面程序图标，分辨率：29x29*/
-                        "app":"unpackage/res/icons/76x76.png","app@2x":"unpackage/res/icons/152x152.png","settings":"unpackage/res/icons/29x29.png","proapp@2x":"unpackage/res/icons/167x167.png","spotlight":"unpackage/res/icons/40x40.png","settings@2x":"unpackage/res/icons/58x58.png","spotlight@2x":"unpackage/res/icons/80x80.png","notification":"unpackage/res/icons/20x20.png","notification@2x":"unpackage/res/icons/40x40.png" /*iPad高分屏设置页面程序图标，分辨率：58x58*/
-                    },"appstore":"C:/Users/Administrator/Desktop/jiaoling.png"
+
+                        /*iPad iOS7 Spotlight搜索程序图标，分辨率：40x40*//*iPad iOS7高分屏Spotlight搜索程序图标，分辨率：80x80*//*iPad设置页面程序图标，分辨率：29x29*/
+                        "app" : "unpackage/res/icons/76x76.png",
+                        "app@2x" : "unpackage/res/icons/152x152.png",
+                        "settings" : "unpackage/res/icons/29x29.png",
+                        "proapp@2x" : "unpackage/res/icons/167x167.png",
+                        "spotlight" : "unpackage/res/icons/40x40.png",
+                        "settings@2x" : "unpackage/res/icons/58x58.png",
+                        "spotlight@2x" : "unpackage/res/icons/80x80.png",
+                        "notification" : "unpackage/res/icons/20x20.png",
+                        "notification@2x" : "unpackage/res/icons/40x40.png" /*iPad高分屏设置页面程序图标，分辨率：58x58*/
+                    },
+                    "appstore" : "unpackage/res/icons/1024x1024.png"
                 },
                 "android" : {
                     "mdpi" : "unpackage/res/icons/48x48.png", /*普通屏程序图标，分辨率：48x48*/
                     "ldpi" : "unpackage/res/icons/48x48.png", /*大屏程序图标，分辨率：48x48*/
                     "hdpi" : "unpackage/res/icons/72x72.png", /*高分屏程序图标，分辨率：72x72*/
                     "xhdpi" : "unpackage/res/icons/96x96.png", /*720P高分屏程序图标，分辨率：96x96*/
-                    "xxhdpi" : "unpackage/res/icons/144x144.png","xxxhdpi":"unpackage/res/icons/192x192.png" /*1080P 高分屏程序图标，分辨率：144x144*/
+                    "xxhdpi" : "unpackage/res/icons/144x144.png",
+                    "xxxhdpi" : "unpackage/res/icons/192x192.png" /*1080P 高分屏程序图标，分辨率：144x144*/
                 }
             },
             "splashscreen" : {
@@ -151,182 +170,162 @@
                     "mdpi" : "", /*普通屏启动图片，分辨率：240x282*/
                     "ldpi" : "", /*大屏启动图片，分辨率：320x442*/
                     "hdpi" : "", /*高分屏启动图片，分辨率：480x762*/
-                    "xhdpi" : "", /*720P高分屏启动图片，分辨率：720x1242*/
-                    "xxhdpi" : "" /*1080P高分屏启动图片，分辨率：1080x1882*/
+                    "xhdpi" : "D:/Pictures/无标题.png", /*720P高分屏启动图片，分辨率：720x1242*/
+                    "xxhdpi" : "D:/Pictures/无标题.png" /*1080P高分屏启动图片，分辨率：1080x1882*/
+                }
+            },
+            "plugins" : {
+                "speech" : {
+                    "ifly" : {}
                 }
             }
         }
     },
-	"dependencies": {
-		"pages": {
-			"page/login.html": {
-				"resources": [],
-				"refer": [
-					"page/index.html"
-				],
-				"priority": 0
-			},
-			"page/index.html": {
-				"resources": [],
-				"refer": [
-					"page/resource.html",
-					"page/detail.html",
-					"page/account_manage.html",
-					"page/org_manage.html",
-					"page/message.html",
-					"page/my_data.html",
-					"page/announcement.html",
-					"page/statistics.html",
-					"page/moniter_add.html"
-				],
-				"priority": 0
-			},
-			"page/resource.html": {
-				"resources": [],
-				"refer": [
-					"page/resource_add.html"
-				],
-				"priority": 0
-			},
-			"page/account_manage.html": {
-				"resources": [
-					"icons/edit.png",
-					"icons/delete.png"
-				],
-				"refer": [
-					"page/account_add.html"
-				],
-				"priority": 0
-			},
-			"page/detail.html": {
-				"resources": [],
-				"refer": [
-					"page/alert.html",
-					"page/index.html"
-				],
-				"priority": 0
-			},
-			"page/resource_add.html": {
-				"resources": [],
-				"refer": [
-					"page/resource.html",
-					"page/org_select.html"
-				],
-				"priority": 0
-			},
-			"page/org_manage.html": {
-				"resources": [],
-				"refer": [
-					"page/org_add.html"
-				],
-				"priority": 0
-			},
-			"page/message.html": {
-				"resources": [],
-				"refer": [
-					"page/alert_detail.html"
-				],
-				"priority": 0
-			},
-			"page/announcement.html": {
-				"resources": [],
-				"refer": [
-					"page/alert_detail.html",
-					"page/announcement_detail.html",
-					"page/announcement_add.html"
-				],
-				"priority": 0
-			},
-			"page/account_add.html": {
-				"resources": [],
-				"refer": [
-					"page/org_select.html"
-				],
-				"priority": 0
-			},
-			"page/org_select.html": {
-				"resources": [],
-				"refer": [
-					"page/account_add.html"
-				],
-				"priority": 0
-			},
-			"page/announcement_add.html": {
-				"resources": [],
-				"refer": [
-					"page/org_select.html"
-				],
-				"priority": 0
-			}
-		},
-		"idle": {
-			"resources": [
-				"icons/watcher_active.png",
-				"js/md5.min.js",
-				"icons/address.png",
-				"icons/up.png",
-				"icons/watcher.png",
-				"css/weui.min.css",
-				"icons/manager.png",
-				"icons/down_full.png",
-				"icons/pwd_active.png",
-				"icons/ad_4.jpg",
-				"page/manage.html",
-				"icons/filter.png",
-				"icons/account_active.png",
-				"icons/gallery.png",
-				"icons/select.png",
-				"js/openWindow.js",
-				"js/polyfill.min.js",
-				"icons/search.png",
-				"icons/address_active.png",
-				"icons/resource.png",
-				"icons/back.png",
-				"js/echarts.min.js",
-				"icons/ad_2.jpg",
-				"icons/add.png",
-				"js/swiper-4.3.5.min.js",
-				"icons/forward.png",
-				"icons/alert.png",
-				"icons/广告牌4.jpg",
-				"icons/avatar.png",
-				"icons/delete_active.png",
-				"icons/account.png",
-				"api/apiHttp.js",
-				"icons/ad_3.jpg",
-				"icons/ad_1.jpg",
-				"icons/manager_active.png",
-				"js/axios.min.js",
-				"js/vue.js",
-				"js/mui.min.js",
-				"icons/orgAuth.png",
-				"components/cHeader.js",
-				"css/style.min.css",
-				"icons/广告牌1.jpg",
-				"api/apiConfig.js",
-				"js/vue-awesome-swiper.js",
-				"components/vMask.js",
-				"icons/statistics.png",
-				"icons/广告牌3.jpg",
-				"components/selectItem.js",
-				"api/api.js",
-				"css/swiper-4.3.5.min.css",
-				"icons/down.png",
-				"icons/pwd.png",
-				"icons/addPic.png",
-				"icons/notify_active.png",
-				"icons/广告牌2.jpg",
-				"icons/resource_active.png",
-				"icons/notify.png",
-				"icons/account_manage.png",
-				"icons/calendar.png",
-				"css/mui.min.css",
-				"icons/takePic.png",
-				"icons/up_full.png",
-				"icons/advertisement.png",
-				"js/index.min.js",
-				"css/reset.css"
-			]
-		}
-	}
+    "dependencies" : {
+        "pages" : {
+            "page/login.html" : {
+                "resources" : [],
+                "refer" : [ "page/index.html" ],
+                "priority" : 0
+            },
+            "page/index.html" : {
+                "resources" : [],
+                "refer" : [
+                    "page/resource.html",
+                    "page/detail.html",
+                    "page/account_manage.html",
+                    "page/org_manage.html",
+                    "page/message.html",
+                    "page/my_data.html",
+                    "page/announcement.html",
+                    "page/statistics.html",
+                    "page/moniter_add.html"
+                ],
+                "priority" : 0
+            },
+            "page/resource.html" : {
+                "resources" : [],
+                "refer" : [ "page/resource_add.html" ],
+                "priority" : 0
+            },
+            "page/account_manage.html" : {
+                "resources" : [ "icons/edit.png", "icons/delete.png" ],
+                "refer" : [ "page/account_add.html" ],
+                "priority" : 0
+            },
+            "page/detail.html" : {
+                "resources" : [],
+                "refer" : [ "page/alert.html", "page/index.html" ],
+                "priority" : 0
+            },
+            "page/resource_add.html" : {
+                "resources" : [],
+                "refer" : [ "page/resource.html", "page/org_select.html" ],
+                "priority" : 0
+            },
+            "page/org_manage.html" : {
+                "resources" : [],
+                "refer" : [ "page/org_add.html" ],
+                "priority" : 0
+            },
+            "page/message.html" : {
+                "resources" : [],
+                "refer" : [ "page/alert_detail.html" ],
+                "priority" : 0
+            },
+            "page/announcement.html" : {
+                "resources" : [],
+                "refer" : [
+                    "page/alert_detail.html",
+                    "page/announcement_detail.html",
+                    "page/announcement_add.html"
+                ],
+                "priority" : 0
+            },
+            "page/account_add.html" : {
+                "resources" : [],
+                "refer" : [ "page/org_select.html" ],
+                "priority" : 0
+            },
+            "page/org_select.html" : {
+                "resources" : [],
+                "refer" : [ "page/account_add.html" ],
+                "priority" : 0
+            },
+            "page/announcement_add.html" : {
+                "resources" : [],
+                "refer" : [ "page/org_select.html" ],
+                "priority" : 0
+            }
+        },
+        "idle" : {
+            "resources" : [
+                "icons/watcher_active.png",
+                "js/md5.min.js",
+                "icons/address.png",
+                "icons/up.png",
+                "icons/watcher.png",
+                "css/weui.min.css",
+                "icons/manager.png",
+                "icons/down_full.png",
+                "icons/pwd_active.png",
+                "icons/ad_4.jpg",
+                "page/manage.html",
+                "icons/filter.png",
+                "icons/account_active.png",
+                "icons/gallery.png",
+                "icons/select.png",
+                "js/openWindow.js",
+                "js/polyfill.min.js",
+                "icons/search.png",
+                "icons/address_active.png",
+                "icons/resource.png",
+                "icons/back.png",
+                "js/echarts.min.js",
+                "icons/ad_2.jpg",
+                "icons/add.png",
+                "js/swiper-4.3.5.min.js",
+                "icons/forward.png",
+                "icons/alert.png",
+                "icons/广告牌4.jpg",
+                "icons/avatar.png",
+                "icons/delete_active.png",
+                "icons/account.png",
+                "api/apiHttp.js",
+                "icons/ad_3.jpg",
+                "icons/ad_1.jpg",
+                "icons/manager_active.png",
+                "js/axios.min.js",
+                "js/vue.js",
+                "js/mui.min.js",
+                "icons/orgAuth.png",
+                "components/cHeader.js",
+                "css/style.min.css",
+                "icons/广告牌1.jpg",
+                "api/apiConfig.js",
+                "js/vue-awesome-swiper.js",
+                "components/vMask.js",
+                "icons/statistics.png",
+                "icons/广告牌3.jpg",
+                "components/selectItem.js",
+                "api/api.js",
+                "css/swiper-4.3.5.min.css",
+                "icons/down.png",
+                "icons/pwd.png",
+                "icons/addPic.png",
+                "icons/notify_active.png",
+                "icons/广告牌2.jpg",
+                "icons/resource_active.png",
+                "icons/notify.png",
+                "icons/account_manage.png",
+                "icons/calendar.png",
+                "css/mui.min.css",
+                "icons/takePic.png",
+                "icons/up_full.png",
+                "icons/advertisement.png",
+                "js/index.min.js",
+                "css/reset.css"
+            ]
+        }
+    }
 }
