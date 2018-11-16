@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>单位选择</title>
+  <script src="../js/polyfill.min.js"></script>
+  <script src="../js/axios.min.js"></script>
+  <script src="../api/api.js"></script>
+  <script src="../api/apiConfig.js"></script>
+  <script src="../api/apiHttp.js"></script>
+  <script src="../js/mui.min.js"></script>
+  <link href="../css/reset.css" rel="stylesheet" />
+  <link href="../css/mui.min.css" rel="stylesheet" />
+  <link href="../css/weui.min.css" rel="stylesheet" />
+  <script src="../js/vue.js"></script>
+  <script src="../js/openWindow.js"></script>
+  <script type="text/javascript" charset="utf-8">
+    mui.init();
+    document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
+  </script>
+  <style type="text/css">
+    body {
+      background-color: #F2F2F2;
+    }
+
+    #resource {
+      width: 100%;
+      height: 100%;
+    }
+
+    .tab {
+      position: fixed;
+      height: 100%;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .container {
+      position: relative;
+      top: 5rem;
+    }
+
+    .page_1 {
+      padding-top: 0.5rem;
+    }
+
+    .search {
+      width: 95%;
+      height: 1.2rem;
+      margin: 0 auto;
+      background-color: #F2F2F2;
+      border-radius: 0.5rem;
+      padding: 0 0.3rem;
+      box-sizing: border-box;
+      margin-bottom: 0.3rem;
+    }
+
+    .filter {
+      padding: 0 0.3rem;
+      background-color: #fff;
+      z-index: 10001;
+      width: 100%;
+      height: 1.5rem;
+      text-align: center;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+
+    }
+
+    .search-input {
+      flex: 1 0 auto;
+      width: auto !important;
+      height: auto !important;
+      padding: 0 !important;
+      border: 1px solid transparent !important;
+      background: transparent !important;
+      font-size: 0.37rem;
+      margin: 0 !important;
+      line-height: 1 !important;
+      outline: 0 !important;
+    }
+
+    .filter_content_1 {
+      height: 5rem;
+      overflow: scroll;
+      z-index: 10001;
+      background: #F2F2F2;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .filter_content_2 {
+      border-bottom: 1px solid #ccc;
+    }
+
+    .filter-item {
+      width: 100%;
+      height: 0.5rem;
+      margin-bottom: 1rem;
+      padding: 0.3rem;
+      clear: both;
+    }
+
+    .filter-item-lb {
+      font-size: 0.5rem;
+      line-height: 1rem;
+      color: #ccc;
+    }
+
+    .filter-item-ob {
+      float: left;
+      margin-right: 0.3rem;
+      width: 1.6rem;
+      background-color: #F2F2F2;
+      text-align: center;
+    }
+
+    .filter-button {
+      width: 100%;
+      clear: both;
+      margin-top: 1.5rem;
+    }
+
+    .filter-button-ob {
+      width: 49%;
+      display: inline-block;
+      padding: 0.3rem 0;
+      text-align: center;
+      background-color: #F2F2F2;
+    }
+
+    .filter-item-ob-active {
+      background-color: yellow;
+      color: #1296DB;
+    }
+
+    .account-card {
+      width: 100%;
+      height: 4.5rem;
+      margin-bottom: 0.3rem;
+      background: #fff;
+      padding: 0.5rem;
+
+    }
+
+
+    .card_interact {
+      width: 100%;
+      height: 1.2rem;
+      padding: 0.2rem;
+      background-color: #fff;
+      border-top: 1px solid #ccc;
+    }
+
+    .header {
+      position: fixed;
+      top: 1.5rem;
+      right: 0;
+      left: 0;
+      z-index: 10001;
+      background: #fff;
+    }
+
+    .selectedComps {
+      position: fixed;
+      top: 3rem;
+      right: 0;
+      left: 0;
+      min-height: 1.2rem;
+      background: #fff;
+      z-index: 10001;
+    }
+
+    .account-card-selected {
+      background-color: #1296DB;
+      color: #fff !important;
+    }
+    .confirm-header {
+      font-size: 0.46rem; 
+      color: #1296DB; 
+      position: absolute; 
+      right: 0; 
+      z-index: 10001;
+    }
+  </style>
+</head>
+
+<body ontouchstart>
+  <div id="org_select" @click="isFilter = 0">
+    <c-header :title="title" :confirm="true" :conf="headerConfirm">
+    </c-header>
+    <div class="header">
+      <div class="search flex">
+        <img src="../icons/search.png" class="icon" />
+        <input type="text" class="search-input" v-model="keyword" placeholder="请输入单位名称" />
+      </div>
+    </div>
+    <div class="container">
+      <div class="selectedComps">已选单位: {{selectedComps.join(',')}}</div>
+      <div v-for="(item, index) in orgArray" :key="index" @click="handleClick(item)" :class="selectedCompsId.indexOf(item.value) !== -1 ? 'account-card noti-title account-card-selected' : 'account-card noti-title'">
+        <div class="flex" style="height: 2rem;">
+          <img src="../icons/orgAuth.png" class="icon" />
+          <span style="font-size: 0.5rem; font-weight: bold; margin-right: 0.5rem;color: #000;">{{item.label}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script src="../components/cHeader.js"></script>
+<script>
+  new Vue({
+    el: '#org_select',
+    data: {
+      title: '单位选择',
+      selected: -1,
+      isFilter: 0,
+      orgArray: [],
+      filterOption1: -1,
+      filterOption2: -1,
+      filterOption3: -1,
+      query: '',
+      contentData: [
+
+      ],
+      HOST: 'http://219.132.139.116:9080/',
+      selectForm: {
+        userType: '',
+        companyId: '',
+        index: 1,
+        pageSize: 1000,
+        keyWord: '',
+      },
+      keyword: '',
+      selectedComps: [],
+      selectedCompsId: [],
+      atype: '',
+      cid: '',
+      cname: '',
+
+    },
+    created: function () {
+      var self = this;
+      h5(function () {
+        var webview = plus.webview.currentWebview();
+        if (webview.atype) {
+          self.atype = webview.atype;
+          self.cid = webview.companyId;
+          self.cname = webview.companyName;
+          self.selectCompanyFormat();
+          if (webview.atype === 'resource') { // 添加帐号
+            if (webview.companyName && webview.companyId) {
+              self.selectedComps.push(webview.companyName);
+              self.selectedCompsId.push(webview.companyId);
+            }
+            
+          } else { // 修改
+            if (!webview.companyName) {
+              return;
+            } else {
+              self.selectedComps = webview.companyName.split(',');
+              self.selectedCompsId = webview.companyId.split(',');
+            }
+          }
+        }
+      });
+      // window.addEventListener('refresh', function () {
+      //   console.log('account cb');
+      //   self.refresh();
+      // });
+      // this.selectCompany();
+    },
+    filters: {
+      typeFilter(val) {
+        switch (val) {
+          case 1:
+            return '执行人';
+          case 2:
+            return '管理责任人';
+        }
+      }
+    },
+    watch: {
+      keyword(val) {
+        this.selectCompanyFormat(val);
+      }
+    },
+    methods: {
+      headerConfirm() {
+        var data = {};
+        if (this.selectedComps.length <= 1) {
+          data.label = this.selectedComps[0];
+          data.value = this.selectedCompsId[0];
+        } else {
+          data.label = this.selectedComps.join(',');
+          data.value = this.selectedCompsId.join(',');
+        }
+        orgBack(data);
+      },
+      selectCompanyFormat(key) {
+        var self = this;
+        if (self.atype === 'account') {
+          this.selectMyCompany(key);
+        }else if ((infoGet('userType') == '3' && self.atype === 'announcement')) {
+          this.selectCompany(key);
+        } else {
+          this.selectUserCompany(key);
+        }
+      },
+      selectUserCompany(key) {
+        var self = this;
+        pm(api.selectUserCompany, {
+          keyWord: key || '',
+          userId: infoGet('userId'),
+          companyId: '',
+        }, res => {
+          self.orgArray = [];
+          res.result.forEach(function (ele, index) {
+            var temp = {};
+            temp.label = ele.company_name;
+            temp.value = ele.company_id;
+            self.orgArray.push(temp);
+          })
+        }, err => {
+          console.log(err);
+        })
+      },
+      selectMyCompany(key) {
+        var self = this;
+        pm(api.selectMyCompany, {
+          keyWord: key || '',
+          userId: infoGet('userId'),
+          index: 1,
+          pageSize: 1000,
+        }, res => {
+          self.orgArray = [];
+          res.result.forEach(function (ele, index) {
+            var temp = {};
+            temp.label = ele.companyName;
+            temp.value = ele.companyId;
+            self.orgArray.push(temp);
+          })
+        }, err => {
+          console.log(err);
+        })
+      },
+      handleClick(item) {
+        var self = this;
+        if (this.atype === 'resource') {
+          if (self.selectedComps.length < 1) { // 第一个
+            self.selectedComps.push(item.label);
+            self.selectedCompsId.push(item.value);
+          } else { // 后面重复的就直接修改
+            self.selectedComps[0] = item.label;
+            self.selectedCompsId[0] = item.value; 
+          }  
+        } else {
+          this.toggle(self.selectedComps, item.label);
+          this.toggle(self.selectedCompsId, item.value);
+        }  
+      },
+      toggle(arr, val) { // 有就去除，没有就添加
+        if (arr.indexOf(val) !== -1) {
+          arr.splice(arr.indexOf(val), 1);
+        } else {
+          arr.push(val);
+        }
+      },
+      selectCompany(val) {
+        var self = this;
+        self.selectForm.keyWord = val || '';
+        pm(api.selectCompany, self.selectForm, function (res) {
+          self.orgArray = [];
+          res.result.forEach(function (ele, index) {
+            var temp = {};
+            temp.label = ele.companyName;
+            temp.value = ele.companyId;
+            self.orgArray.push(temp);
+          })
+        }, function (err) {
+          console.log(err);
+        })
+      },
+      addAccount(id) {
+        h5(function () {
+          jumpTo({
+            to: 'account_add.html',
+            data: {
+              userId: id || 'none'
+            }
+          });
+        })
+      },
+      edit(id) {
+        this.addAccount(id);
+      },
+      handleFilter(val) {
+        this.isFilter = val;
+      },
+      handleFilter2(filter, option) {
+        var temp = 'filterOption' + filter;
+        if (this[temp] === option) {
+          this[temp] = -1;
+          return;
+        }
+        this[temp] = option;
+      },
+      handleSelect(index, val) {
+        this.selected = index;
+        this.selectForm.companyId = val;
+        this.handleFilter(0);
+        this.refresh();
+      },
+      // resetFilter() {
+      //     this.filterOption1 = -1;
+      //     this.filterOption2 = -1;
+      //     this.filterOption3 = -1;
+      // },
+    },
+  })
+</script>
+
+</html>

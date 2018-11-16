@@ -1,7 +1,7 @@
 {
     "@platforms" : [ "android", "iPhone", "iPad" ],
-    "id" : "H5FB599E6", /*应用的标识，创建应用时自动生成，勿手动修改*/
-    "name" : "梅州媒体", /*应用名称，程序桌面图标名称*/
+    "id" : "adxn", /*应用的标识，创建应用时自动生成，勿手动修改*/
+    "name" : "兴宁媒体", /*应用名称，程序桌面图标名称*/
     "version" : {
         "name" : "2.0", /*应用版本名称*/
         "code" : ""
@@ -134,7 +134,7 @@
                         "notification" : "unpackage/res/icons/20x20.png",
                         "notification@2x" : "unpackage/res/icons/40x40.png" /*iPad高分屏设置页面程序图标，分辨率：58x58*/
                     },
-                    "appstore" : "unpackage/res/icons/1024x1024.png"
+                    "appstore" : "C:/Users/Administrator/Desktop/xingning.png"
                 },
                 "android" : {
                     "mdpi" : "unpackage/res/icons/48x48.png", /*普通屏程序图标，分辨率：48x48*/

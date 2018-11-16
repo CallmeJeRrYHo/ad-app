@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>详情页</title>
+  <script src="../js/polyfill.min.js"></script>
+  <script src="../js/axios.min.js"></script>
+  <script src="../api/api.js"></script>
+  <script src="../api/apiConfig.js"></script>
+  <script src="../api/apiHttp.js"></script>
+  <script src="../js/mui.min.js"></script>
+  <link href="../css/reset.css" rel="stylesheet" />
+  <link href="../css/mui.min.css" rel="stylesheet" />
+  <link href="../css/weui.min.css" rel="stylesheet" />
+  <link href="../css/swiper-4.3.5.min.css" rel="stylesheet" />
+  <script src="../js/vue.js"></script>
+  <script src="../js/openWindow.js"></script>
+  <script src="../js/swiper-4.3.5.min.js"></script>
+  <script src="../js/vue-awesome-swiper.js"></script>
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=HGqKSY9gSA70ZrwS5uTZnbjA"></script>
+  <script type="text/javascript" charset="utf-8">
+    document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
+  </script>
+  <style type="text/css">
+    body {
+      background-color: #ccc;
+    }
+
+    body,
+    html,
+    #allmap {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    .container {
+      position: relative;
+      top: 1.3rem;
+      overflow: scroll !important;
+    }
+
+    .swiperArea {
+      width: 100%;
+      background-color: #fff;
+      margin-bottom: 0.5rem;
+      height: 9rem;
+    }
+
+    .swiper_title {
+      font-size: 0.4rem;
+      font-weight: bold;
+      padding: 0.2rem;
+    }
+
+    .swiper-container {
+      width: 100%;
+      height: 5rem;
+    }
+
+    .info {
+      background-color: #fff;
+      padding: 0.2rem;
+    }
+
+    .interact {
+      padding: 0.2rem;
+    }
+
+    .interact-button {
+      background-color: #1296DB;
+      text-align: center;
+      padding: 0.2rem 0;
+      color: #fff;
+      flex: 1 0 auto;
+      margin-bottom: 0.3rem;
+      border-radius: 0.1rem;
+    }
+
+    .adv-detail {
+      background-color: #fff;
+      padding: 0.2rem;
+    }
+
+    .adv-header {
+      text-align: center;
+      position: relative;
+      margin-bottom: 0.5rem;
+      height: 1.2rem;
+      font-size: 0.6rem;
+      font-weight: bold;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .header-icon {
+      position: absolute;
+      left: 0;
+      top: 0.05rem;
+
+    }
+
+    #map-buttons {
+      position: fixed;
+      z-index: 10001;
+      top: 2rem;
+      right: 1rem;
+      width: 3rem;
+      height: 1rem;
+      line-height: 1rem;
+      background: #1296DB;
+      text-align: center;
+      color: #fff;
+      border-radius: 0.2rem;
+    }
+  </style>
+</head>
+
+<body ontouchstart>
+  <div id="allmap" style="display: none;"></div>
+  <div id="detail">
+    <div id="map-buttons" v-if="activeMap" @click="confirmAdd">
+      返回
+    </div>
+    <c-header :title="title">
+    </c-header>
+    <div class="container">
+      <div class="swiperArea">
+        <!-- Swiper -->
+        <swiper :options="swiperOption" style="height: 7.5rem;">
+          <swiper-slide v-for="(item, index) in infoData.pic" :key="index">
+            <img :src="HOST + item.path" style="width:100%;" :key="index" @click="galleryShow(index)" @longtap="imgSave(index)" />
+          </swiper-slide>
+          <div class="swiper-pagination" slot="pagination"></div>
+        </swiper>
+        <div class="swiper_title">
+          {{infoData.serial_num}}
+        </div>
+      </div>
+      <div class="info">
+        <dl>
+          <dt class="flex j-b">
+            <span class="noti-title">管理单位</span>
+            <span>{{infoData.company_name}}</span>
+          </dt>
+          <dt class="flex j-b">
+            <span class="noti-title">管理责任人</span>
+            <span>{{infoData.name}}</span>
+          </dt>
+          <dt class="flex j-b">
+            <span class="noti-title">联系电话</span>
+            <span>{{infoData.mobile}}</span>
+          </dt>
+        </dl>
+      </div>
+      <div class="interact">
+        <div class="interact-button w-100" @click="checkAll">查看单位所有宣传牌</div>
+        <div class="flex">
+          <div class="interact-button" style="margin-right: 0.1rem;" @click="jumpToMap">查看地图</div>
+          <div class="interact-button" @click="sendAlert">发送报警</div>
+        </div>
+
+      </div>
+      <div class="adv-detail">
+        <header class="adv-header">
+          <img src="../icons/advertisement.png" class="header-icon" style="height: 0.8rem; width: 0.8rem;" />
+          <span>宣传牌信息</span>
+        </header>
+        <dl>
+          <dt class="flex j-b">
+            <span class="noti-title">序号</span>
+            <span>{{infoData.serial_num}}</span>
+          </dt>
+          <dt class="flex j-b">
+            <span class="noti-title">位置</span>
+            <span>{{infoData.address}}</span>
+          </dt>
+          <dt class="flex j-b">
+            <span class="noti-title">类型</span>
+            <span>{{infoData.ad_type | typeFilter}}</span>
+          </dt>
+          <dt class="flex j-b">
+            <span class="noti-title">设置规格</span>
+            <span>{{infoData.ad_spec | confFilter}}</span>
+          </dt>
+          <dt class="flex j-b">
+            <span class="noti-title">更新日期</span>
+            <span>{{infoData.modify_time}}</span>
+          </dt>
+          <dt class="flex j-b">
+            <span class="noti-title">是否放置国家领导人头像</span>
+            <span>{{infoData.has_leader_portrait | leaderFilter}}</span>
+          </dt>
+          <dt class="flex j-b">
+            <span class="noti-title">宣传牌内容</span>
+            <span>{{infoData.ad_content}}</span>
+          </dt>
+          <dt class="flex j-b">
+            <span class="noti-title">周边摄像头</span>
+            <span>{{infoData.near_camera || '无'}}</span>
+          </dt>
+          <dt class="flex j-b">
+            <span class="noti-title">周边派出所</span>
+            <span>{{infoData.near_police || '无'}}</span>
+          </dt>
+        </dl>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+
+
+<script src="../components/cHeader.js"></script>
+<script>
+  var map;
+  var geolocation;
+  var marker;
+  // geolocation.getCurrentPosition(function (r) {
+  //     if (this.getStatus() == 0) {
+  //         // marker = new BMap.Marker(r.point);
+  //         map.centerAndZoom(r.point, 14);
+  //         map.setCenter(r.point);
+  //         map.panBy(200, 400);
+  //         // map.addOverlay(marker);
+  //         // marker.enableDragging();
+  //     } else {
+  //         var mes = {
+  //             message: 'failed' + this.getStatus()
+  //         }
+  //         toast(mes);
+  //     }
+  // }, { enableHighAccuracy: true })
+  Vue.use(window.VueAwesomeSwiper);
+  new Vue({
+    el: '#detail',
+    data: {
+      selected: -1,
+      title: '宣传牌详情',
+      address: 'A459环城公路与封疆大道汇合圆盘处',
+      infoData: {},
+      swiperOption: {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        loop: true,
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true
+        },
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev'
+        }
+      },
+      ad: '',
+      HOST: api.HOST,
+      activeMap: false,
+      infoWindow: null,
+      point: null,
+    },
+    created: function () {
+      var self = this;
+      mui.init({
+        gestureConfig: {
+          tap: true, //默认为true
+          doubletap: true, //默认为false
+          longtap: true, //默认为false
+        }
+      });
+      this.initMap();
+      h5(function () {
+        var webview = plus.webview.currentWebview();
+        var url = webview.getURL();
+        if (url.indexOf('ad_id') !== -1) {
+          var ad = url.match(/(?=ad_id\=).*/)[0].slice(6);
+          self.ad = ad;
+        } else {
+          self.ad = webview.ad;
+        }
+        self.getAdDetail();
+      });
+    },
+    watch: {
+      activeMap(val) {
+        if (val) {
+          document.getElementById('allmap').style.display = 'block';
+        } else {
+          document.getElementById('allmap').style.display = 'none';
+        }
+      },
+    },
+    methods: {
+      imgSave(index) {
+        var self = this;
+        var name = self.HOST + self.infoData.pic[index].path;
+        h5(function () {
+          plus.gallery.save(name, function() {
+            plus.nativeUI.toast('图片保存成功');
+          }, function(e) {
+            console.log(e);
+            plus.nativeUI.toast('图片保存失败');
+          })
+        })
+      },
+      galleryShow(index) {
+        var self = this;
+        h5(function () {
+          var urls = [];
+          self.infoData.pic.forEach(ele => {
+            var url = self.HOST + ele.path;
+            urls.push(url);
+          });
+          plus.nativeUI.previewImage(urls, {
+            current: index,
+            loop: true,
+            indicator: 'number',
+          })
+        })
+      },
+      initMap(func) {
+        map = new BMap.Map("allmap");
+        geolocation = new BMap.Geolocation();
+        marker = null;
+        map.centerAndZoom('广州', 14);
+        this.func && this.func();
+      },
+      initMarker() {
+        var self = this;
+        var point = new BMap.Point(self.infoData.lontitude, self.infoData.latitude);
+        marker = new BMap.Marker(point);
+        console.log('MARKER', marker, point);
+        map.addOverlay(marker);
+        map.centerAndZoom(point, 14);
+        map.panBy(200, 400);
+        var info = '<div class="info-win-content"><span style="font-weight:bold;color:#666;">管理单位：' + self.infoData
+          .company_name + '</span>' +
+          '<br><span style="font-weight:bold;color:#666;">所在地址：' + self.infoData.address + '</span> ' +
+          '</div>';
+        // var opts = {
+        //     title: '<span class="info-win-title">' + self.infoData.name +
+        //         // ' <a href="detail.html?ad_id=' + self.infoData.advertisementId + '" style="text-decoration:none;">查看详情</a><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>' +
+        //         '</span>'
+        // };
+        var infoWindow = new BMap.InfoWindow(info, {
+          enableAutoPan: false,
+        });
+        setTimeout(function () {
+          marker.openInfoWindow(infoWindow);
+        }, 2000);
+        marker.addEventListener("click", function (event) {
+          // console.log(event);
+          marker.openInfoWindow(infoWindow);
+        });
+      },
+      confirmAdd() {
+        this.activeMap = false
+        var self = this;
+      },
+      checkAll() {
+        var self = this;
+        h5(function () {
+          jumpTo({
+            to: 'index.html',
+            data: {
+              type: 1,
+              value: self.infoData.company_id
+            }
+          })
+        })
+      },
+      jumpToMap() {
+        var self = this;
+        mui.scrollTo(0, 50);
+        setTimeout(function () {
+          self.activeMap = true;
+        }, 100)
+
+      },
+      sendAlert() {
+        var self = this;
+        h5(function () {
+          jumpTo({
+            to: 'alert.html',
+            data: {
+              ad: self.ad,
+              title: self.infoData.address
+            }
+          })
+        })
+      },
+      getAdDetail() {
+        var self = this;
+        pm(api.getAdDetail, {
+          advertisementId: self.ad,
+        }, function (res) {
+          self.infoData = res.result;
+          self.initMarker();
+
+        }, function (err) {
+          console.log(err);
+        })
+      }
+    },
+    filters: {
+      typeFilter(val) {
+        switch (val) {
+          case 1:
+            return '普通'
+          case 2:
+            return 'T型'
+          case 3:
+            return '灯箱'
+          case 4:
+            return '宣传栏'
+        }
+      },
+      confFilter(val) {
+        switch (val) {
+          case 1:
+            return '单面'
+          case 2:
+            return '双面'
+        }
+      },
+      leaderFilter(val) {
+        switch (val) {
+          case 1:
+            return '是'
+          case 2:
+            return '否'
+        }
+      },
+    }
+  })
+</script>
+
+</html>

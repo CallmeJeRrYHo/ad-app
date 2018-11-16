@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>添加宣传位</title>
+  <script src="../js/polyfill.min.js"></script>
+  <script src="../js/axios.min.js"></script>
+  <script src="../api/api.js"></script>
+  <script src="../api/apiConfig.js"></script>
+  <script src="../api/apiHttp.js"></script>
+  <script src="../js/mui.min.js"></script>
+  <link href="../css/reset.css" rel="stylesheet" />
+  <link href="../css/mui.min.css" rel="stylesheet" />
+  <link href="../css/weui.min.css" rel="stylesheet" />
+  <script src="../js/vue.js"></script>
+  <script src="../js/exif.js"></script>
+  <script src="../js/openWindow.js"></script>
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=HGqKSY9gSA70ZrwS5uTZnbjA"></script>
+  <script adType="text/javascript" charset="utf-8">
+    document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
+  </script>
+  <style adType="text/css">
+    body,
+    html,
+    #allmap {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      font-family: "微软雅黑";
+    }
+
+    .container {
+      position: relative;
+      top: 1.2rem;
+      overflow: scroll !important;
+    }
+
+    .resource_add-content,
+    .pic-content {
+      padding: 0.2rem;
+      background-color: #fff;
+      margin: 0.5rem 0;
+
+    }
+
+    .submit {
+      background-color: #1296DB;
+      text-align: center;
+      width: 100%;
+      height: 1rem;
+      padding: 0.2rem 0;
+      color: #fff;
+      border-radius: 0.1rem;
+    }
+
+    .picArea {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .delete_img {
+      width: 0.7rem;
+      height: 0.7rem;
+      position: absolute;
+      right: 0.3rem;
+      bottom: 0.3rem;
+    }
+    .select_one {
+      width: 0.7rem;
+      height: 0.7rem;
+      position: absolute;
+      left: 0.3rem;
+      bottom: 0.3rem;
+      background: #fff;
+    }
+    .selected_one {
+      width: 0.7rem;
+      height: 0.7rem;
+    }
+
+    .line {
+      background-color: #fff;
+      height: 2rem;
+      padding: 0.4rem;
+      width: 100%;
+    }
+
+    .ad-status {
+      width: 100%;
+      background-color: #fff;
+      padding: 0.2rem;
+    }
+
+    .submit {
+      margin: 0.3rem 0;
+    }
+
+    #map-buttons {
+      position: fixed;
+      z-index: 10001;
+      top: 1rem;
+      right: 0.2rem;
+      width: 2.5rem;
+      height: 1rem;
+      line-height: 1rem;
+      background: #1296DB;
+      text-align: center;
+      color: #fff;
+      border-radius: 0.2rem;
+    }
+    #search {
+      position: fixed;
+      z-index: 10001;
+      top: 1rem;
+      left: 0.2rem;
+      width: 8rem;
+      height: 1rem;
+      border-radius: 0.2rem;
+    }
+    #searchResultPanel {
+      border:1px solid #C0C0C0;
+      width:8rem;
+      top:2rem;
+      left: 0.2rem;
+      z-index: 10001;
+      position: fixed;
+    }
+  </style>
+</head>
+
+<body ontouchstart>
+  <div id="allmap" style="display: none;"></div>
+  <input id="search" type="text" style="display: none;" placeholder="请输入搜索地址" @click.stop="" />
+  <div id="searchResultPanel" style="display: none;"></div>
+  <div id="resource_add">
+    <div id="map-buttons" v-if="activeMap" @click="confirmAdd">
+      {{ (!flag || (boolAnd(2, 1) && flag) || (boolAnd(5, 1) && flag)) ? '确认选点' :'返回'}}
+    </div>
+
+    <c-header v-if="!activeMap" :title="flag ? '修改宣传位':'添加宣传位'">
+    </c-header>
+    <div class="container" v-if="!activeMap">
+      <div class="flex j-b line" v-for="(item, index) in lineArray" :key="index" @click="handleSelect(item.index)">
+        <div class="flex j-b w_100" v-if="!item.type">
+          <span class="noti-title">{{item.title}}</span>
+          <span>{{format(item.key)}}</span>
+        </div>
+        <div class="flex j-b" style="width: 90%" v-else-if="item.type === 'address'" @click.stop="handleAddress">
+          <span class="noti-title">地址</span>
+          <span style="text-overflow: ellipsis; white-space: nowrap;">{{submitForm.address}}</span>
+        </div>
+        <div v-else-if="item.type === 'input'" class="flex w_100">
+          <span class="noti-title">{{item.title}}</span>
+          <input class="t-input" adType="text" :placeholder="'请输入' + item.title"
+            v-model="submitForm[item.value]" />
+        </div>
+        <div v-else-if="item.type === 'textarea'" class="w_100" style="height: 3rem;">
+          <span class="noti-title">{{item.title}}</span>
+          <textarea class="t-input" type="text" placeholder="请输入内容"
+            v-model="submitForm.adContent"></textarea>
+        </div>
+        <img v-if="!item.adType" src="../icons/forward.png" class="icon-small" />
+      </div>
+      <div class="pic-content">
+        <div class="noti-title" style="border-bottom: 1px solid #ccc;padding: 0.3rem 0;">设计图相册</div>
+        <div class="picArea flex">
+          <div v-for="(item, index) in submitForm.designPic" style="margin: 0.3rem 0.2rem;position: relative;">
+            <img :src="HOST + item.path" :key="index" class="uimg" style="width: 3rem; height: 3rem; vertical-align: middle;"
+              @click="galleryShow(index)" @longtap="imgSave(index)"/>
+            <img v-if="boolAnd(2, 1) || !flag" src="../icons/delete_active.png" class="delete_img" @click="deleteImg(index, 1)" />
+          </div>
+          <img @click="uploadPic(1)" v-if="boolAnd(2, 1) || !flag" src="../icons/addPic.png" style="margin: 0.3rem 0;width: 3rem; height: 3rem; vertical-align: middle;" />
+        </div>
+      </div>
+      <div class="ad-status" v-if="flag">
+        <dl>
+          <dt>
+            <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">状态</span>
+            <span>{{ads | statusFilter}}</span>
+          </dt>
+          <dt>
+            <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">更新时间</span>
+            <span>{{preloadData.modifyTime || preloadData.createTime}}</span>
+          </dt>
+          <dt v-if="ads === 2">
+            <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">审核反馈</span>
+            <span>{{preloadData.auditResponse}}</span>
+          </dt>
+        </dl>
+      </div>
+      <div class="pic-content" v-if="boolAnd(1, 2)">
+        <div class="noti-title" style="border-bottom: 1px solid #ccc;padding: 0.3rem 0;">审核反馈</div>
+        <textarea v-model="feedback" class="t-input" placeholder="设计稿审核不通过才需要填写。"></textarea>
+      </div>
+      <div class="pic-content real-pic" v-if="ads !== 1 && ads !== 2 && flag">
+        <div class="noti-title" style="border-bottom: 1px solid #ccc;padding: 0.3rem 0;" v-if="(ads === 3 || ads === 4 || ads === 5) && flag">实景相册</div>
+        <div class="picArea flex">
+          <div v-for="(item, index) in submitForm.pic" style="margin: 0.3rem 0.2rem;position: relative;">
+            <img :src="HOST + item.path" :key="index" class="uimg" style="width: 3rem; height: 3rem; vertical-align: middle;"
+              @click="galleryShow2(index)" />
+            <div class="select_one" @click.stop="selectFirstPic(index)" v-if="((ads === 3 || ads === 5) && userType == 1)">
+              <img class="selected_one" src="../icons/select.png" v-if="firstPic === index">
+            </div>
+            <img v-if="((ads === 3 || ads === 5) && userType == 1)" src="../icons/delete_active.png" class="delete_img"
+              @click.stop="deleteImg(index, 2)" />
+          </div>
+          <img @click="uploadPic(2)" v-if="((ads === 3 || ads === 5) && userType == 1)" src="../icons/addPic.png" style="margin: 0.3rem 0;width: 3rem; height: 3rem; vertical-align: middle;" />
+        </div>
+      </div>
+      <div class="w-100 interact_area">
+        <div v-if="!flag" class="submit" @click="addAdvertisement">
+          创建
+        </div>
+        <div class="w-100" v-if="boolAnd(1, 2) && flag">
+          <div class="submit" @click="designAudit(2)" style="margin-bottom: 0.3rem;">
+            设计稿不通过
+          </div>
+          <div class="submit" @click="designAudit(1)" style="margin-bottom: 0.3rem;">
+            确定设计稿
+          </div>
+        </div>
+        <div class="submit" v-if="boolAnd(2, 1) && flag" @click="updateDesign">
+          提交审核
+        </div>
+        <div class="submit" v-if="boolAnd(3, 1) && flag" @click="submitLiveViewAudit">
+          提交实景审核
+        </div>
+        <div class="submit" v-if="boolAnd(4, 2) && flag" @click="auditLiveView">
+          已审核
+        </div>
+        <div v-if="boolAnd(5, 1) && flag" class="submit" @click="updateAdvertisement">
+          修改
+        </div>
+      </div>
+
+    </div>
+    <select-item v-if="!activeMap" :itemdata="selectArray" :show="isSelect" @selected="handleSelected"></select-item>
+    <v-mask v-if="!activeMap" :show="isSelect" @close="isSelect = false"></v-mask>
+  </div>
+</body>
+
+
+<script src="../components/cHeader.js"></script>
+<script src="../components/selectItem.js"></script>
+<script src="../components/vMask.js"></script>
+<script>
+  // 百度地图API功能
+  var map = new BMap.Map("allmap");
+  var geolocation = new BMap.Geolocation();
+  var marker = null;
+  geolocation.getCurrentPosition(function (r) {
+    if (this.getStatus() == 0) {
+      marker = new BMap.Marker(r.point);
+      map.centerAndZoom(r.point, 14);
+      map.setCenter(r.point);
+      map.panBy(200, 400);
+      map.addOverlay(marker);
+      marker.enableDragging();
+    } else {
+      var mes = {
+        message: 'failed' + this.getStatus()
+      }
+      toast(mes);
+    }
+  }, {
+    enableHighAccuracy: true
+  })
+
+  function G(id) {
+    return document.getElementById(id);
+  }
+  var ac = new BMap.Autocomplete( //建立一个自动完成的对象
+    {
+      "input": "search",
+      "location": map,
+    });
+
+  var myValue;
+  ac.addEventListener("onconfirm", function (e) { //鼠标点击下拉列表后的事件
+    var _value = e.item.value;
+    myValue = _value.province + _value.city + _value.district + _value.street + _value.business;
+    // G("searchResultPanel").innerHTML = "onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+
+    setPlace();
+  });
+
+  function setPlace() {
+    map.clearOverlays(); //清除地图上所有覆盖物
+    function myFun() {
+      var pp = local.getResults().getPoi(0).point; //获取第一个智能搜索的结果
+      map.centerAndZoom(pp, 18);
+      marker = new BMap.Marker(pp)
+      map.addOverlay(marker); //添加标注
+      marker.enableDragging();
+    }
+    var local = new BMap.LocalSearch(map, { //智能搜索
+      onSearchComplete: myFun
+    });
+    local.search(myValue);
+  }
+
+
+
+  // document.getElementsByTagName('body')[0].addEventListener('click', function() {
+  //   alert('map-click');
+  //   var input = document.getElementById('search');
+  //   input.blur();  
+  // })
+  new Vue({
+    el: '#resource_add',
+    data: {
+      selected: -1,
+      lineArray: [{
+          title: '序号',
+          type: 'input',
+          value: 'serialNum',
+        },
+        {
+          title: '地址',
+          key: 'address',
+          index: -1,
+          type: 'address',
+        },
+        {
+          title: '单位',
+          key: 'companyName',
+          index: 3,
+        },
+        {
+          title: '管理责任人',
+          key: 'monitorUserId',
+          index: 4,
+        },
+        {
+          title: '宣传牌类型',
+          src: '../icons/notify_active.png',
+          key: 'adType',
+          index: 0,
+        },
+        {
+          title: '设置规格',
+          src: '../icons/statistics.png',
+          key: 'adSpec',
+          index: 1,
+        },
+        {
+          title: '是否放置国家领导人头像',
+          src: '../icons/watcher_active.png',
+          key: 'hasLeaderPortrait',
+          index: 2,
+        },
+        {
+          title: '周边摄像头',
+          type: 'input',
+          value: 'nearCamera',
+        },
+        {
+          title: '周边派出所',
+          type: 'input',
+          value: 'nearPolice',
+        },
+        {
+          title: '宣传牌内容',
+          type: 'textarea',
+        },
+
+      ],
+      typeArray: [{
+          label: '普通',
+          value: '1',
+          key: 'adType',
+        },
+        {
+          label: 'T型',
+          value: '2',
+        },
+        {
+          label: '灯箱',
+          value: '3',
+        },
+        {
+          label: '宣传栏',
+          value: '4',
+        },
+      ],
+      confArray: [{
+          label: '单面',
+          value: '1',
+          key: 'adSpec',
+        },
+        {
+          label: '双面',
+          value: '2',
+        },
+      ],
+      avatarArray: [{
+          label: '是',
+          value: '1',
+          key: 'hasLeaderPortrait',
+        },
+        {
+          label: '否',
+          value: '2',
+        },
+      ],
+      monitorUserArray: [
+
+      ],
+      selectArray: [],
+      isSelect: false,
+      submitForm: {
+        userId: infoGet('userId'),
+        serialNum: '',
+        nearCamera: '',
+        nearPolice: '',
+        address: '',
+        lontitude: '',
+        latitude: '',
+        adType: '',
+        adSpec: '',
+        hasLeaderPortrait: '',
+        adContent: '',
+        designPic: [],
+        pic: [],
+        companyId: '',
+        companyName: '',
+        monitorUserId: '',
+      },
+      HOST: 'http://219.132.139.116:9080/',
+      uploadUrl: 'http://219.132.139.116:9080/pic/uploadPic',
+      preloadData: {
+
+      },
+      ad: '',
+      flag: false,
+      feedback: '',
+      userType: infoGet('userType'),
+      ads: null,
+      activeMap: false,
+      marker: null,
+      mapAddress: null,
+      firstPic: 0,
+    },
+    watch: {
+      activeMap(val) {
+        if (val) {
+          document.getElementById('allmap').style.display = 'block';
+          document.getElementById('search').style.display = 'block';
+          document.getElementById('searchResultPanel').style.display = 'block';
+        } else {
+          document.getElementById('allmap').style.display = 'none';
+          document.getElementById('search').style.display = 'none';
+          document.getElementById('searchResultPanel').style.display = 'none';
+        }
+      },
+      'submitForm.companyId': {
+        handler(val) {
+          if (val) {
+            this.selectUsers();
+          }
+        },
+        deep: true,
+      }
+    },
+    created: function () {
+      var self = this;
+      mui.init({
+        gestureConfig: {
+          tap: true, //默认为true
+          doubletap: true, //默认为false
+          longtap: true, //默认为false
+        }
+      });
+      h5(function () {
+        var webview = plus.webview.currentWebview();
+        window.addEventListener('org', function (e) {
+          var label = e.detail.label;
+          var org = e.detail.value;
+          self.submitForm.companyId = org;
+          self.submitForm.companyName = label;
+        })
+        if (webview.ad) {
+          if (webview.ad === 'add') { // 添加
+          } else { // 修改
+            self.flag = true;
+            self.ad = webview.ad;
+            self.getAdDetail();
+          }
+        }
+      });
+    },
+    filters: {
+      statusFilter(val) {
+        switch (val) {
+          case 1:
+            return '设计稿待审核';
+          case 2:
+            return '设计稿不通过';
+          case 3:
+            return '设计稿确定';
+          case 4:
+            return '实景待审核';
+          case 5:
+            return '已完成';
+        }
+      }
+    },
+    methods: {
+      selectFirstPic(index) {
+        this.firstPic = index;
+      },
+      imgSave(index) {
+        var self = this;
+        var name = self.HOST + self.submitForm.designPic[index].path;
+        h5(function () {
+          plus.gallery.save(name, function() {
+            plus.nativeUI.toast('图片保存成功');
+          }, function(e) {
+            console.log(e);
+            plus.nativeUI.toast('图片保存失败');
+          })
+        })
+      },
+      galleryShow(index) {
+        var self = this;
+        h5(function () {
+          var urls = [];
+          self.submitForm.designPic.forEach(ele => {
+            var url = self.HOST + ele.path;
+            urls.push(url);
+          });
+          plus.nativeUI.previewImage(urls, {
+            current: index,
+            loop: true,
+            indicator: 'number',
+          })
+        })
+      },
+      galleryShow2(index) {
+        var self = this;
+        h5(function () {
+          var urls = [];
+          self.submitForm.pic.forEach(ele => {
+            var url = self.HOST + ele.path;
+            urls.push(url);
+          });
+          plus.nativeUI.previewImage(urls, {
+            current: index,
+            loop: true,
+            indicator: 'number',
+          })
+        })
+      },
+      updateDesign() {
+        var self = this;
+        this.submitForm.advertisementId = this.ad;
+        this.submitForm.designPic = JSON.stringify(self.submitForm.designPic);
+        pm(api.updateDesign, self.submitForm, res => {
+          toast(res);
+          self.refresh();
+        }, err => {
+          console.log(err);
+        })
+      },
+      handleAddress() {
+        var self = this;
+        if (this.flag) { // 这里是修改广告时显示具体地址的逻辑
+          map.clearOverlays();
+          var point = new BMap.Point(self.submitForm.lontitude, self.submitForm.latitude);
+          marker = new BMap.Marker(point);
+          map.addOverlay(marker);
+          map.centerAndZoom(point, 14);
+          map.panBy(200, 400);
+          // var info = '<div class="info-win-content"><span style="font-weight:bold;color:#666;">管理单位</span><br>' + res.result.company_name +
+          var info = '<div class="info-win-content"><span style="font-weight:bold;color:#666;">所在地址：' + self.submitForm
+            .address + '</span> ' +
+            '</div>';
+          // var opts = {
+          //     title: '<span class="info-win-title">' + self.infoData.name +
+          //         // ' <a href="detail.html?ad_id=' + self.infoData.advertisementId + '" style="text-decoration:none;">查看详情</a><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>' +
+          //         '</span>'
+          // };
+          var infoWindow = new BMap.InfoWindow(info, {
+            enableAutoPan: false,
+          });
+          setTimeout(function () {
+            marker.openInfoWindow(infoWindow);
+          }, 500);
+          marker.addEventListener("click", function (event) {
+            // console.log(event);
+            marker.openInfoWindow(infoWindow);
+          });
+        }
+        this.activeMap = true;
+      },
+      confirmAdd() {
+        if (!this.flag || (this.boolAnd(2, 1) && this.flag) || (this.boolAnd(5, 1) && this.flag)) {
+          this.marker = marker;
+          this.activeMap = false;
+          this.getAddress(this.marker && this.marker.getPosition());
+          this.marker = null;
+        }
+        this.activeMap = false;
+      },
+      getAddress(pt) { // pt = {lat: (number), lng: number}
+        var geoc = new BMap.Geocoder();
+        var self = this;
+        self.submitForm.lontitude = pt.lng;
+        self.submitForm.latitude = pt.lat;
+        geoc.getLocation(pt, function (rs) {
+          var addComp = rs.addressComponents;
+          if (myValue) {
+            self.submitForm.address = myValue;
+          } else {
+            self.submitForm.address = addComp.province + addComp.city + addComp.district +
+              addComp.street + addComp.streetNumber;
+          }
+
+        });
+      },
+      refresh() {
+        var self = this;
+        window.location.reload();
+      },
+      auditLiveView() {
+        var self = this;
+        pm(api.auditLiveView, {
+          userId: infoGet('userId'),
+          advertisementId: self.ad,
+        }, res => {
+          toast(res);
+          self.refresh()
+        }, err => {
+          console.log(err);
+        })
+      },
+      submitLiveViewAudit() {
+        var self = this;
+        this.submitForm.designPic = JSON.stringify(self.submitForm.designPic);
+        this.submitForm.pic[this.firstPic].is_first = 1;
+        pm(api.submitLiveViewAudit, {
+          userId: infoGet('userId'),
+          advertisementId: self.ad,
+          pic: JSON.stringify(self.submitForm.pic),
+        }, res => {
+          toast(res);
+          self.refresh()
+        }, err => {
+          console.log(err);
+        })
+      },
+      designAudit(val) {
+        var self = this;
+        pm(api.designAudit, {
+          userId: infoGet('userId'),
+          advertisementId: self.ad,
+          auditResponse: self.feedback,
+          auditStatus: val,
+        }, res => {
+          toast(res);
+          self.refresh()
+        }, err => {
+          console.log(err);
+        })
+      },
+      boolAnd(status, userType) {
+        var self = this;
+        return self.ads === status && self.userType == userType;
+      },
+      formFill(key) {
+        var self = this;
+        if (key === 'adType') {
+          switch (self.submitForm[key]) {
+            case 1:
+              return '普通';
+            case 2:
+              return 'T型';
+            case 3:
+              return '灯箱';
+            case 4:
+              return '宣传栏';
+          }
+        } else if (key === 'adSpec') {
+          switch (self.submitForm[key]) {
+            case 1:
+              return '单面';
+            case 2:
+              return '双面';
+          }
+        } else if (key === 'hasLeaderPortrait') {
+          switch (self.submitForm[key]) {
+            case 1:
+              return '是';
+            case 2:
+              return '否';
+          }
+        } else if (key === 'companyName') {
+          return self.submitForm.companyName;
+        } else if (key === 'monitorUserId') {
+          return self.submitForm.monitorUserId;
+        }
+      },
+      getAdDetail() {
+        var self = this;
+        pm(api.getAdDetail, {
+          advertisementId: self.ad,
+        }, function (res) {
+          self.ads = res.result['ad_status'];
+          self.preloadData = transformKeyHump(res.result);
+          var temp = {};
+          Object.keys(self.preloadData).forEach(function (ele) {
+            temp[ele] = self.preloadData[ele];
+          })
+          self.submitForm = temp;
+        }, function (err) {
+          console.log(err);
+        })
+      },
+      addAdvertisement() {
+        var self = this;
+        var cache = this.submitForm.designPic;
+        this.submitForm.designPic = JSON.stringify(self.submitForm.designPic);
+        pm(api.addAdvertisement, self.submitForm, res => {
+          toast(res);
+          setTimeout(function () {
+            mui.back();
+          }, 1000)
+          this.submitForm.designPic = cache;
+        }, err => {
+          console.log(err);
+          this.submitForm.designPic = cache;
+        }, res => {
+          toast(res);
+          this.submitForm.designPic = cache;
+        });
+      },
+      updateAdvertisement() {
+        var self = this;
+        var cache = this.submitForm.designPic;
+        var cache2 = this.submitForm.pic;
+        this.submitForm.pic.forEach((ele, index) => {
+          console.log('test', index, self.firstPic);
+          if (self.firstPic === index) {
+            ele.is_first = 1;
+          } else {
+            ele.is_first = 0;
+          }
+        })
+        this.$nextTick(() => {
+          this.submitForm.designPic = JSON.stringify(self.submitForm.designPic);
+          this.submitForm.pic = JSON.stringify(self.submitForm.pic);
+          pm(api.updateAdvertisement, self.submitForm, res => {
+            toast(res);
+            setTimeout(function () {
+              mui.back();
+            }, 1000)
+            self.submitForm.designPic = cache;
+            self.submitForm.pic = cache2;
+          }, err => {
+            console.log(err);
+            self.submitForm.designPic = cache;
+            self.submitForm.pic = cache2;
+          }, res => {
+            toast(res);
+            self.submitForm.designPic = cache;
+            self.submitForm.pic = cache2;
+          });
+        })
+      },
+      resetForm() {
+        this.submitForm = {
+          serial_num: '',
+          address: '',
+          lontitude: '',
+          latitude: '',
+          adType: '',
+          adSpec: '',
+          hasLeaderPortrait: '',
+          adContent: '',
+          userId: '',
+          designPic: [],
+          pic: [],
+        };
+      },
+      format(key) {
+        var self = this;
+        switch (key) {
+          case 'adType':
+            var temp = self.typeArray.filter(function (ele) {
+              return ele.value == self.submitForm.adType;
+            })[0];
+            if (temp) {
+              return temp.label
+            }
+            return '';
+          case 'adSpec':
+            var temp = self.confArray.filter(function (ele) {
+              return ele.value == self.submitForm.adSpec;
+            })[0];
+            if (temp) {
+              return temp.label
+            }
+            return '';
+          case 'hasLeaderPortrait':
+            var temp = self.avatarArray.filter(function (ele) {
+              return ele.value == self.submitForm.hasLeaderPortrait;
+            })[0];
+            if (temp) {
+              return temp.label
+            }
+            return '';
+          case 'companyName':
+            return self.submitForm.companyName;
+          case 'monitorUserId':
+            var temp = self.monitorUserArray.filter(function (ele) {
+              return ele.value == self.submitForm.monitorUserId;
+            })[0];
+            if (temp) {
+              return temp.label
+            }
+            return '';
+        }
+      },
+      handleSelect(index) {
+        if (index === undefined) { //判断没有index 或者不是执行人
+          return;
+        } else if (index === 4) { // 以及管理责任人无单位时的处理
+          if (!this.submitForm.companyId) {
+            toast('请先选择单位');
+            return;
+          }
+          if (this.monitorUserArray.length < 1) {
+            toast('无管理责任人，请联系管理员');
+            return;
+          }
+        }
+        console.log('index', index);
+        switch (index) {
+          case 0:
+            this.selectArray = this.typeArray;
+            break;
+          case 1:
+            this.selectArray = this.confArray;
+            break;
+          case 2:
+            this.selectArray = this.avatarArray;
+            break;
+          case 3:
+            h5(function () {
+              jumpTo({
+                to: 'org_select.html',
+                data: {
+                  atype: 'resource'
+                }
+              });
+            })
+            return;
+          case 4:
+            this.selectArray = this.monitorUserArray;
+            break;
+        }
+        this.isSelect = true;
+      },
+      handleSelected(data) {
+        console.log('data', data);
+        this.submitForm[data.key] = this.selectArray[data.index].value;
+        this.isSelect = false;
+      },
+      uploadPic(type) {
+        var self = this;
+        h5(function () {
+          uploadImg(2, self.uploadUrl, function (res) {
+            if (res.code === 0) {
+              if (type === 1) {
+                self.submitForm.designPic.push(res.result);
+              } else {
+                self.submitForm.pic.push(res.result);
+              }
+            } else {
+              console.log(res.message)
+            }
+
+          })
+        })
+      },
+      deleteImg(index, type) {
+        if (type === 1) {
+          this.submitForm.designPic.splice(index, 1);
+        } else {
+          this.submitForm.pic.splice(index, 1)
+        }
+      },
+      selectUsers() {
+        var self = this;
+        pm(api.selectUsers, {
+          companyId: self.submitForm.companyId,
+          userType: 2,
+          userId: infoGet('userId'),
+          index: 1,
+          pageSize: 1000,
+        }, res => {
+          res.result.forEach(function (ele, index) {
+            var temp = {};
+            temp.label = ele.name;
+            temp.value = ele.userId;
+            if (index === 0) {
+              temp.key = 'monitorUserId';
+            }
+            self.monitorUserArray.push(temp);
+          })
+        }, err => {
+          console.log(err);
+        })
+      },
+    },
+  })
+</script>
+
+</html>

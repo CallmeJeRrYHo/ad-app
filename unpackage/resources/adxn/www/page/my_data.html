@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>我的资料</title>
+    <script src="../js/polyfill.min.js"></script>
+    <script src="../js/axios.min.js"></script>
+    <script src="../api/api.js"></script>
+    <script src="../api/apiConfig.js"></script>
+    <script src="../api/apiHttp.js"></script>
+    <script src="../js/mui.min.js"></script>
+    <link href="../css/reset.css" rel="stylesheet" />
+    <link href="../css/mui.min.css" rel="stylesheet" />
+    <script src="../js/vue.js"></script>
+    <script src="../js/exif.js"></script>
+    <script src="../js/openWindow.js"></script>
+    <script src="../js/md5.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
+    </script>
+    <style type="text/css">
+        .container {
+            position: relative;
+            top: 1.5rem;
+        }
+
+        .alert-content,
+        .pic-content {
+            padding: 0.2rem;
+            height: 5rem;
+            background-color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .submit {
+            background-color: #1296DB;
+            text-align: center;
+            width: 95%;
+            height: 1rem;
+            padding: 0.2rem 0;
+            color: #fff;
+            border-radius: 0.1rem;
+            margin: 0.3rem auto;
+        }
+
+        .line {
+            background-color: #fff;
+            height: 2rem;
+            padding: 0.4rem;
+            width: 100%;
+        }
+
+        .avatar {
+            height: 2rem;
+            width: 2rem;
+            border-radius: 50%;
+        }
+        #map-buttons {
+          position: fixed;
+          z-index: 10001;
+          top: 1rem;
+          right: 1rem;
+          width: 3rem;
+          height: 1rem;
+          line-height: 1rem;
+          background: #1296DB;
+          text-align: center;
+          color: #fff;
+          border-radius: 0.2rem;
+        }
+    </style>
+</head>
+
+<body ontouchstart>
+    <div id="my">
+        <c-header :title="title">
+        </c-header>
+        <div class="container">
+            <div class="flex j-b line" @click="uploadPic">
+                <div class="flex w_100">
+                    <img :src="avatar" class="avatar" />
+                </div>
+                <img src="../icons/forward.png" class="icon-small" />
+            </div>
+            <div class="flex j-b line" v-for="(item, index) in lineArray" :key="index" @click="handleSelect(item.index)">
+                <div class="flex j-b w_100" v-if="!item.type">
+                    <span class="noti-title">{{item.title}}</span>
+                    <span>{{format(item.key)}}</span>
+                </div>
+                <div v-else-if="item.type === 'input'" class="flex w_100">
+                    <span class="noti-title" style="width: 2.5rem;">{{item.title}}</span>
+                    <input class="t-input" type="text" :placeholder="item.placeholder" v-model="submitForm[item.key]" />
+                </div>
+                <img v-if="!item.type" src="../icons/forward.png" class="icon-small" />
+            </div>
+            <div class="submit" @click="updateUserInfo">
+                保存
+            </div>
+        </div>
+        <select-item :itemdata="selectArray" :show="isSelect" @selected="handleSelected"></select-item>
+        <v-mask :show="isSelect"></v-mask>
+    </div>
+</body>
+
+
+<script src="../components/cHeader.js"></script>
+<script src="../components/selectItem.js"></script>
+<script src="../components/vMask.js"></script>
+<script>
+    new Vue({
+        el: '#my',
+        data: {
+            selected: -1,
+            title: '我的资料',
+            lineArray: [
+                {
+                    title: '姓名',
+                    type: 'input',
+                    placeholder: '请输入姓名',
+                    key: 'userName',
+                },
+                {
+                    title: '原密码',
+                    type: 'input',
+                    placeholder: '请输入密码',
+                    key: 'oldPassword',
+                },
+                {
+                    title: '密码',
+                    type: 'input',
+                    placeholder: '请输入密码',
+                    key: 'newPassword',
+                },
+                {
+                    title: '确认密码',
+                    type: 'input',
+                    placeholder: '请再次输入密码',
+                    key: 'newPassword2',
+                },
+
+            ],
+            orgArray: [
+
+            ],
+            leaderArray: [],
+            selectArray: [],
+            isSelect: false,
+            submitForm: {
+                userId: infoGet('userId'),
+                userName: '',
+                path: '',
+                oldPassword: '',
+                newPassword: '',
+                newPassword2: '',
+            },
+            HOST: api.HOST,
+            flag: false,
+            avatar: '',
+            uploadUrl: 'http://219.132.139.116:9080/pic/uploadPic',
+
+        },
+        created: function () {
+            this.getUserInfo();
+        },
+        methods: {
+            getUserInfo() {
+                var self = this;
+                console.log('user', infoGet('userId'));
+                pm(api.getUserInfo, {
+                    userId: infoGet('userId'),
+                }, res => {
+                    self.submitForm.userName = res.result[0].name;
+                    self.avatar = api.HOST + res.result[0].portraitUrl;
+                }, err => {
+                    console.log(err);
+                })
+            },
+            uploadPic(type) {
+                var self = this;
+                h5(function () {
+                    uploadImg(2, self.uploadUrl, function (res) {
+                        if (res.code === 0) {
+                            self.submitForm.path = res.result.path;
+                            self.avatar = self.HOST + res.result.path;
+                        } else {
+                            console.log(res.message)
+                        }
+                    })
+                })
+            },
+            updateUserInfo() {
+                var self = this;
+                if (self.submitForm.newPassword !== self.submitForm.newPassword2) {
+                    var mes = {
+                        message: '两次密码不一致'
+                    };
+                    toast(mes);
+                    return;
+                } else {
+                    if (self.submitForm.oldPassword === '' || self.submitForm.newPassword === '') {
+                        
+                    } else {
+                        self.submitForm.oldPassword = md5(self.submitForm.oldPassword);
+                        self.submitForm.newPassword = md5(self.submitForm.newPassword);
+                    }
+                }
+                pm(api.updateUserInfo, self.submitForm, res => {
+                    toast(res);
+                    setTimeout(function () {
+                        infoSet('name', self.submitForm.userName);
+                        mui.back();
+                    }, 1000)
+                }, err => {
+                    console.log(err);
+                })
+            },
+            selectUsers() {
+                var self = this;
+                pm(api.selectUsers, {
+                    index: 1,
+                    pageSize: 1000,
+                    userId: infoGet('userId'),
+                    companyId: '',
+                    userType: 2,
+                }, res => {
+                    console.log(res.result);
+                    res.result.forEach(function (ele, index) {
+                        var temp = {};
+                        if (index === 0) {
+                            temp.key = 'superiorUserId';
+                        }
+                        temp.value = ele.userId;
+                        temp.label = ele.name;
+                        self.leaderArray.push(temp);
+                    })
+                }, err => {
+                    console.log(err);
+                })
+            },
+            addUser() {
+                var self = this;
+                if (self.submitForm.password !== self.submitForm.password2) {
+                    var mes = {
+                        message: '两次密码不一致'
+                    };
+                    toast(mes);
+                    return;
+                } else {
+                    self.submitForm.password = md5(self.submitForm.password);
+                }
+                pm(api.addUser, self.submitForm, res => {
+                    toast(res);
+                    setTimeout(function () {
+                        mui.back();
+                    }, 1000);
+                }, err => {
+                    console.log(err);
+                })
+            },
+            selectCompany() {
+                var self = this;
+                pm(api.selectCompany, {
+                    index: 1,
+                    pageSize: 1000,
+                }, function (res) {
+                    res.result.forEach(function (ele, index) {
+                        var temp = {};
+                        if (index === 0) {
+                            temp.key = "companyId";
+                        }
+                        temp.label = ele.companyName;
+                        temp.value = ele.companyId;
+                        self.orgArray.push(temp);
+                    })
+                }, function (err) {
+                    console.log(err);
+                })
+            },
+            resetForm() {
+                this.submitForm = {
+                    name: '',
+                    mobile: '',
+                    password: '',
+                    password2: '',
+                    companyId: '',
+                    userType: '',
+                    superiorUserId: '',
+                };
+            },
+            format(key) {
+                var self = this;
+                switch (key) {
+                    case 'companyId':
+                        var temp = self.orgArray.filter(function (ele) {
+                            return ele.value == self.submitForm.companyId;
+                        })[0];
+                        if (temp) {
+                            return temp.label
+                        }
+                        return '';
+                    case 'userType':
+                        var temp = self.roleArray.filter(function (ele) {
+                            return ele.value == self.submitForm.userType;
+                        })[0];
+                        if (temp) {
+                            return temp.label
+                        }
+                        return '';
+                    case 'superiorUserId':
+                        var temp = self.leaderArray.filter(function (ele) {
+                            return ele.value == self.submitForm.superiorUserId;
+                        })[0];
+                        if (temp) {
+                            return temp.label
+                        }
+                        return '';
+                }
+            },
+            handleSelect(index) {
+                if (index === undefined) {
+                    return;
+                }
+                switch (index) {
+                    case 0:
+                        this.selectArray = this.orgArray;
+                        break;
+                    case 1:
+                        this.selectArray = this.roleArray;
+                        break;
+                    case 2:
+                        this.selectArray = this.leaderArray;
+                        break;
+                }
+                this.isSelect = true;
+            },
+            handleSelected(data) {
+                this.submitForm[data.key] = this.selectArray[data.index].value;
+                this.isSelect = false;
+            },
+        },
+    })
+</script>
+
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>统计分析</title>
+  <script src="../js/polyfill.min.js"></script>
+  <script src="../js/axios.min.js"></script>
+  <script src="../api/api.js"></script>
+  <script src="../api/apiConfig.js"></script>
+  <script src="../api/apiHttp.js"></script>
+  <script src="../js/mui.min.js"></script>
+  <link href="../css/reset.css" rel="stylesheet" />
+  <link href="../css/mui.min.css" rel="stylesheet" />
+  <link href="../css/weui.min.css" rel="stylesheet" />
+  <link href="../css/style.min.css" rel="stylesheet" />
+  <script src="../js/vue.js"></script>
+  <script src="../js/openWindow.js"></script>
+  <script src="../js/echarts.min.js"></script>
+  <script src="../js/index.min.js"></script>
+  <script type="text/javascript" charset="utf-8">
+    document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
+  </script>
+  <style type="text/css">
+    .container {
+      position: relative;
+      top: 6rem;
+    }
+
+    .swiperArea {
+      width: 100%;
+      margin-top: 0.5rem;
+
+    }
+
+    .swiper_title {
+      font-size: 0.3rem;
+      font-weight: bold;
+      padding: 0.2rem;
+    }
+
+    .noData {
+      position: fixed;
+      top: 3rem;
+      width: 100%;
+      text-align: center;
+      white-space: nowrap;
+
+    }
+
+    .header {
+      position: fixed;
+      top: 3rem;
+      right: 0;
+      left: 0;
+      z-index: 10001;
+      background: #fff;
+    }
+
+    .tabbar {
+      position: fixed;
+      top: 1.5rem;
+      right: 0;
+      left: 0;
+      z-index: 10001;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-left: 0;
+      border-right: 0;
+      height: 1.5rem;
+    }
+
+    .tab {
+      width: 50%;
+      text-align: center;
+      line-height: 1.5rem;
+      color: #ccc;
+    }
+
+    .tab-active {
+      color: #1296DB;
+      border-bottom: 2px solid #1296DB;
+    }
+
+    .filter {
+      padding: 0 0.3rem;
+      background-color: #fff;
+      z-index: 10001;
+      width: 100%;
+      height: 1.2rem;
+      top: 3rem;
+      position: fixed;
+      text-align: center;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .filter_content_1 {
+      max-height: 5rem;
+      overflow: scroll;
+      z-index: 10000;
+      position: fixed;
+      top: 3.5rem;
+      width: 100%;
+      background: #fff;
+      border-bottom: 1px solid #ccc;
+    }
+  </style>
+</head>
+
+<body ontouchstart>
+  <div id="detail" @click="isFilter = false;">
+    <c-header :title="title">
+    </c-header>
+    <dl class="flex j-a w_100 tabbar">
+      <dt :class="submitForm.type === 1 ? 'tab tab-active' : 'tab'" @click="submitForm.type = 1">
+        样式统计
+      </dt>
+      <dt :class="submitForm.type === 2 ? 'tab tab-active' : 'tab'" @click="submitForm.type = 2">
+        规格统计
+      </dt>
+    </dl>
+    <div class="header">
+      <div class="filter flex j-a">
+        <span @click.stop="isFilter = !isFilter">
+          {{ selectTitle || '所有单位'}}
+          <img src="../icons/down_full.png" class="icon-small" />
+        </span>
+      </div>
+      <div class="filter_content_1" v-if="isFilter">
+        <div class="weui-cells">
+          <div v-for="(item, index) in orgArray" :key="index">
+            <label class="weui-cell weui-check__label" for="x11" @click.stop="handleSelect(item.company_name, item.company_id)">
+              <div class="weui-cell__bd">
+                <p>{{item.company_name}}</p>
+              </div>
+              <div class="weui-cell__ft">
+                <span v-if="selected === item.company_id" class="weui-icon-checked">
+                  <img src="../icons/select.png" class="icon-small" />
+                </span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <ve-pie :data="chartData" :settings="chartSetting"></ve-pie>
+    </div>
+    <span v-if="chartData.rows.length < 1" class="noData">暂无数据显示</span>
+  </div>
+</body>
+
+
+<script src="../components/cHeader.js"></script>
+<script>
+  new Vue({
+    el: '#detail',
+    data: {
+      chartSetting: {
+        dataType: '',
+      },
+      selected: -1,
+      title: infoGet('companyName') || '默认',
+      submitForm: {
+        companyId: infoGet('companyId'),
+        type: 1, // 1根据样式统计 2根据规格统计
+      },
+      orgArray: [],
+      isFilter: false,
+      selectTitle: '',
+      chartData: {
+        columns: ['ad_type', 'num'],
+        rows: [
+          // {
+          //   'ad_type': '1月1日',
+          //   'num': 123
+          // },
+          // {
+          //   'ad_type': '1月2日',
+          //   'num': 1223
+          // },
+          // {
+          //   'ad_type': '1月3日',
+          //   'num': 2123
+          // },
+          // {
+          //   'ad_type': '1月4日',
+          //   'num': 4123
+          // },
+          // {
+          //   'ad_type': '1月5日',
+          //   'num': 3123
+          // },
+          // {
+          //   'ad_type': '1月6日',
+          //   'num': 7123
+          // }
+        ]
+      },
+    },
+    created: function () {
+      this.adStatistics();
+      this.selectUserCompany();
+    },
+    watch: {
+      'submitForm.type': {
+        handler: function () {
+          this.adStatistics();
+        },
+        deep: true,
+      }
+    },
+    methods: {
+      selectUserCompany() {
+        var self = this;
+        pm(api.selectUserCompany, {
+          userId: infoGet('userId'),
+          companyId: '',
+          keyWord: '',
+        }, res => {
+          self.orgArray = res.result;
+        },err => {
+          console.log(err);
+        })
+      },
+      handleSelect(title, val) {
+        this.selected = val;
+        this.submitForm.companyId = val;
+        this.isFilter = false;
+        this.selectTitle = title;
+        this.adStatistics();
+      },
+      adStatistics() {
+        var self = this;
+        pm(api.adStatistics, self.submitForm, res => {
+          var temp = res.result;
+          if (self.submitForm.type === 1) {
+            self.chartData.columns[0] = 'ad_type';
+            temp.forEach(ele => {
+              switch (ele.ad_type) {
+                case 1:
+                  ele.ad_type = '普通';
+                  break;
+                case 2:
+                  ele.ad_type = 'T型';
+                  break;
+                case 3:
+                  ele.ad_type = '灯箱';
+                  break;
+                case 4:
+                  ele.ad_type = '宣传栏';
+                  break;
+              }
+            });
+          } else {
+            self.chartData.columns[0] = 'ad_spec'
+            temp.forEach(ele => {
+              switch (ele.ad_spec) {
+                case 1:
+                  ele.ad_spec = '单面';
+                  break;
+                case 2:
+                  ele.ad_spec = '双面';
+                  break;
+              }
+            })
+          }
+          self.chartData.rows = temp;
+        }, err => {
+          console.log(err);
+        })
+      },
+    },
+  })
+</script>
+
+</html>

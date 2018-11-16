@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>报警详情</title>
+  <script src="../js/polyfill.min.js"></script>
+  <script src="../js/axios.min.js"></script>
+  <script src="../api/api.js"></script>
+  <script src="../api/apiConfig.js"></script>
+  <script src="../api/apiHttp.js"></script>
+  <script src="../js/mui.min.js"></script>
+  <link href="../css/reset.css" rel="stylesheet" />
+  <link href="../css/mui.min.css" rel="stylesheet" />
+  <link href="../css/weui.min.css" rel="stylesheet" />
+  <script src="../js/vue.js"></script>
+  <script src="../js/exif.js"></script>
+  <script src="../js/openWindow.js"></script>
+  <script adType="text/javascript" charset="utf-8">
+    document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
+  </script>
+  <style adType="text/css">
+    .container {
+      position: relative;
+      top: 1.2rem;
+    }
+
+    .alert-content,
+    .pic-content {
+      padding: 0.2rem;
+      background-color: #fff;
+      margin: 0.5rem 0;
+
+    }
+
+    .submit {
+      background-color: #1296DB;
+      text-align: center;
+      width: 100%;
+      height: 1rem;
+      padding: 0.2rem 0;
+      color: #fff;
+      border-radius: 0.1rem;
+    }
+
+    .picArea {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .delete_img {
+      width: 0.7rem;
+      height: 0.7rem;
+      position: absolute;
+      right: 0.3rem;
+      bottom: 0.3rem;
+    }
+
+    .line {
+      background-color: #fff;
+      height: 2rem;
+      padding: 0.4rem;
+      width: 100%;
+    }
+
+    .ad-status {
+      width: 100%;
+      background-color: #fff;
+      padding: 0.2rem;
+    }
+
+    .submit {
+      margin: 0.3rem 0;
+    }
+
+    .title {
+      background-color: #fff;
+      margin-top: 0.4rem;
+      height: 1.5rem;
+      padding: 0.2rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .content {
+      background-color: #fff;
+    }
+
+    .warning-status,
+    .handle-status {
+      background-color: #fff;
+      margin: 0.3rem 0;
+      width: 100%;
+      padding: 0.2rem;
+
+    }
+
+    .card_imgs {
+      width: 2rem;
+      height: 2rem;
+    }
+  </style>
+</head>
+
+<body ontouchstart>
+  <div id="alert">
+    <c-header :title="title">
+    </c-header>
+    <div class="container">
+      <div class="title flex">
+        <img src="../icons/advertisement.png" style="height: 0.8rem; width: 0.8rem;margin-right: 0.3rem;" />
+        <span>{{contentData.address}}</span>
+      </div>
+      <div class="content flex w-100">
+        <div style="align-self: flex-start;">
+          <img src="../icons/alert.png" style="height: 0.8rem; width: 0.8rem;margin-right: 0.3rem;">
+        </div>
+        <div style="w-100">
+          <p style="font-size: 0.5rem; color: #000;">{{contentData.content}}</p>
+          <img v-for="(item, index) in contentData.picFiles" v-if="contentData.picFiles.length > 0" class="card_imgs"
+            :src="HOST + item.path" @click="galleryShow(index)" @longtap="imgSave(index, 1)">
+        </div>
+
+      </div>
+      <div class="warning-status">
+        <dl>
+          <dt>
+            <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">状态</span>
+            <span>{{contentData.warningStatus | wStatusFilter}}</span>
+          </dt>
+          <dt>
+            <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">报警时间</span>
+            <span>{{contentData.createTime }}</span>
+          </dt>
+          <dt>
+            <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">报警者</span>
+            <span>{{contentData.createUserName}}</span>
+          </dt>
+        </dl>
+      </div>
+      <div class="handle-status" v-for="(item, index) in contentData.warningHandles">
+        <dl>
+          <dt>
+            <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">处理结果</span>
+            <span>{{item.handleStatus | statusFilter}}</span>
+          </dt>
+          <dt>
+            <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">处理时间</span>
+            <span>{{item.createTime || '--'}}</span>
+          </dt>
+          <dt>
+            <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">审核时间</span>
+            <span>{{item.modifyTime || '--'}}</span>
+          </dt>
+          <dt>
+            <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">处理内容</span>
+            <span>{{item.content}}</span>
+          </dt>
+          <dt>
+            <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">处理回复</span>
+            <span>{{item.handleResponse}}</span>
+          </dt>
+        </dl>
+      </div>
+
+      <div class="pic-content" v-if="contentData.isShowHandle && userType === '1'">
+        <div class="noti-title" style="border-bottom: 1px solid #ccc;padding: 0.3rem 0;">处理结果</div>
+        <textarea v-model="feedback" class="t-input" placeholder="请输入内容"></textarea>
+      </div>
+      <div class="pic-content">
+        <div class="noti-title" style="border-bottom: 1px solid #ccc;padding: 0.3rem 0;">附图</div>
+        <div class="picArea flex" @click="uploadPic">
+          <div v-for="(item, index) in pics" style="margin: 0.3rem 0.2rem;position: relative;">
+            <img :src="HOST + item.path" :key="index" class="uimg" style="width: 3rem; height: 3rem; vertical-align: middle;"
+              @click.stop="galleryShow(index)" @longtap="imgSave(index, 2)"/>
+            <img v-if="(contentData.isShowHandle && userType === '1') || (contentData.isShowHandleAudit && userType === '2')" src="../icons/delete_active.png" class="delete_img" @click.stop="deleteImg(index)" />
+          </div>
+          <img v-if="(contentData.isShowHandle && userType === '1') || (contentData.isShowHandleAudit && userType === '2')" src="../icons/addPic.png" style="margin: 0.3rem 0;width: 3rem; height: 3rem; vertical-align: middle;" />
+        </div>
+      </div>
+      <div class="w-100 interact_area">
+        <div class="submit" @click="handleWarning" v-if="contentData.isShowHandle && userType === '1'">
+          提交处理结果
+        </div>
+        <div v-if="contentData.isShowHandleAudit && userType === '2'">
+          <div class="submit" @click="auditWarningHandle(2)">再次报警</div>
+          <div class="submit" @click="auditWarningHandle(1)">已审核</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+
+
+<script src="../components/cHeader.js"></script>
+<script src="../components/selectItem.js"></script>
+<script src="../components/vMask.js"></script>
+<script>
+  new Vue({
+    el: '#alert',
+    data: {
+      selected: -1,
+      title: '报警详情',
+      detail_title: 'A459环城公路与封疆大道汇合圆盘处',
+      lineArray: [{
+          title: '序号',
+          adType: 'input',
+        },
+        {
+          title: '地址',
+          key: 'address',
+          index: -1,
+        },
+        {
+          title: '宣传牌类型',
+          src: '../icons/notify_active.png',
+          key: 'adType',
+          index: 0,
+        },
+        {
+          title: '设置规格',
+          src: '../icons/statistics.png',
+          key: 'adSpec',
+          index: 1,
+        },
+        {
+          title: '是否放置国家领导人头像',
+          src: '../icons/watcher_active.png',
+          key: 'hasLeaderPortrait',
+          index: 2,
+        },
+        {
+          title: '宣传牌内容',
+          adType: 'textarea',
+        },
+      ],
+      typeArray: [{
+          label: '普通',
+          value: '0',
+          key: 'adType',
+        },
+        {
+          label: 'T型',
+          value: '1',
+        },
+        {
+          label: '灯箱',
+          value: '2',
+        },
+        {
+          label: '宣传栏',
+          value: '3',
+        },
+      ],
+      confArray: [{
+          label: '单面',
+          value: '0',
+          key: 'adSpec',
+        },
+        {
+          label: '双面',
+          value: '1',
+        },
+      ],
+      avatarArray: [{
+          label: '是',
+          value: '0',
+          key: 'hasLeaderPortrait',
+        },
+        {
+          label: '否',
+          value: '1',
+        },
+      ],
+      selectArray: [],
+      isSelect: false,
+      submitForm: {
+        userId: infoGet('userId'),
+        serialNum: '',
+        address: '',
+        lontitude: '102.759',
+        latitude: '65.123',
+        adType: '',
+        adSpec: '',
+        hasLeaderPortrait: '',
+        adContent: '',
+        designPic: [],
+        pic: [],
+      },
+      uploadUrl: 'http://219.132.139.116:9080/pic/uploadPic',
+      aid: '',
+      userType: infoGet('userType'),
+      contentData: {},
+      HOST: api.HOST,
+      feedback: '',
+      pics: [],
+    },
+    created: function () {
+      var self = this;
+      mui.init({
+        gestureConfig: {
+          tap: true, //默认为true
+          doubletap: true, //默认为false
+          longtap: true, //默认为false
+        }
+      });
+      h5(function () {
+        var webview = plus.webview.currentWebview();
+        if (webview.aid) {
+          self.aid = webview.aid;
+          self.getWarningDetail();
+        }
+      });
+    },
+    filters: {
+      statusFilter(val) {
+        switch (val) {
+          case 1:
+            return '待审核';
+          case 2:
+            return '已通过';
+          case 3:
+            return '已驳回';
+        }
+      },
+      wStatusFilter(val) {
+        switch (val) {
+          case 1:
+            return '待处理';
+          case 2:
+            return '已完成';
+        }
+
+      }
+    },
+    methods: {
+      imgSave(index, type) {
+        var self = this;
+        if (type === 1) {
+          var name = self.HOST + self.contentData.picFiles[index].path;
+        } else {
+          var name = self.HOST + self.pics[index].path;
+        }
+        h5(function () {
+          plus.gallery.save(name, function() {
+            plus.nativeUI.toast('图片保存成功');
+          }, function(e) {
+            console.log(e);
+            plus.nativeUI.toast('图片保存失败');
+          })
+        })
+      },
+      galleryShow(index) {
+        var self = this;
+        h5(function () {
+          var urls = [];
+          self.contentData.picFiles.forEach(ele => {
+            var url = self.HOST + ele.path;
+            urls.push(url);
+          });
+          plus.nativeUI.previewImage(urls, {
+            current: index,
+            loop: true,
+            indicator: 'number',
+          })
+        })
+      },
+      handleWarning() {
+        var self = this;
+        var temp = this.pics;
+        this.pics = JSON.stringify(self.pics);
+        pm(api.handleWarning, {
+          content: self.feedback,
+          userId: infoGet('userId'),
+          warningId: self.aid,
+          pics: self.pics,
+        }, res => {
+          toast(res);
+          setTimeout(function () {
+            self.pics = temp;
+            mui.back();
+          }, 1000)
+        }, err => {
+          console.log(err);
+        })
+      },
+      auditWarningHandle(val) {
+        var self = this;
+        pm(api.auditWarningHandle, {
+          userId: infoGet('userId'),
+          warningId: self.aid,
+          auditStatus: val
+        }, res => {
+          toast(res);
+          setTimeout(function () {
+            mui.back();
+          }, 1000)
+        }, err => {
+          console.log(err);
+        })
+      },
+      refresh() {
+        var self = this;
+        window.location.reload();
+      },
+      designAudit(val) {
+        var self = this;
+        pm(api.designAudit, {
+          userId: infoGet('userId'),
+          advertisementId: self.ad,
+          auditResponse: self.feedback,
+          auditStatus: val,
+        }, res => {
+          toast(res);
+          self.refresh()
+        }, err => {
+          console.log(err);
+        })
+      },
+      boolAnd(status, userType) {
+        var self = this;
+        return self.ads === status && self.userType == userType;
+      },
+      formFill(key) {
+        var self = this;
+        if (key === 'adType') {
+          switch (self.submitForm[key]) {
+            case 1:
+              return '普通';
+            case 2:
+              return 'T型';
+            case 3:
+              return '灯箱';
+            case 4:
+              return '宣传栏';
+          }
+        } else if (key === 'adSpec') {
+          switch (self.submitForm[key]) {
+            case 1:
+              return '单面';
+            case 2:
+              return '双面';
+          }
+        } else {
+          switch (self.submitForm[key]) {
+            case 1:
+              return '是';
+            case 2:
+              return '否';
+          }
+        }
+      },
+      getWarningDetail() {
+        var self = this;
+        pm(api.getWarningDetail, {
+          warningId: self.aid,
+          userId: infoGet('userId'),
+        }, function (res) {
+          self.contentData = res.result;
+          self.pics = res.result.warningHandles[0].pics;
+        }, function (err) {
+          console.log(err);
+        })
+      },
+      addAdvertisement() {
+        var self = this;
+        var cache = this.submitForm.designPic;
+        this.submitForm.designPic = JSON.stringify(self.submitForm.designPic);
+        pm(api.addAdvertisement, self.submitForm, res => {
+          toast(res);
+          mui.back();
+          this.submitForm.designPic = cache;
+        }, err => {
+          console.log(err);
+          this.submitForm.designPic = cache;
+        }, res => {
+          toast(res);
+          this.submitForm.designPic = cache;
+        });
+      },
+      resetForm() {
+        this.submitForm = {
+          serial_num: '',
+          address: '',
+          lontitude: '',
+          latitude: '',
+          adType: '',
+          adSpec: '',
+          hasLeaderPortrait: '',
+          adContent: '',
+          userId: '',
+          designPic: [],
+          pic: [],
+        };
+      },
+      format(key) {
+        var self = this;
+        switch (key) {
+          case 'adType':
+            var temp = self.typeArray.filter(function (ele) {
+              return ele.value == self.submitForm.adType;
+            })[0];
+            if (temp) {
+              return temp.label
+            }
+            return '';
+          case 'adSpec':
+            var temp = self.confArray.filter(function (ele) {
+              return ele.value == self.submitForm.adSpec;
+            })[0];
+            if (temp) {
+              return temp.label
+            }
+            return '';
+          case 'hasLeaderPortrait':
+            var temp = self.avatarArray.filter(function (ele) {
+              return ele.value == self.submitForm.hasLeaderPortrait;
+            })[0];
+            if (temp) {
+              return temp.label
+            }
+            return '';
+        }
+      },
+      handleSelect(index) {
+        if (index === undefined) {
+          return;
+        }
+        switch (index) {
+          case 0:
+            this.selectArray = this.typeArray;
+            break;
+          case 1:
+            this.selectArray = this.confArray;
+            break;
+          case 2:
+            this.selectArray = this.avatarArray;
+            break;
+        }
+        this.isSelect = true;
+      },
+      handleSelected(data) {
+        this.submitForm[data.key] = this.selectArray[data.index].value;
+        this.isSelect = false;
+      },
+      uploadPic(type) {
+        var self = this;
+        h5(function () {
+          uploadImg(1, self.uploadUrl, function (res) {
+            if (res.code === 0) {
+              self.pics.push(res.result);
+            } else {
+              console.log(res.message)
+            }
+          })
+        })
+      },
+      deleteImg(index) {
+        // if (type === 1) {
+        //   this.submitForm.designPic.splice(index, 1);
+        // } else {
+        //   this.submitForm.pic.splice(index, 1)
+        // }
+        this.pics.splice(index, 1);
+      },
+    },
+  })
+</script>
+
+</html>
