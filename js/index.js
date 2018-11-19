@@ -117,6 +117,8 @@ var drawRoute = function(map, destPoint) {
     var geolocation = new BMap.Geolocation();
     geolocation.getCurrentPosition(function(r) {
         if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+			r.point.lat=115.7397958375;
+			r.point.lng=24.1527695783;
             var mk = new BMap.Marker(r.point);
             // map.addOverlay(mk);
             // map.panTo(r.point);

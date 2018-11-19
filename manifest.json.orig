@@ -134,8 +134,10 @@
                         "notification" : "unpackage/res/icons/20x20.png",
                         "notification@2x" : "unpackage/res/icons/40x40.png" /*iPad高分屏设置页面程序图标，分辨率：58x58*/
                     },
-                    "appstore" : "C:/Users/Administrator/Desktop/xingning.png"
-					"appstore" : "xn.png"
+
+                    "appstore" : "mz.png"
+
+                    "appstore" : "IMG_1574.png"
                 },
                 "android" : {
                     "mdpi" : "unpackage/res/icons/48x48.png", /*普通屏程序图标，分辨率：48x48*/
