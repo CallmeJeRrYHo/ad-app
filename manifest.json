@@ -134,7 +134,7 @@
                         "notification" : "unpackage/res/icons/20x20.png",
                         "notification@2x" : "unpackage/res/icons/40x40.png" /*iPad高分屏设置页面程序图标，分辨率：58x58*/
                     },
-                    "appstore" : "C:/Users/Administrator/Desktop/xingning.png"
+                    "appstore" : "xingning.png"
                 },
                 "android" : {
                     "mdpi" : "unpackage/res/icons/48x48.png", /*普通屏程序图标，分辨率：48x48*/
@@ -170,8 +170,8 @@
                     "mdpi" : "", /*普通屏启动图片，分辨率：240x282*/
                     "ldpi" : "", /*大屏启动图片，分辨率：320x442*/
                     "hdpi" : "", /*高分屏启动图片，分辨率：480x762*/
-                    "xhdpi" : "D:/Pictures/无标题.png", /*720P高分屏启动图片，分辨率：720x1242*/
-                    "xxhdpi" : "D:/Pictures/无标题.png" /*1080P高分屏启动图片，分辨率：1080x1882*/
+                    "xhdpi" : "", /*720P高分屏启动图片，分辨率：720x1242*/
+                    "xxhdpi" : "" /*1080P高分屏启动图片，分辨率：1080x1882*/
                 }
             },
             "plugins" : {
