@@ -214,6 +214,7 @@
     },
     methods: {
       selectUserCompany() {
+				this.selectTitle = infoGet('companyName');
         var self = this;
         pm(api.selectUserCompany, {
           userId: infoGet('userId'),
