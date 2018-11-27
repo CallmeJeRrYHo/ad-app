@@ -4,7 +4,7 @@
 	(global.api = factory());
 }(this, (function () {
     var api = {
-		HOST: 'http://219.132.139.116:9090',
+		HOST: 'http://192.168.3.223:9090',
         // 公告类
         selectMsg: function (data) {
             return apiHttp.fetchPost(apiConfig.selectMsg, data);

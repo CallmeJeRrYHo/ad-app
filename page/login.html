@@ -90,14 +90,23 @@
             password: '',
         },
         created: function () {
-            
+           document.addEventListener("plusready",function(){
+           	console.log(plus.push.getClientInfo().clientid);
+						window.localStorage.setItem("cid",plus.push.getClientInfo().clientid);
+           });
         },
         methods: {
           login() {
+						var cid=window.localStorage.getItem("cid");
+						if(!cid){
+							mui.toast("cid获取失败可能影响推送", {duration: 'long', type: 'div'});
+							cid='';
+						}
             var self = this;
             pm(api.login, {
               account: self.account,
               password: md5(self.password),
+							cid: cid,
             }, res => {
               // jumpTo
               console.log(res);
