@@ -581,7 +581,20 @@
 						})
 						self.handleSelect(ind, webview.value);
 					}
-				});			
+				});
+				document.addEventListener("plusready", function() {
+					plus.push.addEventListener('receive', function(msg) {
+						if (msg.aps) {
+							mui.toast("putong", {duration: 'long', type: 'div'});
+						} else {
+							mui.toast("touchuan", {duration: 'long', type: 'div'});
+						}
+
+						// 测试在线，透传消息，设置角标
+						plus.runtime.setBadgeNumber(10);
+
+					});
+				});
 			},
 			methods: {
 				/** 
@@ -731,9 +744,9 @@
 					var self = this;
 					var map = new BMap.Map("l-map");
 					//兴宁市的 默认到市委为中心
-					if(self.initMapAddress.indexOf('兴宁')!=-1){
-						map.centerAndZoom(new BMap.Point(115.739777,24.15276), 15);
-					}else{
+					if (self.initMapAddress.indexOf('兴宁') != -1) {
+						map.centerAndZoom(new BMap.Point(115.739777, 24.15276), 15);
+					} else {
 						map.centerAndZoom(self.initMapAddress, 15);
 					}
 					map.enableScrollWheelZoom(true);
