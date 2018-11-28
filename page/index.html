@@ -399,12 +399,13 @@
 						</div>
 					</div>
 					<div class="manage-content">
-						<div class="flex j-b line" v-for="(item, index) in lineArray" :key="index" v-if="+item.auth <= +userType" @click="jumpTo(item.to)">
+						<div class="flex j-b line" v-for="(item, index) in lineArray" :key="index" v-if="+item.auth <= +userType" @click="jumpToAndCleanDot(item)">
 							<div class="flex">
 								<img :src="item.src" class="icon-small" style="margin-right: 0.2rem" />
 								<span>{{item.title}}</span>
+								<img src="../icons/red_dot.png" class="icon-small" style="float: right"  v-show="+item.hasDot" />
 							</div>
-							<img src="../icons/forward.png" class="icon-small" />
+							<img src="../icons/forward.png" class="icon-small"/>
 						</div>
 					</div>
 					<div class="manage-login w-100" @click="logout">
@@ -471,42 +472,49 @@
 						src: '../icons/watcher_active.png',
 						to: 'account_manage.html',
 						auth: '2',
+						hasDot: false,
 					},
 					{
 						title: '我的消息',
 						src: '../icons/alert.png',
 						to: 'message.html',
 						auth: '1',
+						hasDot: false,
 					},
 					{
 						title: '单位管理',
-						src: '../icons/watcher_active.png',
+						src: '../icons/orgAuth.png',
 						to: 'org_manage.html',
 						auth: '3',
+						hasDot: false,
 					},
 					{
 						title: '管理宣传位',
-						src: '../icons/watcher_active.png',
+						src: '../icons/advertisement.png',
 						to: 'resource.html',
 						auth: '1',
+						hasDot: false,
 					},
 					{
 						title: '通知公告',
-						src: '../icons/watcher_active.png',
+						src: '../icons/notify_active.png',
 						to: 'announcement.html',
 						auth: '1',
+						hasDot: false,
 					},
 					{
 						title: '统计分析',
 						src: '../icons/statistics.png',
 						to: 'statistics.html',
 						auth: '1',
+						hasDot: false,
 					},
 					{
 						title: '投放监测',
 						src: '../icons/statistics.png',
 						to: 'moniter_add.html',
 						auth: '1',
+						hasDot: false,
 					},
 
 				],
@@ -583,17 +591,20 @@
 					}
 				});
 				document.addEventListener("plusready", function() {
-					plus.push.addEventListener('receive', function(msg) {
-						if (msg.aps) {
-							mui.toast("putong", {duration: 'long', type: 'div'});
-						} else {
-							mui.toast("touchuan", {duration: 'long', type: 'div'});
-						}
-
-						// 测试在线，透传消息，设置角标
-						plus.runtime.setBadgeNumber(10);
-
+					plus.push.addEventListener('receive', function(msg) {								
+							var data = JSON.parse(msg.payload);
+							switch(data.operation){
+								case "ad":
+									self.lineArray[3].hasDot=true;
+									self.createLocalMsg("有新广告");
+									break;
+								case "msg":
+									self.lineArray[4].hasDot=true;
+									self.createLocalMsg("您有新消息");
+									break;
+							}
 					});
+				
 				});
 			},
 			methods: {
@@ -668,6 +679,11 @@
 					// }
 
 
+				},
+				createLocalMsg(content){
+					plus.push.createMessage( content, "{'operation':'ad'}", {
+						icon: '../unpackage/res/icons/180x180.png'
+					} );
 				},
 				handleEndPullRefresh(bool) {
 					var self = this;
@@ -847,7 +863,6 @@
 				},
 				selectAdList(addr, point) {
 					var self = this;
-					console.log(self.selectForm.companyId)
 					this.resetContent();
 					if (addr) {
 						self.selectForm.lon = addr.lng;
@@ -882,6 +897,14 @@
 					h5(function() {
 						jumpTo({
 							to: to
+						});
+					})
+				},
+				jumpToAndCleanDot(item){
+ 					item.hasDot=false;
+					h5(function() {
+						jumpTo({
+							to: item.to
 						});
 					})
 				},

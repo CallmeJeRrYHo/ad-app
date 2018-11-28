@@ -2,4 +2,10 @@
 蕉岭 io.dcloud.adjl
 梅州 io.dcloud.admz
 
-url,文字,图标
+url,文字,图标,推送appid
+219.132. 139.116
+		mz                                  jl                        xn
+id    CPRuA1sHC579jAawsmPKe3         CZBjaWvqVp7MUsoBDomi34    H4zjDXaTZ8AQi28jH7W8b
+appS  Zb9KwKkpZPALzREn5j2Mg2         oMaFOS0O7DAPVxYe1dIDXA   9dwndTOzrW5IsSjNZE6qwA
+key   omtok4M3Ln5hEznCdFm3s7         9ghDzvIFZy8qUmIPziVLXA   5qwEltEBmp8NsruEWWk4i9
+MasterS  bDNBsHHfVjA0DsZmiHkvW4      Qy1hTSNKDX84L7jSHUSe41   oNz2Pq09pE6jl4PlHLXiA9
