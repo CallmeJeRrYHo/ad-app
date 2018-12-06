@@ -55,8 +55,10 @@
         // 统计类
         adStatistics: '/statistics/adStatistics',
         
-
-
+		//巡查
+		listPatrolRecord: '/patrolRecord/list',
+		patrolRecordDetail: '/patrolRecord/detail',
+		patrolRecordDetailAdd: '/patrolRecord/add',
         
 
         

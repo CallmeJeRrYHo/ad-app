@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>添加巡查记录</title>
+  <script src="../js/polyfill.min.js"></script>
+  <script src="../js/axios.min.js"></script>
+  <script src="../api/api.js"></script>
+  <script src="../api/apiConfig.js"></script>
+  <script src="../api/apiHttp.js"></script>
+  <script src="../js/mui.min.js"></script>
+  <link href="../css/reset.css" rel="stylesheet" />
+  <link href="../css/mui.min.css" rel="stylesheet" />
+  <link href="../css/weui.min.css" rel="stylesheet" />
+  <script src="../js/vue.js"></script>
+  <script src="../js/exif.js"></script>
+  <script src="../js/openWindow.js"></script>
+	<script adType="text/javascript" charset="utf-8">
+    document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
+  </script>
+  <style adType="text/css">
+    .container {
+      position: relative;
+      top: 1.2rem;
+    }
+
+    .alert-content,
+    .pic-content {
+      padding: 0.2rem;
+      background-color: #fff;
+      margin: 0.5rem 0;
+
+    }
+
+    .submit {
+      background-color: #1296DB;
+      text-align: center;
+      width: 100%;
+      height: 1rem;
+      padding: 0.2rem 0;
+      color: #fff;
+      border-radius: 0.1rem;
+    }
+
+    .picArea {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .delete_img {
+      width: 0.7rem;
+      height: 0.7rem;
+      position: absolute;
+      right: 0.3rem;
+      bottom: 0.3rem;
+    }
+
+    .line {
+      background-color: #fff;
+      height: 2rem;
+      padding: 0.4rem;
+      width: 100%;
+    }
+
+    .ad-status {
+      width: 100%;
+      background-color: #fff;
+      padding: 0.2rem;
+    }
+
+    .submit {
+      margin: 0.3rem 0;
+    }
+
+    .title {
+      background-color: #fff;
+      margin-top: 0.4rem;
+      height: 1.5rem;
+      padding: 0.2rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .content {
+      background-color: #fff;
+    }
+
+    .warning-status,
+    .handle-status {
+      background-color: #fff;
+      margin: 0.3rem 0;
+      width: 100%;
+      padding: 0.2rem;
+
+    }
+
+    .card_imgs {
+      width: 2rem;
+      height: 2rem;
+    }
+  </style>
+</head>
+
+<body ontouchstart>
+  <div id="alert">
+    <c-header :title="title">
+    </c-header>
+    <div class="container">
+      <div class="title flex">
+        <img src="../icons/advertisement.png" style="height: 0.8rem; width: 0.8rem;margin-right: 0.3rem;" />
+        <span>{{address}}</span>
+      </div>
+      <div class="warning-status">
+				<div class="flex j-b" style="padding: 0.2rem;" @click="hasProblemShow">
+					<div class="flex j-b w_100">
+						<span class="noti-title">是否有问题</span>
+						<span>{{hasProblem}}</span>
+					</div>
+					<img src="../icons/forward.png" class="icon-small" />
+				</div>
+        <HR style="background-color:#EFEFEF;border: none; height: 1px;"/>
+				<div class="flex j-b" style="padding: 0.2rem;" @click="isWarningShow">
+					<div class="flex j-b w_100">
+						<span class="noti-title">是否已报警</span>
+						<span>{{isWarning}}</span>
+					</div>
+					<img src="../icons/forward.png" class="icon-small" />
+				</div>
+				<HR style="background-color:#EFEFEF;border: none; height: 1px;"/>
+				<div class="flex j-b" style="padding: 0.2rem;" >
+					<div class="flex j-b w_100">
+						<div class="noti-title" style="width: 1rem;">报警编号</div>
+						<input class="t-input" adType="text" placeholder="请输入报警号"  v-model="submitForm.warningNo"/>
+					</div>
+				</div>
+      </div>
+      <div class="pic-content" v-if="contentData.isShowHandle && userType === '1'">
+        <div class="noti-title" style="border-bottom: 1px solid #ccc;padding: 0.3rem 0;">处理结果</div>
+        <textarea v-model="feedback" class="t-input" placeholder="请输入内容"></textarea>
+      </div>
+      <div class="pic-content">
+        <div class="noti-title" style="border-bottom: 1px solid #ccc;padding: 0.3rem 0;">附图</div>
+        <div class="picArea flex" @click="uploadPic">
+          <div v-for="(item, index) in pics" style="margin: 0.3rem 0.2rem;position: relative;">
+            <img :src="HOST + item.path" :key="index" class="uimg" style="width: 3rem; height: 3rem; vertical-align: middle;"
+              @click.stop="galleryShow(index)" @longtap="imgSave(index, 2)"/>
+            <img v-if="(contentData.isShowHandle && userType === '1') || (contentData.isShowHandleAudit && userType === '2')" src="../icons/delete_active.png" class="delete_img" @click.stop="deleteImg(index)" />
+          </div>
+          <img  src="../icons/addPic.png" style="margin: 0.3rem 0;width: 3rem; height: 3rem; vertical-align: middle;" />
+        </div>
+      </div>
+     <div class="submit" @click="submitFormShow">
+     		提交
+     </div>
+    </div>
+		<select-item :itemdata="selectArray" :show="isSelect" @selected="handleSelected"></select-item>
+		<v-mask :show="isSelect" @close="isSelect = false"></v-mask>
+		
+  </div>
+</body>
+
+
+<script src="../components/cHeader.js"></script>
+<script src="../components/selectItem.js"></script>
+<script src="../components/vMask.js"></script>
+<script>
+  new Vue({
+    el: '#alert',
+    data: {
+      selected: -1,
+      title: '添加巡查记录',
+      detail_title: 'A459环城公路与封疆大道汇合圆盘处',
+      selectArray: [],
+      isSelect: false,
+      submitForm: {
+        userId: infoGet('userId'),
+        hasProblem: '',
+        pic:'',
+				isWarning: '',
+				warningNo: '',
+				advertisementId: '',
+      },
+			hasProblem:'',
+			isWarning:'',
+			problemArray: [{
+					label: '有',
+					value: '1',
+					key: 'hasProblem',
+				},
+				{
+					label: '无',
+					value: '0',
+				},
+			],
+			warningArray: [{
+					label: '有',
+					value: '1',
+					key: 'isWarning',
+				},
+				{
+					label: '无',
+					value: '0',
+				},
+			],
+      uploadUrl: 'http://192.168.3.223:9090/pic/uploadPic',
+      aid: '',
+      userType: infoGet('userType'),
+      contentData: {},
+      HOST: api.HOST,
+      feedback: '',
+			prId: '1',
+      pics: [],
+			address: '',
+    },
+    created: function () { 
+      var self = this;
+      mui.init({
+        gestureConfig: {
+          tap: true, //默认为true
+          doubletap: true, //默认为false
+          longtap: true, //默认为false
+        }
+      });
+      h5(function () {
+        var webview = plus.webview.currentWebview();
+          self.address = webview.address;
+					self.submitForm.advertisementId= webview.ad;
+      });
+    },
+
+    methods: {
+      handleSelected(data) {
+        this.submitForm[data.key] = this.selectArray[data.index].value;
+        this.isSelect = false;
+				if(data.key=='isWarning'){
+					this.isWarning=this.selectArray[data.index].label;
+				}
+				if(data.key=='hasProblem'){
+					this.hasProblem=this.selectArray[data.index].label;
+				}
+      },
+      uploadPic(type) {
+        var self = this;
+        h5(function () {
+          uploadImg(1, self.uploadUrl, function (res) {
+            if (res.code === 0) {
+              self.pics.push(res.result);
+            } else {
+              console.log(res.message)
+            }
+          })
+        })
+      },
+      deleteImg(index) {
+        // if (type === 1) {
+        //   this.submitForm.designPic.splice(index, 1);
+        // } else {
+        //   this.submitForm.pic.splice(index, 1)
+        // }
+        this.pics.splice(index, 1);
+      },
+			hasProblemShow(){
+				this.selectArray=this.problemArray;
+				this.isSelect=true;
+			},
+			isWarningShow(){
+				this.selectArray=this.warningArray;
+				this.isSelect=true;
+			},
+			submitFormShow(){
+				var self=this;
+				console.log(JSON.stringify(self.pics));
+				self.submitForm.pics=JSON.stringify(self.pics);
+				pm(api.patrolRecordDetailAdd,self.submitForm,
+						res=>{
+							toast(res);
+							setTimeout(function() {
+								mui.back();
+							},1000);
+						}, err => {
+                    console.log(err);
+                });
+			},
+    },
+		filters: {
+			statusFilter(val) {
+				switch (val) {
+					case 1:
+						return '设计稿待审核';
+					case 2:
+						return '设计稿不通过';
+					case 3:
+						return '设计稿确定';
+					case 4:
+						return '实景待审核';
+					case 5:
+						return '已完成'; 
+				}
+			}
+		},
+  })
+</script>
+
+</html>

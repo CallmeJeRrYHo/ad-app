@@ -4,7 +4,7 @@
 	(global.api = factory());
 }(this, (function () {
     var api = {
-		HOST: 'http://39.108.245.130:9090',
+		HOST: 'http://192.168.3.223:9090',
         // 公告类
         selectMsg: function (data) {
             return apiHttp.fetchPost(apiConfig.selectMsg, data);
@@ -129,6 +129,15 @@
             return apiHttp.fetchPost(apiConfig.adStatistics, data);
         },
        
+			 listPatrolRecord: function(data){
+					return apiHttp.fetchPost(apiConfig.listPatrolRecord,data);
+			 },
+			 patrolRecordDetail: function(data){
+				 	return apiHttp.fetchPost(apiConfig.patrolRecordDetail,data);
+			 },
+			 patrolRecordDetailAdd: function(data){
+				 return apiHttp.fetchPost(apiConfig.patrolRecordDetailAdd,data);
+			 },
     }
     return api
 })))

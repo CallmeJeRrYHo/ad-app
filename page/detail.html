@@ -156,7 +156,10 @@
         </dl>
       </div>
       <div class="interact">
-        <div class="interact-button w-100" @click="checkAll">查看单位所有宣传牌</div>
+				<div class="flex">
+        <div class="interact-button"  style="margin-right: 0.1rem;" @click="checkAll">查看单位所有宣传牌</div>
+				<div class="interact-button" @click="checkPatrolRecord">查看巡查记录</div>
+				</div>
         <div class="flex">
           <div class="interact-button" style="margin-right: 0.1rem;" @click="jumpToMap">查看地图</div>
           <div class="interact-button" @click="sendAlert">发送报警</div>
@@ -371,6 +374,18 @@
           })
         })
       },
+			checkPatrolRecord(){
+				var self = this;
+				h5(function () {
+					jumpTo({
+						to: 'patrol_record_list.html',
+						data: {
+							ad: self.ad,
+							address: self.address
+						}
+					})
+				})
+			},
       jumpToMap() {
         var self = this;
         mui.scrollTo(0, 50);
