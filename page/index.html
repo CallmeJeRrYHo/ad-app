@@ -351,6 +351,14 @@
 							 @click="">双面</dt>
 						</dl>
 					</div>
+					<div class="filter-item">
+						<label class="filter-item-lb">巡查状态</label>
+						<dl>
+							<dt class="filter-item-ob" :class="selectForm.isPatrol === 1 ? 'filter-item-ob-active' : ''" @click="handleFilter2(3, 1)">本月已巡查</dt>
+							<dt class="filter-item-ob" :class="selectForm.isPatrol === 2 ? 'filter-item-ob-active' : ''" @click="handleFilter2(3, 2)"
+							@click="">本月未巡查</dt>
+						</dl>
+					</div>
 					<div class="filter-button">
 						<div class="filter-button-ob" @click="resetFilter">重置</div>
 						<div class="filter-button-ob" style="background-color: #1296DB" @click="refresh">确定</div>
@@ -440,7 +448,6 @@
 						label: '全部单位',
 						value: '',
 					},
-
 				],
 				filterOption1: -1,
 				filterOption2: -1,
@@ -505,7 +512,7 @@
 					{
 						title: '统计分析',
 						src: '../icons/statistics.png',
-						to: 'statistics.html',
+						to: 'new_statistics.html',
 						auth: '1',
 						hasDot: false,
 					},
@@ -527,6 +534,7 @@
 					pageSize: 15,
 					lon: '',
 					lat: '',
+					isPatrol: '',
 				},
 				mobile: '',
 				userType: '',
@@ -863,6 +871,7 @@
 				},
 				selectAdList(addr, point) {
 					var self = this;
+					self.selectForm.index=1;
 					this.resetContent();
 					if (addr) {
 						self.selectForm.lon = addr.lng;
@@ -974,12 +983,18 @@
 							return;
 						}
 						this.selectForm.adType = option;
-					} else {
+					} else if(filter=== 2) {
 						if (this.selectForm.adSpec === option) {
 							this.selectForm.adSpec = '';
 							return;
 						}
 						this.selectForm.adSpec = option;
+					}else{
+						if (this.selectForm.isPatrol === option) {
+							this.selectForm.isPatrol = '';
+							return;
+						}
+						this.selectForm.isPatrol = option;
 					}
 				},
 				handleSelect(index, val) {
