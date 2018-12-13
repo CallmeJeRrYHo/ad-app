@@ -376,11 +376,15 @@
       },
 			checkPatrolRecord(){
 				var self = this;
+				console.log(JSON.stringify(self.infoData));
+				
+				console.log(self.infoData.user_id);
 				h5(function () {
 					jumpTo({
 						to: 'patrol_record_list.html',
 						data: {
 							ad: self.ad,
+							create_user_id: self.infoData.user_id,
 							address: self.address
 						}
 					})
