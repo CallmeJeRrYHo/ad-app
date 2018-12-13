@@ -117,7 +117,7 @@
 	<body ontouchstart>
 		<div id="moniter" @click="isFilter = 0">
 			<c-header :title="title"></c-header>
-			<dl class="flex j-a w_100 tabbar" v-if="false">
+			<dl class="flex j-a w_100 tabbar">
 				<dt class="tab" @click="openDate(1)">
 					{{ submitForm.startDate || '开始日期'}}
 				</dt>
@@ -251,6 +251,7 @@
 						} else {
 							self.submitForm.endDate = item.text;
 						}
+						self.newStatistics();
 					})
 				},
 				handleSelect(title, val) {
@@ -296,7 +297,10 @@
 				},
 				newStatistics() {
 					var self = this;
+					console.log(JSON.stringify(self.submitForm));
+				
 					pm(api.newStatistics, self.submitForm, res => {
+						console.log(JSON.stringify(res));
 						self.total_num=res.result.total_num;
 						self.month_patrol_num=res.result.month_patrol_num;
 						self.month_update_num=res.result.month_update_num;

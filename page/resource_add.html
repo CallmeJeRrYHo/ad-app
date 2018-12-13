@@ -384,6 +384,10 @@
           label: '宣传栏',
           value: '4',
         },
+				{
+					label: 'LED显示屏',
+					value: '5',
+				},
       ],
       confArray: [{
           label: '单面',
@@ -681,6 +685,8 @@
               return '灯箱';
             case 4:
               return '宣传栏';
+						case 5:
+							return 'LED显示屏';
           }
         } else if (key === 'adSpec') {
           switch (self.submitForm[key]) {
