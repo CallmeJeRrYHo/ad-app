@@ -54,7 +54,7 @@
 
         // 统计类
         adStatistics: '/statistics/adStatistics',
-        
+        newStatistics: '/statistics/newStatistics',
 		//巡查
 		listPatrolRecord: '/patrolRecord/list',
 		patrolRecordDetail: '/patrolRecord/detail',

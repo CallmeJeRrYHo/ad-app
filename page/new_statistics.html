@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>统计分析</title>
+		<script src="../js/polyfill.min.js"></script>
+		<script src="../js/axios.min.js"></script>
+		<script src="../api/api.js"></script>
+		<script src="../api/apiConfig.js"></script>
+		<script src="../api/apiHttp.js"></script>
+		<script src="../js/mui.min.js"></script>
+		<link href="../css/reset.css" rel="stylesheet" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/mui.dtpicker.css" rel="stylesheet" />
+		<link href="../css/mui.picker.min.css" rel="stylesheet" />
+		<link href="../css/weui.min.css" rel="stylesheet" />
+		<script src="../js/vue.js"></script>
+		<script src="../js/mui.picker.min.js"></script>
+		<script src="../js/mui.dtpicker.js"></script>
+		<script src="../js/openWindow.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			document.documentElement.style.fontSize = document.documentElement.clientWidth / 10.8 + 'px';
+		</script>
+		<style type="text/css">
+			body {
+				background-color: #f2f2f2;
+			}
+
+			#resource {
+				width: 100%;
+				height: 100%;
+			}
+
+			.container {
+				position: relative;
+				top: 4rem;
+			}
+
+			.account-card {
+				width: 100%;
+				height: 5rem;
+				margin-bottom: 0.3rem;
+				background: #fff;
+				padding: 0.5rem;
+			}
+
+			.header {
+				position: fixed;
+				top: 3rem;
+				right: 0;
+				left: 0;
+				z-index: 10001;
+				background: #fff;
+			}
+
+			.tabbar {
+				position: fixed;
+				top: 1.5rem;
+				right: 0;
+				left: 0;
+				z-index: 10001;
+				background: #fff;
+				border-left: 0;
+				border-right: 0;
+				height: 1.5rem;
+			}
+
+			.tab {
+				width: 50%;
+				text-align: center;
+				line-height: 1.5rem;
+			}
+
+			.tab-active {
+				color: #1296DB;
+				border-bottom: 2px solid #1296DB;
+			}
+
+			.filter {
+				padding: 0 0.3rem;
+				background-color: #fff;
+				z-index: 10001;
+				width: 100%;
+				height: 1.2rem;
+				top: 3rem;
+				position: fixed;
+				text-align: center;
+				border-top: 1px solid #ccc;
+				border-bottom: 1px solid #ccc;
+			}
+
+			.warning-status,
+			.handle-status {
+				background-color: #fff;
+				margin: 0.3rem 0;
+				width: 100%;
+				padding: 0.2rem;
+
+			}
+
+			.filter_content_1 {
+				max-height: 5rem;
+				overflow: scroll;
+				z-index: 10000;
+				position: fixed;
+				top: 3.5rem;
+				width: 100%;
+				background: #fff;
+				border-bottom: 1px solid #ccc;
+			}
+		</style>
+	</head>
+
+	<body ontouchstart>
+		<div id="moniter" @click="isFilter = 0">
+			<c-header :title="title"></c-header>
+			<dl class="flex j-a w_100 tabbar" v-if="false">
+				<dt class="tab" @click="openDate(1)">
+					{{ submitForm.startDate || '开始日期'}}
+				</dt>
+				<dt class="tab" @click="openDate(2)">
+					{{ submitForm.endDate || '结束日期'}}
+				</dt>
+			</dl>
+			<div class="header">
+				<div class="filter flex j-a">
+					<span @click.stop="isFilter = !isFilter">
+						{{ selectTitle || '选择单位'}}
+						<img src="../icons/down_full.png" class="icon-small" />
+					</span>
+				</div>
+				<div class="filter_content_1" v-if="isFilter">
+					<div class="weui-cells">
+						<div v-for="(item, index) in orgArray" :key="index">
+							<label class="weui-cell weui-check__label" for="x11" @click="handleSelect(item.company_name, item.company_id)">
+								<div class="weui-cell__bd">
+									<p>{{item.company_name}}</p>
+								</div>
+								<div class="weui-cell__ft">
+									<span v-if="selected === item.company_id" class="weui-icon-checked">
+										<img src="../icons/select.png" class="icon-small" />
+									</span>
+								</div>
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="warning-status">
+					<div class="flex j-b" style="padding: 0.2rem;">
+						<div class="flex j-b w_100">
+							<span class="noti-title">宣传位总数</span>
+							<span>{{total_num}}</span>
+						</div>
+					</div>
+					<HR style="background-color:#EFEFEF;border: none; height: 1px;" />
+					<div class="flex j-b" style="padding: 0.2rem;">
+						<div class="flex j-b w_100">
+							<span class="noti-title">本月更新数量</span>
+							<span>{{month_update_num}}</span>
+						</div>
+					</div>
+					<HR style="background-color:#EFEFEF;border: none; height: 1px;" />
+					<div class="flex j-b" style="padding: 0.2rem;">
+						<div class="flex j-b w_100">
+							<span class="noti-title">更新率</span>
+							<span>{{updateRate}}%</span>
+						</div>
+					</div>
+					<HR style="background-color:#EFEFEF;border: none; height: 1px;" />
+					<div class="flex j-b" style="padding: 0.2rem;">
+						<div class="flex j-b w_100">
+							<span class="noti-title">本月巡查数量</span>
+							<span>{{month_patrol_num}}</span>
+						</div>
+					</div>
+					<HR style="background-color:#EFEFEF;border: none; height: 1px;" />
+					<div class="flex j-b" style="padding: 0.2rem;">
+						<div class="flex j-b w_100">
+							<span class="noti-title">巡查率</span>
+							<span>{{patrolRate}}%</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<script src="../components/cHeader.js"></script>
+	<script>
+		new Vue({
+			el: '#moniter',
+			data: {
+				title: '投放监控',
+				isFilter: 0,
+				total_num: 0,
+				month_patrol_num: 0,
+				month_update_num: 0,
+				updateRate: 0,
+				patrolRate: 0,
+				contentData: [],
+				submitForm: {
+					companyId: '',
+					startDate: '',
+					endDate: '',
+				},
+				userType: infoGet('userType'),
+				selectTitle: '',
+				selected: -1,
+				date: null,
+				orgArray: [{
+					company_name: '全部',
+					company_id: '',
+				}],
+			},
+			created: function() {
+				this.newStatistics();
+				this.selectUserCompany();
+			},
+			watch: {
+				'submitForm.startDate': {
+					handler: function() {
+						if (this.submitForm.endDate) {
+							this.adMonitor();
+						}
+					},
+					deep: true,
+				},
+				'submitForm.endDate': {
+					handler: function() {
+						if (this.submitForm.startDate) {
+							this.adMonitor();
+						}
+					},
+					deep: true,
+				},
+			},
+			methods: {
+				openDate(val) {
+					var dtpicker = new mui.DtPicker({
+						type: 'date'
+					});
+					var self = this;
+					dtpicker.show(item => {
+						if (val === 1) {
+							self.submitForm.startDate = item.text;
+						} else {
+							self.submitForm.endDate = item.text;
+						}
+					})
+				},
+				handleSelect(title, val) {
+					this.selected = val;
+					this.submitForm.companyId = val;
+					this.isFilter = false;
+					this.selectTitle = title;
+					this.newStatistics();
+				},
+				selectUserCompany() {
+					var self = this;
+					pm(api.selectUserCompany, {
+						userId: infoGet('userId'),
+						companyId: '',
+						keyWord: '',
+					}, res => {
+						res.result.forEach(ele => {
+							self.orgArray.push(ele);
+						})
+					}, err => {
+						console.log(err);
+					})
+				},
+				checkMessage(id) {
+					h5(function() {
+						jumpTo({
+							to: 'alert_detail.html',
+							data: {
+								aid: id || ''
+							}
+						})
+					})
+				},
+				resetForm() {
+					this.submitForm = {
+						userId: infoGet('userId'),
+						adType: '',
+						adSpec: '',
+						adStatus: '',
+						index: 1,
+						pageSize: 1000,
+					}
+				},
+				newStatistics() {
+					var self = this;
+					pm(api.newStatistics, self.submitForm, res => {
+						self.total_num=res.result.total_num;
+						self.month_patrol_num=res.result.month_patrol_num;
+						self.month_update_num=res.result.month_update_num;
+						self.updateRate=(self.month_update_num/self.total_num*100).toFixed(2);
+						self.patrolRate=(self.month_patrol_num/self.total_num*100).toFixed(2);
+					}, err => {
+						console.log(err);
+					})
+				},
+
+				handleFilter(val) {
+					this.isFilter = val;
+				},
+				handleFilter2(filter, option) {
+					switch (filter) {
+						case 1:
+							if (this.submitForm.adType === option) {
+								this.submitForm.adType = '';
+								return;
+							}
+							this.submitForm.adType = option;
+							break;
+						case 2:
+							if (this.submitForm.adSpec === option) {
+								this.submitForm.adSpec = '';
+								return;
+							}
+							this.submitForm.adSpec = option;
+							break;
+						case 3:
+							if (this.submitForm.adStatus === option) {
+								this.submitForm.adStatus = '';
+								return;
+							}
+							this.submitForm.adStatus = option;
+							break;
+					}
+				},
+				resetFilter() {
+					this.submitForm.adType = '';
+					this.submitForm.adSpec = '';
+					this.submitForm.adStatus = '';
+				},
+				refresh() {
+					this.adMonitor();
+					this.isFilter = 0;
+				}
+			},
+			filters: {
+				statusFilter(val) {
+					switch (val) {
+						case 1:
+							return '待处理';
+						case 2:
+							return '已完成';
+					}
+				}
+			}
+		})
+	</script>
+
+</html>
