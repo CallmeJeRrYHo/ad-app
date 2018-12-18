@@ -543,7 +543,7 @@
 				name: '',
 				avatar: '',
 				adList: [],
-				initMapAddress: '蕉岭县',
+				initMapAddress: '梅州县',
 				map: null,
 				isPanel: true,
 				keyword: '',
@@ -769,8 +769,8 @@
 					}
 					var self = this;
 					var map = new BMap.Map("l-map");
-					//兴宁市的 默认到市委为中心
-					if (self.initMapAddress.indexOf('兴宁') != -1) {
+					//梅州市的 默认到市委为中心
+					if (self.initMapAddress.indexOf('梅州') != -1) {
 						map.centerAndZoom(new BMap.Point(115.739777, 24.15276), 15);
 					} else {
 						map.centerAndZoom(self.initMapAddress, 15);

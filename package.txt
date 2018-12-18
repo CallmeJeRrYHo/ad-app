@@ -1,6 +1,6 @@
-兴宁 io.dcloud.adxn
-蕉岭 io.dcloud.adjl
-梅州 io.dcloud.admz
+兴 宁 io.dcloud.adxn
+蕉 岭 io.dcloud.adjl
+梅 州 市委io.dcloud.admz
 
 url,文字,图标,推送appid
 219.132. 139.116

@@ -1,5 +1,5 @@
-兴宁 io.dcloud.adxn
-蕉岭 io.dcloud.H5FB599E6  io.dcloud.adjl
-梅州 io.dcloud.H5FB599E5  io.dcloud.admz
+兴 宁 io.dcloud.adxn
+蕉 岭 io.dcloud.H5FB599E6  io.dcloud.adjl
+梅 州 io.dcloud.H5FB599E5  io.dcloud.admz
 
 url,文字,图标，app名字，包名
