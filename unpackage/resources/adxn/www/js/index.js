@@ -7,7 +7,7 @@ var adverts = [{
     company: '城市综合管理局',
     legal_person: '陈二',
     telephone: '13719984494',
-    address: '逢甲公园(梅州市蕉岭县南门路)',
+    address: '逢甲公园(兴宁县兴宁县南门路)',
     type: '普通',
     standard: '单面',
     update_time: '2018年02月18日',
@@ -24,7 +24,7 @@ var adverts = [{
     company: '县发展和改革局',
     legal_person: '李四',
     telephone: '13502333033',
-    address: '锡林公园(梅州市蕉岭县锡林公园长兴路北)',
+    address: '锡林公园(兴宁县兴宁县锡林公园长兴路北)',
     type: '普通',
     standard: '单面',
     update_time: '2018年05月30日',
@@ -41,7 +41,7 @@ var adverts = [{
     company: '县发展和改革局',
     legal_person: '王五',
     telephone: '13502371119',
-    address: '蕉岭县蕉城镇政府(梅州市溪峰西路85)',
+    address: '兴宁县蕉城镇政府(兴宁县溪峰西路85)',
     type: '普通',
     standard: '单面',
     update_time: '2018年04月29日',
@@ -58,7 +58,7 @@ var adverts = [{
     company: '县发展和改革局',
     legal_person: '赵六',
     telephone: '13823879873',
-    address: '米乐星量贩式KTV(蕉岭店)',
+    address: '米乐星量贩式KTV(兴宁店)',
     type: '普通',
     standard: '单面',
     update_time: '2018年01月09日',
@@ -75,7 +75,7 @@ var adverts = [{
     company: '县发展和改革局',
     legal_person: '刘一',
     telephone: '13536730245',
-    address: '龙腾大厦(梅州市蕉岭县桃源东路15)',
+    address: '龙腾大厦(兴宁县兴宁县桃源东路15)',
     type: '普通',
     standard: '双面',
     update_time: '2018年03月21日',
@@ -92,7 +92,7 @@ var adverts = [{
     company: '城市综合管理局',
     legal_person: '张三',
     telephone: '13825975960',
-    address: '蕉岭中学(梅州市蕉岭县镇山路41)',
+    address: '兴宁中学(兴宁县兴宁县镇山路41)',
     type: '普通',
     standard: '单面',
     update_time: '2018年04月10日',
@@ -117,6 +117,8 @@ var drawRoute = function(map, destPoint) {
     var geolocation = new BMap.Geolocation();
     geolocation.getCurrentPosition(function(r) {
         if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+			r.point.lat=115.7397958375;
+			r.point.lng=24.1527695783;
             var mk = new BMap.Marker(r.point);
             // map.addOverlay(mk);
             // map.panTo(r.point);

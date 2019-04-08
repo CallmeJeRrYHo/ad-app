@@ -341,6 +341,7 @@
 							<dt class="filter-item-ob" :class="selectForm.adType === 2 ? 'filter-item-ob-active' : ''" @click="handleFilter2(1, 2)">T型</dt>
 							<dt class="filter-item-ob" :class="selectForm.adType === 3 ? 'filter-item-ob-active' : ''" @click="handleFilter2(1, 3)">灯箱</dt>
 							<dt class="filter-item-ob" :class="selectForm.adType === 4 ? 'filter-item-ob-active' : ''" @click="handleFilter2(1, 4)">宣传栏</dt>
+							<dt class="filter-item-ob" :class="selectForm.adType === 4 ? 'filter-item-ob-active' : ''" @click="handleFilter2(1, 5)">LED显示屏</dt>
 						</dl>
 					</div>
 					<div class="filter-item">
@@ -349,6 +350,14 @@
 							<dt class="filter-item-ob" :class="selectForm.adSpec === 1 ? 'filter-item-ob-active' : ''" @click="handleFilter2(2, 1)">单面</dt>
 							<dt class="filter-item-ob" :class="selectForm.adSpec === 2 ? 'filter-item-ob-active' : ''" @click="handleFilter2(2, 2)"
 							 @click="">双面</dt>
+						</dl>
+					</div>
+					<div class="filter-item">
+						<label class="filter-item-lb">巡查状态</label>
+						<dl>
+							<dt class="filter-item-ob" :class="selectForm.isPatrol === 1 ? 'filter-item-ob-active' : ''" @click="handleFilter2(3, 1)">本月已巡查</dt>
+							<dt class="filter-item-ob" :class="selectForm.isPatrol === 2 ? 'filter-item-ob-active' : ''" @click="handleFilter2(3, 2)"
+							@click="">本月未巡查</dt>
 						</dl>
 					</div>
 					<div class="filter-button">
@@ -360,7 +369,7 @@
 
 			<div class="tab">
 				<div class="page_1" v-show="activeTab === 0">
-					<input id="search" type="text" ref="search" placeholder="请输入搜索地址" @click.stop="" v-model="selectForm.keyWord" />
+					<input id="search" type="text" ref="search" placeholder="请输入搜索地址" @click.stop="" v-model="selectForm.keyWord" v-if="isShowSearch"/>
 					<div id="searchResultPanel" v-if="selectForm.keyWord && isPanel">
 						<dl>
 							<dt v-for="(item, index) in contentData" class="search-item" @click="searchItemClick(item)">
@@ -399,12 +408,13 @@
 						</div>
 					</div>
 					<div class="manage-content">
-						<div class="flex j-b line" v-for="(item, index) in lineArray" :key="index" v-if="+item.auth <= +userType" @click="jumpTo(item.to)">
+						<div class="flex j-b line" v-for="(item, index) in lineArray" :key="index" v-if="+item.auth <= +userType" @click="jumpToAndCleanDot(item)">
 							<div class="flex">
 								<img :src="item.src" class="icon-small" style="margin-right: 0.2rem" />
 								<span>{{item.title}}</span>
+								<img src="../icons/red_dot.png" class="icon-small" style="float: right"  v-show="+item.hasDot" />
 							</div>
-							<img src="../icons/forward.png" class="icon-small" />
+							<img src="../icons/forward.png" class="icon-small"/>
 						</div>
 					</div>
 					<div class="manage-login w-100" @click="logout">
@@ -439,7 +449,6 @@
 						label: '全部单位',
 						value: '',
 					},
-
 				],
 				filterOption1: -1,
 				filterOption2: -1,
@@ -447,6 +456,7 @@
 				contentData: [
 
 				],
+				isShowSearch: true,
 				activeTab: 0,
 				selected: -1,
 				lineArray: [
@@ -471,43 +481,50 @@
 						src: '../icons/watcher_active.png',
 						to: 'account_manage.html',
 						auth: '2',
+						hasDot: false,
 					},
 					{
 						title: '我的消息',
 						src: '../icons/alert.png',
 						to: 'message.html',
 						auth: '1',
+						hasDot: false,
 					},
 					{
 						title: '单位管理',
-						src: '../icons/watcher_active.png',
+						src: '../icons/orgAuth.png',
 						to: 'org_manage.html',
 						auth: '3',
+						hasDot: false,
 					},
 					{
 						title: '管理宣传位',
-						src: '../icons/watcher_active.png',
+						src: '../icons/advertisement.png',
 						to: 'resource.html',
 						auth: '1',
+						hasDot: false,
 					},
 					{
 						title: '通知公告',
-						src: '../icons/watcher_active.png',
+						src: '../icons/notify_active.png',
 						to: 'announcement.html',
 						auth: '1',
+						hasDot: false,
 					},
 					{
 						title: '统计分析',
 						src: '../icons/statistics.png',
-						to: 'statistics.html',
+						to: 'new_statistics.html',
 						auth: '1',
+						hasDot: false,
 					},
-					{
-						title: '投放监测',
-						src: '../icons/statistics.png',
-						to: 'moniter_add.html',
-						auth: '1',
-					},
+// 					{
+// 						title: '投放监测',
+// 						src: '../icons/statistics.png',
+// 						to: 'moniter_add.html',
+// 						auth: '1',
+// 						hasDot: false,
+// 					},
 
 				],
 				selectForm: {
@@ -519,6 +536,7 @@
 					pageSize: 15,
 					lon: '',
 					lat: '',
+					isPatrol: '',
 				},
 				mobile: '',
 				userType: '',
@@ -582,7 +600,22 @@
 						self.handleSelect(ind, webview.value);
 					}
 				});
-
+				document.addEventListener("plusready", function() {
+					plus.push.addEventListener('receive', function(msg) {								
+							var data = JSON.parse(msg.payload);
+							switch(data.operation){
+								case "ad":
+									self.lineArray[3].hasDot=true;
+									self.createLocalMsg("有新广告");
+									break;
+								case "msg":
+									self.lineArray[4].hasDot=true;
+									self.createLocalMsg("您有新消息");
+									break;
+							}
+					});
+				
+				});
 			},
 			methods: {
 				/** 
@@ -656,6 +689,11 @@
 					// }
 
 
+				},
+				createLocalMsg(content){
+					plus.push.createMessage( content, "{'operation':'ad'}", {
+						icon: '../unpackage/res/icons/180x180.png'
+					} );
 				},
 				handleEndPullRefresh(bool) {
 					var self = this;
@@ -731,14 +769,19 @@
 					}
 					var self = this;
 					var map = new BMap.Map("l-map");
-					map.centerAndZoom(self.initMapAddress, 15);
+					//兴宁县的 默认到市委为中心
+					if (self.initMapAddress.indexOf('兴') != -1) {
+						map.centerAndZoom(new BMap.Point(115.739777, 24.15276), 15);
+					} else {
+						map.centerAndZoom(self.initMapAddress, 15);
+					}
 					map.enableScrollWheelZoom(true);
-
 					map.addEventListener('dragend', function() {
 						var cp = map.getCenter();
 						var temp = {};
 						temp.lng = cp.lng;
 						temp.lat = cp.lat;
+						self.isShowSearch=true;
 						var point = new BMap.Point(cp.lng, cp.lat);
 						self.selectAdList(temp, point);
 					})
@@ -773,6 +816,7 @@
 								// console.log(event);
 								var marker = event.target;
 								var label = marker.getLabel().getContent();
+								self.isShowSearch=false;
 								marker.openInfoWindow(infoWindows[label]);
 							});
 							self.map.addOverlay(poiMarker);
@@ -831,7 +875,7 @@
 				},
 				selectAdList(addr, point) {
 					var self = this;
-					console.log(self.selectForm.companyId)
+					self.selectForm.index=1;
 					this.resetContent();
 					if (addr) {
 						self.selectForm.lon = addr.lng;
@@ -866,6 +910,14 @@
 					h5(function() {
 						jumpTo({
 							to: to
+						});
+					})
+				},
+				jumpToAndCleanDot(item){
+ 					item.hasDot=false;
+					h5(function() {
+						jumpTo({
+							to: item.to
 						});
 					})
 				},
@@ -935,12 +987,18 @@
 							return;
 						}
 						this.selectForm.adType = option;
-					} else {
+					} else if(filter=== 2) {
 						if (this.selectForm.adSpec === option) {
 							this.selectForm.adSpec = '';
 							return;
 						}
 						this.selectForm.adSpec = option;
+					}else{
+						if (this.selectForm.isPatrol === option) {
+							this.selectForm.isPatrol = '';
+							return;
+						}
+						this.selectForm.isPatrol = option;
 					}
 				},
 				handleSelect(index, val) {

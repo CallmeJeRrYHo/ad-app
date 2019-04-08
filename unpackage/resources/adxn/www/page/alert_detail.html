@@ -136,6 +136,10 @@
             <span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">报警者</span>
             <span>{{contentData.createUserName}}</span>
           </dt>
+					<dt>
+						<span class="noti-title" style="margin-right: 0.3rem; width: 6rem;">报警编号</span>
+						<span>{{contentData.warning_no}}</span>
+					</dt>
         </dl>
       </div>
       <div class="handle-status" v-for="(item, index) in contentData.warningHandles">
@@ -252,6 +256,10 @@
           label: '宣传栏',
           value: '3',
         },
+				{
+					label: 'LED显示屏',
+					value: '4',
+				},
       ],
       confArray: [{
           label: '单面',
@@ -288,7 +296,7 @@
         designPic: [],
         pic: [],
       },
-      uploadUrl: 'http://219.132.139.116:9080/pic/uploadPic',
+      uploadUrl: 'http://219.132.139.116:9099/pic/uploadPic',
       aid: '',
       userType: infoGet('userType'),
       contentData: {},
@@ -434,6 +442,8 @@
               return '灯箱';
             case 4:
               return '宣传栏';
+						case 5:
+							return 'LED显示屏';
           }
         } else if (key === 'adSpec') {
           switch (self.submitForm[key]) {

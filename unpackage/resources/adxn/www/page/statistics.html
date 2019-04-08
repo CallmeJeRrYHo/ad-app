@@ -214,6 +214,7 @@
     },
     methods: {
       selectUserCompany() {
+				this.selectTitle = infoGet('companyName');
         var self = this;
         pm(api.selectUserCompany, {
           userId: infoGet('userId'),
@@ -252,6 +253,9 @@
                 case 4:
                   ele.ad_type = '宣传栏';
                   break;
+								case 5:
+									ele.ad_type = 'LED显示屏';
+									break;
               }
             });
           } else {
